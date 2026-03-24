@@ -3,42 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/signup_flow_nav"
-    app:startDestination="@id/getStartedFragment">
+    app:startDestination="@id/onboardingFragment">
 
     <fragment
         android:id="@+id/getStartedFragment"
         android:name="com.app.edtech.ui.get_started.fragment.GetStartedFragment"
         android:label="fragment_get_started">
-<!--        <action-->
-<!--            android:id="@+id/action_getStartedFragment_to_signinFragment"-->
-<!--            app:destination="@id/signinFragment" />-->
+        <action
+            android:id="@+id/action_getStartedFragment_to_signinFragment"
+            app:destination="@id/signinFragment" />
     </fragment>
-<!--    <fragment-->
-<!--        android:id="@+id/signinFragment"-->
-<!--        android:name="com.app.hihlo.ui.signup.fragment.SigninFragment"-->
-<!--        android:label="SigninFragment"-->
-<!--        tools:layout="@layout/fragment_signin"/>-->
-<!--    <fragment-->
-<!--        android:id="@+id/emailFragment"-->
-<!--        android:name="com.app.hihlo.ui.signup.fragment.EmailFragment"-->
-<!--        android:label="EmailFragment"-->
-<!--        tools:layout="@layout/fragment_email"/>-->
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.app.edtech.ui.signup.fragment.OnboardingFragment"
+        android:label="OnboardingFragment" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_getStartedFragment"
+            app:destination="@id/getStartedFragment" />
+    </fragment>
+        <fragment
+        android:id="@+id/signinFragment"
+        android:name="com.app.edtech.ui.signup.fragment.SigninFragment"
+        android:label="SigninFragment"
+        tools:layout="@layout/fragment_signin"/>
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.app.edtech.ui.signup.fragment.EmailFragment"
+        android:label="EmailFragment"
+        tools:layout="@layout/fragment_email"/>
 <!--    <fragment-->
 <!--        android:id="@+id/registrationFragment"-->
 <!--        android:name="com.app.hihlo.ui.signup.fragment.RegistrationFragment"-->
 <!--        android:label="RegistrationFragment"-->
 <!--        tools:layout="@layout/fragment_registration"/>-->
-<!--    <fragment-->
-<!--        android:id="@+id/otpFragment"-->
-<!--        android:name="com.app.hihlo.ui.signup.fragment.OtpFragment"-->
-<!--        android:label="OtpFragment"-->
-<!--        tools:layout="@layout/fragment_otp"/>-->
-<!--    <fragment-->
-<!--        android:id="@+id/newPasswordFragment"-->
-<!--        android:name="com.app.hihlo.ui.signup.fragment.NewPasswordFragment"-->
-<!--        android:label="NewPasswordFragment"-->
-<!--        tools:layout="@layout/fragment_new_password"/>-->
-<!--    <fragment-->
+    <fragment
+        android:id="@+id/otpFragment"
+        android:name="com.app.edtech.ui.signup.fragment.OtpFragment"
+        android:label="OtpFragment"
+        tools:layout="@layout/fragment_otp"/>
+    <fragment
+        android:id="@+id/newPasswordFragment"
+        android:name="com.app.edtech.ui.signup.fragment.NewPasswordFragment"
+        android:label="NewPasswordFragment"
+        tools:layout="@layout/fragment_new_password"/>
+    <fragment
+        android:id="@+id/joinFragment"
+        android:name="com.app.edtech.ui.signup.fragment.JoinFragment"
+        android:label="JoinFragment" />
+    <!--    <fragment-->
 <!--        android:id="@+id/termsConditionsFragment"-->
 <!--        android:name="com.app.hihlo.ui.profile.terms_conditions.TermsConditionsFragment"-->
 <!--        android:label="TermsConditionsFragment"-->

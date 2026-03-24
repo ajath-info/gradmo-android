@@ -17,7 +17,7 @@ class GetStartedFragment : BaseFragment<FragmentGetStartedBinding>() {
     private fun onClick() {
         binding.apply {
             registerAsStudent.setOnClickListener {
-//                findNavController().navigate(R.id.action_getStartedFragment_to_signinFragment)
+                findNavController().navigate(R.id.joinFragment)
             }
         }
     }

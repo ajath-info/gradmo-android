@@ -3,24 +3,30 @@ package com.app.edtech.ui.signup.fragment
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import android.widget.Toast
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
+import com.app.edtech.databinding.FragmentJoinBinding
 import com.app.edtech.databinding.FragmentSigninBinding
-import com.app.edtech.ui.signup.view_model.SigninViewModel
+import com.app.edtech.ui.signup.view_model.JoinViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
 import com.app.edtech.utils.network_utils.Status
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
-class SigninFragment : BaseFragment<FragmentSigninBinding>() {
+class JoinFragment : BaseFragment<FragmentJoinBinding>(){
     private var isPassHidden = true
-    private val viewModel: SigninViewModel by viewModels()
+    private val viewModel: JoinViewModel by viewModels()
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -157,16 +163,14 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
 
     private fun onClick() {
         binding.apply {
-            tvForgotPassword.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("from","login")
-                findNavController().navigate(R.id.emailFragment,bundle)
+            loginButton.setOnClickListener {
+                findNavController().navigate(R.id.signinFragment)
             }
         }
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_signin
+        return R.layout.fragment_join
     }
     private fun setPasswordToggle() {
         binding.password.transformationMethod = CommonUtils.DotPasswordTransformationMethod
