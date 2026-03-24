@@ -166,6 +166,9 @@ class JoinFragment : BaseFragment<FragmentJoinBinding>(){
             loginButton.setOnClickListener {
                 findNavController().navigate(R.id.signinFragment)
             }
+            getOtpButton.setOnClickListener {
+                findNavController().navigate(R.id.otpFragment)
+            }
         }
     }
 

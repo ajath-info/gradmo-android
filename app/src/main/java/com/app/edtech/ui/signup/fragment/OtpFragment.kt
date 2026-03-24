@@ -164,7 +164,7 @@ class OtpFragment : Fragment() {
         else{
 //            viewModel.hitVerifyEmailOtp(signUpData?.email.toString(),code)
             findNavController().navigate(
-                                    R.id.newPasswordFragment, // this is Fragment C
+                                    R.id.editProfileNewFragment, // this is Fragment C
 //                                    NavOptions.Builder()
 //                                        .setPopUpTo(R.id.otpFragment, true) // remove B (OTP) from back stack
 //                                        .build()

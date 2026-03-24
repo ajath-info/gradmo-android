@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,4 +74,11 @@ dependencies {
     annotationProcessor(libs.compiler)
 
     implementation("me.relex:circleindicator:2.1.6")
+
+    implementation("com.amazonaws:aws-android-sdk-s3:2.72.0")
+    implementation("com.amazonaws:aws-android-sdk-core:2.72.0")
+
+//    image cropper
+//    implementation("com.github.yalantis:ucrop:2.2.10")
+
 }

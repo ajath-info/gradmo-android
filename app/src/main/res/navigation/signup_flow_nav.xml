@@ -40,7 +40,11 @@
         android:id="@+id/otpFragment"
         android:name="com.app.edtech.ui.signup.fragment.OtpFragment"
         android:label="OtpFragment"
-        tools:layout="@layout/fragment_otp"/>
+        tools:layout="@layout/fragment_otp">
+        <action
+            android:id="@+id/action_otpFragment_to_editProfileNewFragment"
+            app:destination="@id/editProfileNewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newPasswordFragment"
         android:name="com.app.edtech.ui.signup.fragment.NewPasswordFragment"
@@ -55,9 +59,9 @@
 <!--        android:name="com.app.hihlo.ui.profile.terms_conditions.TermsConditionsFragment"-->
 <!--        android:label="TermsConditionsFragment"-->
 <!--        tools:layout="@layout/fragment_terms_conditions"/>-->
-<!--    <fragment-->
-<!--        android:id="@+id/editProfileNewFragment"-->
-<!--        android:name="com.app.hihlo.ui.profile.fragment.EditProfileNewFragment"-->
-<!--        android:label="EditProfileFragment"-->
-<!--        tools:layout="@layout/fragment_edit_profile_new"/>-->
+    <fragment
+        android:id="@+id/editProfileNewFragment"
+        android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_edit_profile_new"/>
 </navigation>
