@@ -28,4 +28,9 @@
     <string name="school_college_name">School/College Name</string>
     <string name="grade">Grade</string>
     <string name="save">Save</string>
+    <string name="home">Home</string>
+    <string name="course">Course</string>
+    <string name="notifications">Notifications</string>
+    <string name="account">Account</string>
+    <string name="view_profile">View Profile</string>
 </resources>

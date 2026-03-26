@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.app.edtech.ui.fragment.HomeFragment"
+        android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/courseFragment"
+        android:name="com.app.edtech.ui.fragment.CourseFragment"
+        android:label="CourseFragment" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.app.edtech.ui.fragment.SearchFragment"
+        android:label="SearchFragment" />
+    <fragment
+        android:id="@+id/editProfileNewFragment2"
+        android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
+        android:label="EditProfileNewFragment" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.app.edtech.ui.fragment.NotificationFragment"
+        android:label="NotificationFragment" />
+</navigation>

@@ -25,6 +25,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.services.s3.AmazonS3Client
 import com.app.edtech.databinding.FragmentEditProfileNewBinding
+import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.signup.view_model.EditProfileViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.CommonUtils.touchHideKeyBoard
@@ -73,6 +74,10 @@ class EditProfileNewFragment : Fragment() {
         touchHideKeyBoard(binding.root, requireActivity())
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.updateButton.setOnClickListener {
+            requireActivity().finish()
+            startActivity(Intent(requireActivity(), HomeActivity::class.java))
         }
             imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {

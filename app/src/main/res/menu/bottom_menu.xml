@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:id="@+id/home"
+            android:title="@string/home"
+            android:icon="@drawable/home_icon"/>
+        <item
+            android:id="@+id/course"
+            android:title="@string/course"
+            android:icon="@drawable/course_icon"/>
+        <item
+            android:id="@+id/search"
+            android:title=""/>
+        <item
+            android:id="@+id/notification"
+            android:title="@string/notifications"
+            android:icon="@drawable/notification_icon"/>
+        <item
+            android:id="@+id/account"
+            android:title="@string/account"
+            android:icon="@drawable/account_icon"/>
+</menu>

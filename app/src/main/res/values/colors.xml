@@ -6,4 +6,6 @@
     <color name="theme_blue">#4E74F9</color>
     <color name="theme_green">#0DCA68</color>
     <color name="theme_red">#D35202</color>
+    <color name="gray_menu_icon">#767372</color>
+    <color name="transparent">#00000000</color>
 </resources>

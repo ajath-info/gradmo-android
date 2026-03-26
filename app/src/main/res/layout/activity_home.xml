@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            tools:context=".basic.activity.HomeActivity">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:defaultNavHost="true"
+                app:layout_constraintBottom_toTopOf="@id/bottomAppBar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navGraph="@navigation/home_nav" />
+
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottomAppBar"
+                android:layout_marginStart="-15dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:backgroundTint="@color/white"
+                app:fabCradleMargin="11dp"
+                app:fabCradleRoundedCornerRadius="30dp"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottomNavigationView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:elevation="1dp"
+                    app:itemIconTint="@drawable/bottom_nav_item_color_state"
+                    app:itemPaddingTop="12dp"
+                    app:labelVisibilityMode="labeled"
+                    app:menu="@menu/bottom_menu" />
+            </com.google.android.material.bottomappbar.BottomAppBar>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+
+                android:id="@+id/floatingbtn"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="5dp"
+                android:backgroundTint="@color/white"
+
+                android:elevation="0dp"
+                app:layout_anchor="@id/bottomAppBar"
+                app:layout_constraintBottom_toBottomOf="@id/imgBtn"
+                app:layout_constraintEnd_toEndOf="@id/imgBtn"
+                app:layout_constraintStart_toStartOf="@id/imgBtn"
+                app:layout_constraintTop_toTopOf="@id/imgBtn"
+                app:maxImageSize="0dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:elevation="15dp"
+                android:src="@drawable/search_icon_menu"
+                app:layout_anchor="@id/floatingbtn"
+                app:layout_anchorGravity="center"
+                app:layout_constraintTop_toTopOf="@id/bottomAppBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:maxImageSize="0dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Side Menu -->
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="start"
+            android:background="@android:color/white">
+
+            <!-- Include your menu layout -->
+            <include android:id="@+id/sideMenu"
+                layout="@layout/layout_menu_bottom_sheet"/>
+
+        </LinearLayout>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>
