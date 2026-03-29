@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.app.hihlo.model.login.response.LoginResponse
-import com.app.hihlo.ui.signup.model.ChangePasswordRequest
-import com.app.hihlo.ui.signup.model.ResetPasswordRequest
+import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.ui.signup.model.ChangePasswordRequest
+import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

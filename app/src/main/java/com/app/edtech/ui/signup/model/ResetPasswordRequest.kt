@@ -1,9 +1,9 @@
-package com.app.hihlo.ui.signup.model
+package com.app.edtech.ui.signup.model
 
 data class ResetPasswordRequest(
-    var email: String?=null,
-    var newPassword: String?=null,
-    var confirmPassword: String?=null
+    var mobile: String?=null,
+    var password: String?=null,
+    var confirm_password: String?=null
 )
 
 data class ChangePasswordRequest(

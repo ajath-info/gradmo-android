@@ -2,20 +2,16 @@ package com.app.edtech.ui.signup.view_model
 
 import android.app.Application
 import android.util.Patterns
-import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.edtech.R
 import com.app.edtech.network_call.repository.ApiRepository
-import com.app.edtech.preferences.FCM_TOKEN
-import com.app.edtech.preferences.Preferences
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.app.hihlo.model.login.request.LoginRequest
-import com.app.hihlo.model.login.response.LoginResponse
+import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.hihlo.ui.signup.model.SocialSignUpRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -97,7 +93,7 @@ class JoinViewModel @Inject constructor(application: Application): AndroidViewMo
 
 
         // Success
-        hitLoginDataApi(LoginRequest(email = emailInput, password = passwordInput, deviceToken = Preferences.getStringPreference(getApplication(), FCM_TOKEN), deviceType = "A", ))
+//        hitLoginDataApi(LoginRequest(email = emailInput, password = passwordInput, deviceToken = Preferences.getStringPreference(getApplication(), FCM_TOKEN), deviceType = "A", ))
 //        _validationMessage.value = "Successful!"
     }
 

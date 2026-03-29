@@ -32,8 +32,8 @@ import com.app.hihlo.model.get_recent_chat.response.GetRecentChatResponse
 import com.app.hihlo.model.get_reel_comments.response.ReelCommentsResponse
 import com.app.hihlo.model.home.response.HomeResponse
 import com.app.hihlo.model.interest_list.response.InterestListResponse
-import com.app.hihlo.model.login.request.LoginRequest
-import com.app.hihlo.model.login.response.LoginResponse
+import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.hihlo.model.notification.response.GetNotificationListResponse
 import com.app.hihlo.model.post_comments.request.PostCommentsRequest
 import com.app.hihlo.model.post_comments.response.PostCommentsResponse
@@ -63,8 +63,8 @@ import com.app.edtech.model.SendOtpPhoneRequest
 import com.app.edtech.model.UserToCreatorRequest
 import com.app.edtech.model.VerifyPhoneOtpRequest
 import com.app.hihlo.ui.profile.model.DeleteAccountRequest
-import com.app.hihlo.ui.signup.model.ChangePasswordRequest
-import com.app.hihlo.ui.signup.model.ResetPasswordRequest
+import com.app.edtech.ui.signup.model.ChangePasswordRequest
+import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
 import com.app.hihlo.ui.signup.model.SocialSignUpRequest
 import retrofit2.http.Body
@@ -78,12 +78,22 @@ import retrofit2.http.Path
 
 
 interface ApiService {
-    @POST("login")
+    @POST("api/user/login")
     suspend fun login(@Body requestBody: LoginRequest): LoginResponse
+
+    @POST("api/user/send-otp")
+    suspend fun sendLoginOtp(@Body requestBody: LoginRequest): LoginResponse
 
     @POST("social-auth")
     suspend fun socialLogin(@Body requestBody: SocialSignUpRequest): LoginResponse
 
+    @FormUrlEncoded
+    @POST("api/user/verify-otp")
+    suspend fun verifyLoginOtp(
+        @Field("mobile") mobile: String,
+        @Field("otp") otp: String,
+        @Field("user_type") user_type: String,
+    ): LoginResponse
     @FormUrlEncoded
     @POST("send-mail")
     suspend fun sendMailOtp(
@@ -92,21 +102,13 @@ interface ApiService {
         @Field("purpose") purpose: String?,
     ): LoginResponse
 
-    @POST("forgot-password")
+    @POST("api/user/update-password")
     suspend fun resetPassword(@Body requestBody: ResetPasswordRequest): LoginResponse
 
 
     @POST("change-password")
     suspend fun changePassword(@Header("Authorization") token: String,@Body requestBody: ChangePasswordRequest): LoginResponse
 
-
-
-    @FormUrlEncoded
-    @POST("verify-mail-otp")
-    suspend fun verifyEmailOtp(
-        @Field("email") email: String,
-        @Field("otp") type: String
-    ): LoginResponse
 
     @POST("signup")
     suspend fun registerUser(

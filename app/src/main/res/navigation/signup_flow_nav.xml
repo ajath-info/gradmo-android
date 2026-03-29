@@ -28,7 +28,7 @@
         tools:layout="@layout/fragment_signin"/>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.app.edtech.ui.signup.fragment.EmailFragment"
+        android:name="com.app.edtech.ui.signup.fragment.ForgotPasswordFragment"
         android:label="EmailFragment"
         tools:layout="@layout/fragment_email"/>
 <!--    <fragment-->

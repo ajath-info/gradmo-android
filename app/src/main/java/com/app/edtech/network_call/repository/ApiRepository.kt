@@ -16,7 +16,7 @@ import com.app.hihlo.model.edit_profile.request.EditProfileRequest
 import com.app.hihlo.model.end_call.request.EndCallRequest
 import com.app.hihlo.model.flag_user.request.FlagUserRequest
 import com.app.hihlo.model.follow.request.FollowRequest
-import com.app.hihlo.model.login.request.LoginRequest
+import com.app.edtech.model.login.request.LoginRequest
 import com.app.hihlo.model.post_comments.request.PostCommentsRequest
 import com.app.hihlo.model.rating_review.RatingReviewRequest
 import com.app.hihlo.model.reply_to_comment.request.ReplyToCommentRequest
@@ -29,8 +29,8 @@ import com.app.hihlo.model.save_call.SaveCallRequest
 import com.app.hihlo.model.set_notification.SetNotificationRequest
 import com.app.hihlo.model.update_call_status.UpdateCallStatusRequest
 import com.app.hihlo.ui.profile.model.DeleteAccountRequest
-import com.app.hihlo.ui.signup.model.ChangePasswordRequest
-import com.app.hihlo.ui.signup.model.ResetPasswordRequest
+import com.app.edtech.ui.signup.model.ChangePasswordRequest
+import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
 import com.app.hihlo.ui.signup.model.SocialSignUpRequest
 
@@ -38,6 +38,7 @@ class ApiRepository {
     private val service = RetrofitBuilder.apiService
 
     suspend fun loginApi(request: LoginRequest) = service.login(request)
+    suspend fun sendLoginOtpApi(request: LoginRequest) = service.sendLoginOtp(request)
 
     suspend fun socialLogin(request: SocialSignUpRequest) = service.socialLogin(request)
 
@@ -112,7 +113,7 @@ class ApiRepository {
 
     suspend fun sendEmailOtp(email: String,userName:String?,purpose: String?) = service.sendMailOtp(email,userName,purpose)
 
-    suspend fun verifyEmailOtp(email: String,otp:String) = service.verifyEmailOtp(email,otp)
+    suspend fun verifyLoginOtp(mobile: String,otp:String, userType:String) = service.verifyLoginOtp(mobile, otp, userType)
 
     suspend fun registerUser(model: SignUp) = service.registerUser(model)
 

@@ -9,7 +9,7 @@ import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
 import com.app.hihlo.model.check_username.request.CheckUsernameRequest
 import com.app.hihlo.model.check_username.response.CheckUsernameResponse
-import com.app.hihlo.model.login.response.LoginResponse
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.hihlo.ui.signup.model.SocialSignUpRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

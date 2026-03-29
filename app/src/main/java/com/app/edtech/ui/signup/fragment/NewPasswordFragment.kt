@@ -17,8 +17,7 @@ import com.app.edtech.ui.signup.view_model.ResetPasswordViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
 import com.app.edtech.utils.network_utils.Status
-import com.app.hihlo.ui.signup.model.ResetPasswordRequest
-import com.app.hihlo.ui.signup.model.SignUp
+import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.google.gson.Gson
 
 class NewPasswordFragment : Fragment() {
@@ -26,22 +25,53 @@ class NewPasswordFragment : Fragment() {
     private var isPassHidden = true
     private var isCnfPassHidden = true
     private val resetPasswordViewModel: ResetPasswordViewModel by viewModels()
-    var data: SignUp?=null
-
+    var from = ""
+    var phone = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            data = it.getParcelable("data")
-            Log.e("TAG", "onCreate:ddd $data", )
+            from = it.getString("from").toString()
+            phone = it.getString("phone").toString()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         CommonUtils.hideKeyboard(requireActivity())
+        setObserver()
 
+    }
+
+    private fun setObserver() {
+        resetPasswordViewModel.getResetPasswordLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                            Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(
+                                R.id.signinFragment,
+                                null,
+                                NavOptions.Builder()
+                                    .setPopUpTo(R.id.signup_flow_nav, true) // clears everything in backstack
+                                    .build()
+                            )
+                    }else{
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -76,56 +106,20 @@ class NewPasswordFragment : Fragment() {
             Toast.makeText(requireActivity(), "New password and confirm new password not matched", Toast.LENGTH_SHORT).show()
         }else{
             //Api hitting
-//            val model = ResetPasswordRequest(
-//                email = data?.email,
-//                newPassword = password,
-//                confirmPassword = cnfPassword
-//            )
-//            hitResetPasswordApi(model)
-
-            findNavController().navigate(
-                R.id.signinFragment,
-                null,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.signup_flow_nav, true) // clears everything in backstack
-                    .build()
+            val model = ResetPasswordRequest(
+                mobile = phone,
+                password = password,
+                confirm_password = cnfPassword
             )
-        }
-    }
+            resetPasswordViewModel.hitResetPassword(model)
 
-    private fun hitResetPasswordApi(model: ResetPasswordRequest) {
-        resetPasswordViewModel.hitResetPassword(model)
-        resetPasswordViewModel.getResetPasswordLiveData().observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
-                    if (it.data?.status==1){
-                        if (it.data.code == 200){
-                            val list = it.data.payload
-                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                            findNavController().navigate(
-                                R.id.signinFragment,
-                                null,
-                                NavOptions.Builder()
-                                    .setPopUpTo(R.id.signup_flow_nav, true) // clears everything in backstack
-                                    .build()
-                            )
-                        }else{
-                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                        }
-                    }else{
-                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
-                    }
-                    ProcessDialog.dismissDialog(true)
-                }
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-                Status.ERROR -> {
-                    Log.e("TAG", "Login Failed: ${it.message}")
-                    ProcessDialog.dismissDialog(true)
-                }
-            }
+//            findNavController().navigate(
+//                R.id.signinFragment,
+//                null,
+//                NavOptions.Builder()
+//                    .setPopUpTo(R.id.signup_flow_nav, true) // clears everything in backstack
+//                    .build()
+//            )
         }
     }
 

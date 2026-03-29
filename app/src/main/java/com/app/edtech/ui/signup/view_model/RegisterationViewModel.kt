@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.app.hihlo.model.login.response.LoginResponse
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.hihlo.ui.signup.model.SignUp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

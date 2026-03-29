@@ -1,6 +1,7 @@
 package com.app.edtech.ui.signup.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -18,10 +19,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.databinding.FragmentOtpBinding
+import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.IS_LOGIN
+import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.USER_TYPE
+import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.signup.view_model.SendMailOtpViewModel
-import com.app.edtech.ui.signup.view_model.VerifyEmailOtpViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
 import com.app.edtech.utils.network_utils.Status
@@ -31,9 +37,7 @@ import com.google.gson.Gson
 class OtpFragment : Fragment() {
     private lateinit var binding:FragmentOtpBinding
     var from = ""
-    var purpose = ""
-    var signUpData: SignUp?=null
-    private val viewModel: VerifyEmailOtpViewModel by viewModels()
+    var phone = ""
     private var countdown: CountDownTimer?=null
     private val sendEmailOtpViewModel: SendMailOtpViewModel by viewModels()
 
@@ -42,18 +46,13 @@ class OtpFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
            from = it.getString("from").toString()
-            signUpData = it.getParcelable("data")
-            purpose = it.getString("purpose").toString()
-            Log.e("TAG", "onCreate:daa $signUpData", )
-            Log.e("TAG", "onCreate:daa $purpose", )
+           phone = it.getString("phone").toString()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
-        initVerifyApi()
-
         CommonUtils.touchHideKeyBoard(view,requireActivity())
     }
 
@@ -119,27 +118,58 @@ class OtpFragment : Fragment() {
                 binding.tvResend.visibility = View.VISIBLE
                 binding.tvDidnt.text = "Haven’t received the OTP yet?"
                 binding.tvResend.setOnClickListener {
-                    sendEmailOtpViewModel.hitSendEmailOtp(signUpData?.email.toString(),signUpData?.username.toString(),purpose)
+                    val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
+                    val request = LoginRequest(mobile = phone, user_type = userType)
+                    sendEmailOtpViewModel.hitResendLoginOtp(request)
                 }
             }
         }.start()
     }
 
     private fun initObserver() {
-        sendEmailOtpViewModel.getLoginLiveData().observe(viewLifecycleOwner) {
+        sendEmailOtpViewModel.getVerifyOtpLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
-                    if (it.data?.status==1){
-                        if (it.data.code == 200){
-                            val list = it.data.payload
-                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                            startTimer()
-                        }else{
-                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
+                    if (it.data?.status=="true"){
+                        if (from=="login") {
+                            Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
+                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
+                            CommonUtils.hideKeyboard(requireActivity())
+                            Log.i("TAG", "setObserver: "+Preferences.getStringPreference(requireContext(), FCM_TOKEN))
+                            startActivity(Intent(requireActivity(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }else if (from == "forgot"){
+                            val bundle = Bundle()
+                            bundle.putString("phone",phone)
+                            bundle.putString("from","forgot")
+                            findNavController().navigate(R.id.newPasswordFragment,bundle)
                         }
+
                     }else{
-                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
+
+                    ProcessDialog.dismissDialog(true)
+                }
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+        sendEmailOtpViewModel.getResendLoginOtpLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "resend otp: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                        Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
+                        startTimer()
+                    }else{
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
@@ -162,72 +192,9 @@ class OtpFragment : Fragment() {
             Toast.makeText(requireActivity(), "Please enter otp", Toast.LENGTH_SHORT).show()
         }
         else{
-//            viewModel.hitVerifyEmailOtp(signUpData?.email.toString(),code)
-            findNavController().navigate(
-                                    R.id.editProfileNewFragment, // this is Fragment C
-//                                    NavOptions.Builder()
-//                                        .setPopUpTo(R.id.otpFragment, true) // remove B (OTP) from back stack
-//                                        .build()
-                                )
-
-        }
-    }
-    private fun initVerifyApi() {
-        viewModel.getLoginLiveData().observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
-//                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
-//                    if (it.data?.status==1){
-//                        if (it.data.code == 200){
-//                            val list = it.data.payload
-//                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-//                            val model = SignUp(
-//                                name = signUpData?.name,
-//                                email = signUpData?.email,
-//                                username = signUpData?.username,
-//                                phoneNumber = signUpData?.phoneNumber,
-//                                deviceType = "A",
-//                                password = signUpData?.password,
-//                                confirmPassword = signUpData?.password,
-//                                deviceToken = Preferences.getStringPreference(requireActivity(),
-//                                    FCM_TOKEN),
-//                            )
-//                            val bundle = Bundle()
-//                            bundle.putString("from",from)
-//                            bundle.putParcelable("data",model)
-//                            if(from=="forgot_password"){
-//                                findNavController().navigate(
-//                                    R.id.newPasswordFragment, // this is Fragment C
-//                                    bundle,
-//                                    NavOptions.Builder()
-//                                        .setPopUpTo(R.id.otpFragment, true) // remove B (OTP) from back stack
-//                                        .build()
-//                                )
-//                            }else{
-//                                findNavController().navigate(
-//                                    R.id.addDetailsFragment, // this is Fragment C
-//                                    bundle,
-//                                    NavOptions.Builder()
-//                                        .setPopUpTo(R.id.otpFragment, true) // remove B (OTP) from back stack
-//                                        .build()
-//                                )
-//                            }
-//                            countdown?.cancel()
-//                        }else{
-//
-//                        }
-//                    }else{
-//                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
-//                    }
-//                    ProcessDialog.dismissDialog(true)
-                }
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-                Status.ERROR -> {
-                    Log.e("TAG", "Login Failed: ${it.message}")
-                    ProcessDialog.dismissDialog(true)
-                }
+            if (from=="login" || from=="forgot"){
+                val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
+                sendEmailOtpViewModel.hitVerifyOtp(phone, code, userType ?: "")
             }
         }
     }

@@ -1,15 +1,23 @@
 package com.app.edtech.ui.signup.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentSigninBinding
+import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.IS_LOGIN
+import com.app.edtech.preferences.LOGIN_DATA
+import com.app.edtech.preferences.Preferences
+import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.signup.view_model.SigninViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
@@ -115,14 +123,12 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
-//                    if (it.data?.status==1){
-//                        if (it.data.code == 200){
-//                            Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
-//                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
-//                            CommonUtils.hideKeyboard(requireActivity())
-//                            Log.i("TAG", "setObserver: "+Preferences.getStringPreference(requireContext(), FCM_TOKEN))
-//                            updateUserOnFirebase(it.data.payload)
-//
+                    if (it.data?.status=="true"){
+                            Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
+                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
+                            CommonUtils.hideKeyboard(requireActivity())
+                            Log.i("TAG", "setObserver: "+Preferences.getStringPreference(requireContext(), FCM_TOKEN))
+
 //                            if(it.data.payload?.city.isNullOrBlank()|| it.data.payload.profileImage.isNullOrEmpty()){
 //                                val bundle = Bundle()
 //                                val userDetails = it.data.payload?.toUserDetailsX()
@@ -130,15 +136,12 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
 //                                bundle.putParcelable("userDetail",userDetails)
 //                                findNavController().navigate(R.id.editProfileNewFragment,bundle)
 //                            }else{
-//                                startActivity(Intent(requireActivity(), HomeActivity::class.java))
-//                                requireActivity().finish()
+                                startActivity(Intent(requireActivity(), HomeActivity::class.java))
+                                requireActivity().finish()
 //                            }
-//                        }else{
-//                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }else{
-//                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
-//                    }
+                    }else{
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
                     ProcessDialog.dismissDialog(true)
                 }
                 Status.LOADING -> {
@@ -150,6 +153,32 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
                 }
             }
         }
+        viewModel.getSendLoginOtpLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                        CommonUtils.hideKeyboard(requireActivity())
+                        Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
+                        val bundle = Bundle()
+                        bundle.putString("phone",viewModel.phone.get())
+                        bundle.putString("from","login")
+                        findNavController().navigate(R.id.otpFragment,bundle)
+                    }else{
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
         viewModel.validationMessage.observe(viewLifecycleOwner) { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
@@ -161,6 +190,21 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
                 val bundle = Bundle()
                 bundle.putString("from","login")
                 findNavController().navigate(R.id.emailFragment,bundle)
+            }
+            loginViaOtpButton.setOnClickListener {
+                if (viewModel?.loginType?.value.equals("password")){
+                    viewModel?.loginType?.postValue("otp")
+                    passwordLayout.isVisible = false
+                    emailInput.isVisible = false
+                    phoneInput.isVisible = true
+                    loginViaOtpButton.text = getString(R.string.login_via_email)
+                }else {
+                    viewModel?.loginType?.postValue("password")
+                    passwordLayout.isVisible = true
+                    emailInput.isVisible = true
+                    phoneInput.isVisible = false
+                    loginViaOtpButton.text = getString(R.string.login_via_otp)
+                }
             }
         }
     }

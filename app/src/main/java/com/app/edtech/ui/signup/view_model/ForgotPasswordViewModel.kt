@@ -4,38 +4,35 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.app.hihlo.model.login.response.LoginResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class VerifyEmailOtpViewModel @Inject constructor(application: Application): AndroidViewModel(application) {
+class ForgotPasswordViewModel @Inject constructor(application: Application): AndroidViewModel(application) {
+    private val forgotPasswordSendOtpLiveDate = SingleLiveEvent<Resources<LoginResponse>>()
 
-    private val verifyLiveData = SingleLiveEvent<Resources<LoginResponse>>()
-
-    fun getLoginLiveData(): LiveData<Resources<LoginResponse>> {
-        return verifyLiveData
+    fun getForgotPasswordSendOtpLiveData(): LiveData<Resources<LoginResponse>> {
+        return forgotPasswordSendOtpLiveDate
     }
 
-    fun hitVerifyEmailOtp(email:String,otp:String) {
-
+    fun hitForgotPasswordSendOtp(request: LoginRequest) {
         try {
-            verifyLiveData.postValue(Resources.loading(null))
+            forgotPasswordSendOtpLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {
                 try {
-                    verifyLiveData.postValue(
+                    forgotPasswordSendOtpLiveDate.postValue(
                         Resources.success(
-                            ApiRepository().verifyEmailOtp(email,otp)
+                            ApiRepository().sendLoginOtpApi(request)
                         )
                     )
-
                 } catch (ex: Exception) {
-                    verifyLiveData.postValue(Resources.error(ex.localizedMessage, null))
+                    forgotPasswordSendOtpLiveDate.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

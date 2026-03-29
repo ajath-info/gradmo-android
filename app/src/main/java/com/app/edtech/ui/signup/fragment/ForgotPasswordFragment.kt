@@ -11,16 +11,19 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.databinding.FragmentEmailBinding
-import com.app.edtech.ui.signup.view_model.SendMailOtpViewModel
+import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.USER_TYPE
+import com.app.edtech.ui.signup.view_model.ForgotPasswordViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
 import com.app.edtech.utils.network_utils.Status
 import com.google.gson.Gson
 
-class EmailFragment : Fragment() {
+class ForgotPasswordFragment : Fragment() {
     private lateinit var binding:FragmentEmailBinding
     var from = ""
-    private val viewModel: SendMailOtpViewModel by viewModels()
+    private val viewModel: ForgotPasswordViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,44 +56,31 @@ class EmailFragment : Fragment() {
     }
 
     private fun checkValidation() {
-        val etEmail = binding.emailInput.text.toString()
-        if(etEmail.isEmpty()){
+        val etPhone = binding.phoneInput.text.toString()
+        if(etPhone.isEmpty()){
             Toast.makeText(requireActivity(), "Please enter your number", Toast.LENGTH_SHORT).show()
-        }else if(etEmail.length<10){
+        }else if(etPhone.length<10){
             Toast.makeText(requireActivity(), "Please enter valid number", Toast.LENGTH_SHORT).show()
         }else{
-
-//            viewModel.hitSendEmailOtp(etEmail,null,"forgot_password")
-//            initObserver(etEmail,"forgot_password")
-
-            findNavController().navigate(R.id.otpFragment)
-
-
+            val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
+            val request = LoginRequest(mobile = etPhone, user_type = userType)
+            viewModel.hitForgotPasswordSendOtp(request)
         }
     }
 
-    private fun initObserver(etEmail: String, from: String) {
-        viewModel.getLoginLiveData().observe(viewLifecycleOwner) {
+    private fun initObserver() {
+        viewModel.getForgotPasswordSendOtpLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "interest list success: ${Gson().toJson(it)}")
-                    if (it.data?.status==1){
-                        if (it.data.code == 200){
-//                            val list = it.data.payload
-//                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-//                            val data = SignUp(
-//                                email = etEmail
-//                            )
-//                            val bundle = Bundle()
-//                            bundle.putString("from",from)
-//                            bundle.putParcelable("data",data)
-//                            Log.i("TAG", "initObserver: "+from)
-//                            findNavController().navigate(R.id.otpFragment,bundle)
-                        }else{
-                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                        }
+                    Log.e("TAG", "resend otp: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                        Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
+                        val bundle = Bundle()
+                        bundle.putString("phone",binding.phoneInput.text.toString())
+                        bundle.putString("from","forgot")
+                        findNavController().navigate(R.id.otpFragment,bundle)
                     }else{
-                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
@@ -108,5 +98,6 @@ class EmailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         CommonUtils.touchHideKeyBoard(view,requireActivity())
+        initObserver()
     }
 }

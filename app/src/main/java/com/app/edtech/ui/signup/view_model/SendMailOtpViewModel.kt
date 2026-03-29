@@ -3,10 +3,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.app.hihlo.model.login.response.LoginResponse
+import com.app.edtech.model.login.response.LoginResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,27 +16,27 @@ import javax.inject.Inject
 @HiltViewModel
 class SendMailOtpViewModel @Inject constructor(application: Application): AndroidViewModel(application) {
 
-    private val loginLiveDate = SingleLiveEvent<Resources<LoginResponse>>()
+    private val verifyOtpLiveData = SingleLiveEvent<Resources<LoginResponse>>()
 
-    fun getLoginLiveData(): LiveData<Resources<LoginResponse>> {
-        return loginLiveDate
+    fun getVerifyOtpLiveData(): LiveData<Resources<LoginResponse>> {
+        return verifyOtpLiveData
     }
 
-    fun hitSendEmailOtp(email:String,userName:String?,purpose: String?) {
+    fun hitVerifyOtp(mobile:String,otp:String,userType: String) {
 
         try {
-            loginLiveDate.postValue(Resources.loading(null))
+            verifyOtpLiveData.postValue(Resources.loading(null))
             viewModelScope.launch {
                 try {
-                    loginLiveDate.postValue(
+                    verifyOtpLiveData.postValue(
                         Resources.success(
-                            ApiRepository().sendEmailOtp(email,userName,purpose)
+                            ApiRepository().verifyLoginOtp(mobile,otp,userType)
                         )
                     )
 
 
                 } catch (ex: Exception) {
-                    loginLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+                    verifyOtpLiveData.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }
@@ -44,4 +45,38 @@ class SendMailOtpViewModel @Inject constructor(application: Application): Androi
             ex.printStackTrace()
         }
     }
+
+
+
+
+    private val resendLoginOtpLiveDate = SingleLiveEvent<Resources<LoginResponse>>()
+
+    fun getResendLoginOtpLiveData(): LiveData<Resources<LoginResponse>> {
+        return resendLoginOtpLiveDate
+    }
+
+    fun hitResendLoginOtp(request: LoginRequest) {
+
+        try {
+            resendLoginOtpLiveDate.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    resendLoginOtpLiveDate.postValue(
+                        Resources.success(
+                            ApiRepository().sendLoginOtpApi(request)
+                        )
+                    )
+
+
+                } catch (ex: Exception) {
+                    resendLoginOtpLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
 }
