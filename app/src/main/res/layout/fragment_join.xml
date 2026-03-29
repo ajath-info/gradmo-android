@@ -186,6 +186,7 @@
             <!-- Login Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/getOtpButton"
+                android:onClick="@{viewModel::onClick}"
                 style="@style/CommonButton2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

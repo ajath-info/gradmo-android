@@ -4,20 +4,18 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.app.edtech.R
 import com.app.edtech.databinding.ActivityMainBinding
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.IS_LOGIN
+import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
-import com.app.hihlo.ui.signup.activity.SignupFlowActivity
+import com.app.edtech.ui.signup.activity.SignupFlowActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -58,9 +56,18 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this@MainActivity, SignupFlowActivity::class.java))
                 }*/
                 if (Preferences.getStringPreference(this@MainActivity, IS_LOGIN) == "2") {
-//                    startActivity(Intent(this@MainActivity, HomeActivity::class.java))
+                    if(Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.data?.is_profile_completed==0){
+                        val intent = Intent(this@MainActivity, SignupFlowActivity::class.java)
+                        intent.putExtra("start_from", "incompleteProfile") // or "signup"
+                        startActivity(intent)
+                        finish()
+                    }else{
+                        startActivity(Intent(this@MainActivity, HomeActivity::class.java))
+                        finish()
+                    }
                 } else {
                     startActivity(Intent(this@MainActivity, SignupFlowActivity::class.java))
+                    finish()
                 }
             }
         }

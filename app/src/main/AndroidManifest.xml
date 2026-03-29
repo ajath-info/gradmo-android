@@ -15,7 +15,7 @@
             android:name=".ui.activity.HomeActivity"
             android:exported="false" />
         <activity
-            android:name="com.app.hihlo.ui.signup.activity.SignupFlowActivity"
+            android:name=".ui.signup.activity.SignupFlowActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activity.MainActivity"

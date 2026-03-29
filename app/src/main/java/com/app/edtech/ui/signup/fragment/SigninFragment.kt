@@ -12,11 +12,13 @@ import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentSigninBinding
+import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.FCM_TOKEN
 import com.app.edtech.preferences.IS_LOGIN
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.UserPreference
 import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.signup.view_model.SigninViewModel
 import com.app.edtech.utils.CommonUtils
@@ -124,21 +126,22 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status=="true"){
+                        if (it.data.data?.is_profile_completed==1){
                             Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                             Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                             CommonUtils.hideKeyboard(requireActivity())
                             Log.i("TAG", "setObserver: "+Preferences.getStringPreference(requireContext(), FCM_TOKEN))
-
-//                            if(it.data.payload?.city.isNullOrBlank()|| it.data.payload.profileImage.isNullOrEmpty()){
-//                                val bundle = Bundle()
-//                                val userDetails = it.data.payload?.toUserDetailsX()
-//                                bundle.putString("from","normal")
-//                                bundle.putParcelable("userDetail",userDetails)
-//                                findNavController().navigate(R.id.editProfileNewFragment,bundle)
-//                            }else{
-                                startActivity(Intent(requireActivity(), HomeActivity::class.java))
-                                requireActivity().finish()
-//                            }
+                            startActivity(Intent(requireActivity(), HomeActivity::class.java))
+                            requireActivity().finish()
+                        }else{
+                            Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
+                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
+                            UserPreference.loginRequest = LoginRequest(name = it.data.data?.name, mobile = it.data.data?.mobile, email = it.data.data?.email)
+                            UserPreference.studentId = it.data.data?.studentId.toString()
+                            val bundle = Bundle()
+                            bundle.putString("from","signup")
+                            findNavController().navigate(R.id.editProfileNewFragment,bundle)
+                        }
                     }else{
                         Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }

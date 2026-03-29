@@ -2,16 +2,21 @@ package com.app.edtech.ui.signup.view_model
 
 import android.app.Application
 import android.util.Patterns
+import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.app.edtech.R
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.USER_TYPE
+import com.app.edtech.preferences.UserPreference
 import com.app.hihlo.ui.signup.model.SocialSignUpRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -30,25 +35,32 @@ class JoinViewModel @Inject constructor(application: Application): AndroidViewMo
     private val _validationMessage = MutableLiveData<String>()
     val validationMessage: LiveData<String> = _validationMessage
 
-    private val loginLiveDate = SingleLiveEvent<Resources<LoginResponse>>()
-
-    fun getLoginLiveData(): LiveData<Resources<LoginResponse>> {
-        return loginLiveDate
+    fun onClick(view: View) {
+        when(view.id){
+            R.id.getOtpButton->{
+                onSubmit()
+            }
+        }
     }
-    fun hitLoginDataApi(request: LoginRequest) {
+    private val signUpLiveDate = SingleLiveEvent<Resources<LoginResponse>>()
+
+    fun getSignUpLiveData(): LiveData<Resources<LoginResponse>> {
+        return signUpLiveDate
+    }
+    fun hitSignUpDataApi(request: LoginRequest) {
 
         try {
-            loginLiveDate.postValue(Resources.loading(null))
+            signUpLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {
                 try {
-                    loginLiveDate.postValue(
+                    signUpLiveDate.postValue(
                         Resources.success(
-                            ApiRepository().loginApi(request
+                            ApiRepository().signupApi(request
                             )
                         )
                     )
                 } catch (ex: Exception) {
-                    loginLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+                    signUpLiveDate.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }
@@ -78,7 +90,7 @@ class JoinViewModel @Inject constructor(application: Application): AndroidViewMo
             return
         }
         if (phoneInput.isNullOrEmpty()) {
-            _validationMessage.value = "Please Enter Email"
+            _validationMessage.value = "Please Enter Phone"
             return
         }
 
@@ -91,38 +103,15 @@ class JoinViewModel @Inject constructor(application: Application): AndroidViewMo
             return
         }
 
-
-        // Success
-//        hitLoginDataApi(LoginRequest(email = emailInput, password = passwordInput, deviceToken = Preferences.getStringPreference(getApplication(), FCM_TOKEN), deviceType = "A", ))
+//        val deviceToken = Preferences.getStringPreference(getApplication(), FCM_TOKEN)
+        val deviceToken = "test"
+        val userType = Preferences.getStringPreference(getApplication(), USER_TYPE)
+        val deviceId = "test"
+        var request = LoginRequest(name = nameInput, email = emailInput, mobile = phoneInput, password = passwordInput, device_token = deviceToken, device_id = deviceId, device_type = "android", user_type = userType)
+        UserPreference.loginRequest = request
+        hitSignUpDataApi(request)
 //        _validationMessage.value = "Successful!"
     }
 
-    private val socialLoginLiveData = SingleLiveEvent<Resources<LoginResponse>>()
-
-    fun getSocialLiveData(): LiveData<Resources<LoginResponse>> {
-        return socialLoginLiveData
-    }
-    fun hitSocialApi(request: SocialSignUpRequest) {
-
-        try {
-            socialLoginLiveData.postValue(Resources.loading(null))
-            viewModelScope.launch {
-                try {
-                    socialLoginLiveData.postValue(
-                        Resources.success(
-                            ApiRepository().socialLogin(request
-                            )
-                        )
-                    )
-                } catch (ex: Exception) {
-                    loginLiveDate.postValue(Resources.error(ex.localizedMessage, null))
-
-                }
-            }
-
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
 
 }

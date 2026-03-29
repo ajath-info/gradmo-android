@@ -36,79 +36,79 @@ class JoinFragment : BaseFragment<FragmentJoinBinding>(){
 //        clickTermsConditions()
 //        clickDontHaveAccount()
     }
-//    private fun clickDontHaveAccount(){
-//        val fullText = "Don’t have an account ?  Sign Up"
-//        val spannableString = SpannableString(fullText)
-//        val signUpClick = object : ClickableSpan() {
-//            override fun onClick(widget: View) {
-//                findNavController().navigate(R.id.registrationFragment)
-//            }
-//
-//            override fun updateDrawState(ds: TextPaint) {
-//                super.updateDrawState(ds)
-//                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme) // your link color
-//                ds.isUnderlineText = false
-//            }
-//        }
-//
-//        val signUpStart = fullText.indexOf("Sign Up")
-//        val signUpEnd = signUpStart + "Sign Up".length
-//
-//        spannableString.setSpan(signUpClick, signUpStart, signUpEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        binding.tvDontHaveAccount.text = spannableString
-//        binding.tvDontHaveAccount.movementMethod = LinkMovementMethod.getInstance()
-//        binding.tvDontHaveAccount.highlightColor = Color.TRANSPARENT
-//
-//    }
-//    private fun clickTermsConditions(){
-//        val fullText = "I agree to Terms & Conditions and Privacy Policy of the App"
-//        val spannableString = SpannableString(fullText)
-//        val termsClickable = object : ClickableSpan() {
-//            override fun onClick(widget: View) {
-//                // Handle Terms & Conditions click
-//                //Toast.makeText(widget.context, "Terms & Conditions clicked", Toast.LENGTH_SHORT).show()
-//                val bundle = Bundle()
-//                bundle.putString("screen","termsCondition")
-//                findNavController().navigate(R.id.termsConditionsFragment,bundle)
-//            }
-//
-//            override fun updateDrawState(ds: TextPaint) {
-//                super.updateDrawState(ds)
-//                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme) // your link color
-//                ds.isUnderlineText = false
-//            }
-//        }
-//
-//        // Privacy Policy click span
-//        val privacyClickable = object : ClickableSpan() {
-//            override fun onClick(widget: View) {
-//                // Handle Privacy Policy click
-//                //Toast.makeText(widget.context, "Privacy Policy clicked", Toast.LENGTH_SHORT).show()
-//                val bundle = Bundle()
-//                bundle.putString("screen","privacy")
-//                findNavController().navigate(R.id.termsConditionsFragment,bundle)
-//            }
-//
-//            override fun updateDrawState(ds: TextPaint) {
-//                super.updateDrawState(ds)
-//                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme)
-//                ds.isUnderlineText = false
-//            }
-//        }
-//
-//        // Apply spans
-//        val termsStart = fullText.indexOf("Terms & Conditions")
-//        val termsEnd = termsStart + "Terms & Conditions".length
-//
-//        val privacyStart = fullText.indexOf("Privacy Policy")
-//        val privacyEnd = privacyStart + " Privacy Policy".length
-//
-//        spannableString.setSpan(termsClickable, termsStart, termsEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        spannableString.setSpan(privacyClickable, privacyStart, privacyEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        binding.tvTermsConditions.text = spannableString
-//        binding.tvTermsConditions.movementMethod = LinkMovementMethod.getInstance()
-//        binding.tvTermsConditions.highlightColor = Color.TRANSPARENT
-//    }
+  /*  private fun clickDontHaveAccount(){
+        val fullText = "Don’t have an account ?  Sign Up"
+        val spannableString = SpannableString(fullText)
+        val signUpClick = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                findNavController().navigate(R.id.registrationFragment)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme) // your link color
+                ds.isUnderlineText = false
+            }
+        }
+
+        val signUpStart = fullText.indexOf("Sign Up")
+        val signUpEnd = signUpStart + "Sign Up".length
+
+        spannableString.setSpan(signUpClick, signUpStart, signUpEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.tvDontHaveAccount.text = spannableString
+        binding.tvDontHaveAccount.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvDontHaveAccount.highlightColor = Color.TRANSPARENT
+
+    }
+    private fun clickTermsConditions(){
+        val fullText = "I agree to Terms & Conditions and Privacy Policy of the App"
+        val spannableString = SpannableString(fullText)
+        val termsClickable = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                // Handle Terms & Conditions click
+                //Toast.makeText(widget.context, "Terms & Conditions clicked", Toast.LENGTH_SHORT).show()
+                val bundle = Bundle()
+                bundle.putString("screen","termsCondition")
+                findNavController().navigate(R.id.termsConditionsFragment,bundle)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme) // your link color
+                ds.isUnderlineText = false
+            }
+        }
+
+        // Privacy Policy click span
+        val privacyClickable = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                // Handle Privacy Policy click
+                //Toast.makeText(widget.context, "Privacy Policy clicked", Toast.LENGTH_SHORT).show()
+                val bundle = Bundle()
+                bundle.putString("screen","privacy")
+                findNavController().navigate(R.id.termsConditionsFragment,bundle)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireActivity(),R.color.theme)
+                ds.isUnderlineText = false
+            }
+        }
+
+        // Apply spans
+        val termsStart = fullText.indexOf("Terms & Conditions")
+        val termsEnd = termsStart + "Terms & Conditions".length
+
+        val privacyStart = fullText.indexOf("Privacy Policy")
+        val privacyEnd = privacyStart + " Privacy Policy".length
+
+        spannableString.setSpan(termsClickable, termsStart, termsEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(privacyClickable, privacyStart, privacyEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.tvTermsConditions.text = spannableString
+        binding.tvTermsConditions.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvTermsConditions.highlightColor = Color.TRANSPARENT
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,34 +117,19 @@ class JoinFragment : BaseFragment<FragmentJoinBinding>(){
         setObserver()
     }
     private fun setObserver() {
-        viewModel.getLoginLiveData().observe(viewLifecycleOwner) {
+        viewModel.getSignUpLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
-//                    if (it.data?.status==1){
-//                        if (it.data.code == 200){
-//                            Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
-//                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
-//                            CommonUtils.hideKeyboard(requireActivity())
-//                            Log.i("TAG", "setObserver: "+Preferences.getStringPreference(requireContext(), FCM_TOKEN))
-//                            updateUserOnFirebase(it.data.payload)
-//
-//                            if(it.data.payload?.city.isNullOrBlank()|| it.data.payload.profileImage.isNullOrEmpty()){
-//                                val bundle = Bundle()
-//                                val userDetails = it.data.payload?.toUserDetailsX()
-//                                bundle.putString("from","normal")
-//                                bundle.putParcelable("userDetail",userDetails)
-//                                findNavController().navigate(R.id.editProfileNewFragment,bundle)
-//                            }else{
-//                                startActivity(Intent(requireActivity(), HomeActivity::class.java))
-//                                requireActivity().finish()
-//                            }
-//                        }else{
-//                            Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }else{
-//                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
-//                    }
+                    if (it.data?.status=="true"){
+                        Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
+                        val bundle = Bundle()
+                        bundle.putString("phone",viewModel.phone.get())
+                        bundle.putString("from","signup")
+                        findNavController().navigate(R.id.otpFragment,bundle)
+                    }else{
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
                     ProcessDialog.dismissDialog(true)
                 }
                 Status.LOADING -> {

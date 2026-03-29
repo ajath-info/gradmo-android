@@ -1,20 +1,12 @@
-package com.app.hihlo.ui.signup.activity
+package com.app.edtech.ui.signup.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.edtech.R
 import com.app.edtech.base.BaseActivity
-import com.app.edtech.databinding.ActivityMainBinding
 import com.app.edtech.databinding.ActivitySignupFlowBinding
-import com.app.edtech.preferences.IS_LOGIN
-import com.app.edtech.preferences.LOGIN_DATA
-import com.app.edtech.preferences.Preferences
 
 class SignupFlowActivity : BaseActivity<ActivitySignupFlowBinding>() {
     private lateinit var navController: NavController
@@ -25,6 +17,16 @@ class SignupFlowActivity : BaseActivity<ActivitySignupFlowBinding>() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.signup_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+        val startFrom = intent.getStringExtra("start_from")
+
+        val navGraph = navController.navInflater.inflate(R.navigation.signup_flow_nav)
+
+        when (startFrom) {
+            "incompleteProfile" -> navGraph.setStartDestination(R.id.editProfileNewFragment)
+            else -> navGraph.setStartDestination(R.id.onboardingFragment)
+        }
+
+        navController.graph = navGraph
     }
 
     fun isGestureNavigation(): Boolean {
