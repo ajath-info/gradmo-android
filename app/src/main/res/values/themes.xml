@@ -8,12 +8,16 @@
     <style name="Theme.EdTech" parent="Base.Theme.EdTech" />
     <style name="CommonButton1">
         <item name="cornerRadius">12dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:textSize">15sp</item>
         <item name="android:paddingVertical">15dp</item>
         <item name="android:layout_marginHorizontal">20dp</item>
     </style>
     <style name="CommonButton2">
         <item name="cornerRadius">30dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:textSize">17sp</item>
         <item name="android:backgroundTint">@color/theme_blue</item>
         <item name="android:paddingVertical">15dp</item>
@@ -22,7 +26,6 @@
     <style name="CommonLoginFlowEditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-
         <item name="android:maxLines">1</item>
         <item name="android:paddingVertical">13dp</item>
         <item name="android:paddingHorizontal">15dp</item>
@@ -30,7 +33,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHint">@color/black</item>
-
         <item name="android:background">@drawable/bg_login_flow_edittex</item>
     </style>
+
 </resources>

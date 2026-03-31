@@ -29,7 +29,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:navGraph="@navigation/home_nav" />
 
-
             <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/bottomAppBar"
                 android:layout_marginStart="-15dp"
@@ -39,19 +38,23 @@
                 android:layout_gravity="bottom"
                 android:backgroundTint="@color/white"
                 app:fabCradleMargin="11dp"
+                app:fabCradleVerticalOffset="60dp"
                 app:fabCradleRoundedCornerRadius="30dp"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
                     app:itemActiveIndicatorStyle="@null"
+                    app:itemRippleColor="@null"
                     android:id="@+id/bottomNavigationView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
+                    app:itemTextColor="@drawable/bottom_nav_item_color_state"
                     app:itemIconTint="@drawable/bottom_nav_item_color_state"
                     app:itemPaddingTop="12dp"
                     app:labelVisibilityMode="labeled"
+
                     app:menu="@menu/bottom_menu" />
             </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -59,9 +62,9 @@
 
 
                 android:id="@+id/floatingbtn"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="5dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="0dp"
                 android:backgroundTint="@color/white"
 
                 android:elevation="0dp"
@@ -76,7 +79,7 @@
                 android:id="@+id/imgBtn"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:elevation="15dp"
+                android:elevation="6dp"
                 android:src="@drawable/search_icon_menu"
                 app:layout_anchor="@id/floatingbtn"
                 app:layout_anchorGravity="center"
@@ -94,8 +97,6 @@
             android:orientation="vertical"
             android:layout_gravity="start"
             android:background="@android:color/white">
-
-            <!-- Include your menu layout -->
             <include android:id="@+id/sideMenu"
                 layout="@layout/layout_menu_bottom_sheet"/>
 

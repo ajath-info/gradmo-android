@@ -44,17 +44,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(1000)
             withContext(Dispatchers.Main) {
-                /*Log.e("TAG", "delayTime: ${Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.payload}", )
-                if (Preferences.getStringPreference(this@MainActivity, IS_LOGIN) == "2") {
-                    if(Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.payload?.city.isNullOrBlank()
-                        || Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.payload?.profileImage.isNullOrEmpty()){
-                        startActivity(Intent(this@MainActivity, SignupFlowActivity::class.java))
-                    }else{
-                        startActivity(Intent(this@MainActivity, HomeActivity::class.java))
-                    }
-                } else {
-                    startActivity(Intent(this@MainActivity, SignupFlowActivity::class.java))
-                }*/
                 if (Preferences.getStringPreference(this@MainActivity, IS_LOGIN) == "2") {
                     if(Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.data?.is_profile_completed==0){
                         val intent = Intent(this@MainActivity, SignupFlowActivity::class.java)

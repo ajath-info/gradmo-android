@@ -1,11 +1,13 @@
 package com.app.edtech.ui.get_started.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentGetStartedBinding
 import com.app.edtech.model.login.request.LoginRequest
+import com.app.edtech.preferences.IS_FIRST_LOGIN_DONE
 import com.app.edtech.preferences.Preferences
 import com.app.edtech.preferences.USER_TYPE
 import com.app.edtech.preferences.UserPreference
@@ -14,15 +16,29 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class GetStartedFragment : BaseFragment<FragmentGetStartedBinding>() {
+    private var isFirstLoginDone=""
+
     override fun initView(savedInstanceState: Bundle?) {
+        isFirstLoginDone = Preferences.getStringPreference(requireContext(), IS_FIRST_LOGIN_DONE) ?: ""
+        Log.i("TAG", "isFirstLoginDone: "+isFirstLoginDone)
+        setUI()
         onClick()
     }
-
+    private fun setUI() {
+        if (isFirstLoginDone=="1"){
+            binding.apply {
+                registerAsStudent.text = "Access as a Student"
+                registerAsTeacher.text = "Access as a Teacher"
+                registerAsInstitute.text = "Access as an Institute"
+            }
+        }
+    }
     private fun onClick() {
         binding.apply {
             registerAsStudent.setOnClickListener {
                 Preferences.setStringPreference(requireContext(), USER_TYPE, "student")
-                findNavController().navigate(R.id.joinFragment)
+                if (isFirstLoginDone!="1") findNavController().navigate(R.id.joinFragment)
+                else findNavController().navigate(R.id.signinFragment)
 
 //                val deviceToken = "test"
 //                val userType = Preferences.getStringPreference(requireContext(), USER_TYPE)
@@ -35,11 +51,13 @@ class GetStartedFragment : BaseFragment<FragmentGetStartedBinding>() {
             }
             registerAsTeacher.setOnClickListener {
                 Preferences.setStringPreference(requireContext(), USER_TYPE, "teacher")
-                findNavController().navigate(R.id.joinFragment)
+                if (isFirstLoginDone!="1") findNavController().navigate(R.id.joinFragment)
+                else findNavController().navigate(R.id.signinFragment)
             }
             registerAsInstitute.setOnClickListener {
                 Preferences.setStringPreference(requireContext(), USER_TYPE, "institute")
-                findNavController().navigate(R.id.joinFragment)
+                if (isFirstLoginDone!="1") findNavController().navigate(R.id.joinFragment)
+                else findNavController().navigate(R.id.signinFragment)
             }
         }
     }

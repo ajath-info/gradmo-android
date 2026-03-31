@@ -22,5 +22,12 @@ data class UserData(
     val device_type: String? = null,
     val is_profile_completed: Int? = null,
     val access_token: String? = null,
-    val token_type: String? = null
+    val token_type: String? = null,
+    val address: String? = null,
+    val country: String? = null,
+    val pincode: String? = null,
+    val city: String? = null,
+    val state: String? = null,
+    val schoolCollegeName: String? = null,
+    val grade: String? = null,
 )

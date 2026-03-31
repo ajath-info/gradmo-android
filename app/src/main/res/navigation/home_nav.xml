@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav"
     app:startDestination="@id/homeFragment">
 
@@ -24,4 +25,9 @@
         android:id="@+id/notificationFragment"
         android:name="com.app.edtech.ui.fragment.NotificationFragment"
         android:label="NotificationFragment" />
+    <fragment
+        android:id="@+id/editProfileNewFragment"
+        android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_edit_profile_new"/>
 </navigation>

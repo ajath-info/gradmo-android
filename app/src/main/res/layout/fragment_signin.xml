@@ -25,7 +25,7 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="36dp"
                 android:layout_marginStart="15dp"
-                android:src="@drawable/cross_button"
+                android:src="@drawable/back_button"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
             <TextView
@@ -222,7 +222,39 @@
                 app:layout_constraintTop_toBottomOf="@id/tvOrWith"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-
+            <TextView
+                android:id="@+id/alreadyHaveAnAccount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/black"
+                android:text="Already have an account?"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/manrope_semibold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loginViaOtpButton"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/goToSignup"
+                style="@style/CommonButton2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginBottom="104dp"
+                android:text="@string/sign_up"
+                app:layout_constraintTop_toBottomOf="@id/alreadyHaveAnAccount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <View
+                app:layout_constraintTop_toBottomOf="@id/goToSignup"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/transparent"/>
 <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--                android:id="@+id/clGoogleLogin"-->
 <!--                android:layout_width="match_parent"-->

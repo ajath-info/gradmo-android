@@ -6,13 +6,19 @@ import com.app.edtech.network_call.RetrofitBuilder
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class ApiRepository {
     private val service = RetrofitBuilder.apiService
 
     suspend fun loginApi(request: LoginRequest) = service.login(request)
     suspend fun signupApi(request: LoginRequest) = service.signup(request)
-    suspend fun updateProfileApi(request: UpdateProfileRequest, accessToken: String) = service.updateProfile(request, accessToken)
+    suspend fun updateProfileApi(
+        image: MultipartBody.Part?,
+        requestMap: Map<String, RequestBody>,
+        accessToken: String
+    ) = service.updateProfile(image, requestMap, accessToken)
     suspend fun sendLoginOtpApi(request: LoginRequest) = service.sendLoginOtp(request)
 
     suspend fun resetPassword(request: ResetPasswordRequest) = service.resetPassword(request)

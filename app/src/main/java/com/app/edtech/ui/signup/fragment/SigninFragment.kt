@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
@@ -15,6 +16,7 @@ import com.app.edtech.databinding.FragmentSigninBinding
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.IS_FIRST_LOGIN_DONE
 import com.app.edtech.preferences.IS_LOGIN
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
@@ -126,6 +128,8 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status=="true"){
+                        Preferences.setStringPreference(requireContext(), IS_FIRST_LOGIN_DONE, "1")
+                        Log.i("TAG", "IS_FIRST_LOGIN_DONE: "+Preferences.getStringPreference(requireContext(), IS_FIRST_LOGIN_DONE))
                         if (it.data.data?.is_profile_completed==1){
                             Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                             Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
@@ -189,6 +193,14 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
 
     private fun onClick() {
         binding.apply {
+            goToSignup.setOnClickListener {
+                findNavController().navigate(
+                    R.id.joinFragment,
+                    null,
+                    NavOptions.Builder()
+                        .setPopUpTo(R.id.signup_flow_nav, true) // clears everything in backstack
+                        .build()
+                )            }
             tvForgotPassword.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("from","login")

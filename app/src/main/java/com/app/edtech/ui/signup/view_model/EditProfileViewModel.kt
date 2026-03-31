@@ -11,6 +11,8 @@ import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,27 +23,20 @@ class EditProfileViewModel @Inject constructor(application: Application): Androi
         return updateProfileLiveData
     }
 
-    fun hitUpdateProfile(request: UpdateProfileRequest, accessToken: String) {
+    fun hitUpdateProfile(
+        image: MultipartBody.Part?,
+        requestMap: Map<String, RequestBody>,
+        accessToken: String
+    ) {
+        updateProfileLiveData.postValue(Resources.loading(null))
 
-        try {
-            updateProfileLiveData.postValue(Resources.loading(null))
-            viewModelScope.launch {
-                try {
-                    updateProfileLiveData.postValue(
-                        Resources.success(
-                            ApiRepository().updateProfileApi(request, accessToken)
-                        )
-                    )
-
-
-                } catch (ex: Exception) {
-                    updateProfileLiveData.postValue(Resources.error(ex.localizedMessage, null))
-
-                }
+        viewModelScope.launch {
+            try {
+                val response = ApiRepository().updateProfileApi(image, requestMap, accessToken)
+                updateProfileLiveData.postValue(Resources.success(response))
+            } catch (ex: Exception) {
+                updateProfileLiveData.postValue(Resources.error(ex.localizedMessage, null))
             }
-
-        } catch (ex: Exception) {
-            ex.printStackTrace()
         }
     }
 

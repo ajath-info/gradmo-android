@@ -22,6 +22,7 @@ import com.app.edtech.databinding.FragmentOtpBinding
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.IS_FIRST_LOGIN_DONE
 import com.app.edtech.preferences.IS_LOGIN
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
@@ -132,6 +133,7 @@ class OtpFragment : Fragment() {
                 Status.SUCCESS -> {
                     if (it.data?.status=="true"){
                         if (from=="login") {
+                            Preferences.setStringPreference(requireContext(), IS_FIRST_LOGIN_DONE, "1")
                             if (it.data.data?.is_profile_completed==1){
                                 Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                                 Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
@@ -140,7 +142,7 @@ class OtpFragment : Fragment() {
                                 startActivity(Intent(requireActivity(), HomeActivity::class.java))
                                 requireActivity().finish()
                             }else{
-                                Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
+//                                Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                                 Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                                 UserPreference.loginRequest = LoginRequest(name = it.data.data?.name, mobile = it.data.data?.mobile, email = it.data.data?.email)
                                 UserPreference.studentId = it.data.data?.studentId.toString()
@@ -153,8 +155,10 @@ class OtpFragment : Fragment() {
                             bundle.putString("phone",phone)
                             bundle.putString("from","forgot")
                             findNavController().navigate(R.id.newPasswordFragment,bundle)
-                        }else{
+                        }else if (from == "signup"){
                             UserPreference.studentId = it.data.data?.studentId ?: ""
+                            UserPreference.loginRequest = LoginRequest(name = it.data.data?.name, mobile = it.data.data?.mobile, email = it.data.data?.email)
+                            Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                             val bundle = Bundle()
                             bundle.putString("from","signup")
                             findNavController().navigate(R.id.editProfileNewFragment,bundle)

@@ -2,15 +2,21 @@ package com.app.edtech.network_call
 
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.logout.response.DeleteResponse
 import com.app.edtech.model.profile.request.UpdateProfileRequest
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 
 
 interface ApiService {
@@ -23,8 +29,16 @@ interface ApiService {
     @POST("api/user/send-otp")
     suspend fun sendLoginOtp(@Body requestBody: LoginRequest): LoginResponse
 
+    /*@POST("api/user/update-profile")
+    suspend fun updateProfile(@Body requestBody: UpdateProfileRequest, @Header("Authorization") accessToken: String): LoginResponse*/
+
+    @Multipart
     @POST("api/user/update-profile")
-    suspend fun updateProfile(@Body requestBody: UpdateProfileRequest, @Header("Authorization") accessToken: String): LoginResponse
+    suspend fun updateProfile(
+        @Part image: MultipartBody.Part?,
+        @PartMap requestMap: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Header("Authorization") accessToken: String
+    ): LoginResponse
     @FormUrlEncoded
     @POST("api/user/verify-otp")
     suspend fun verifyLoginOtp(
@@ -54,7 +68,7 @@ interface ApiService {
     @FormUrlEncoded
     @POST("api/user/delete-account")
     suspend fun delete(@Header("Authorization") token: String, @Field("student_id") student_id: String
-    ): LoginResponse
+    ): DeleteResponse
 
 }
 

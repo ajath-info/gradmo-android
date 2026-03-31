@@ -8,6 +8,7 @@ import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.logout.response.DeleteResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,8 +21,8 @@ class HomeActivityViewModel @Inject constructor(
     private val logoutLiveData = SingleLiveEvent<Resources<LoginResponse>>()
     fun getLogoutLiveData(): LiveData<Resources<LoginResponse>> = logoutLiveData
 
-    private val deleteAccountLiveData = SingleLiveEvent<Resources<LoginResponse>>()
-    fun getDeleteAccountLiveData(): LiveData<Resources<LoginResponse>> = deleteAccountLiveData
+    private val deleteAccountLiveData = SingleLiveEvent<Resources<DeleteResponse>>()
+    fun getDeleteAccountLiveData(): LiveData<Resources<DeleteResponse>> = deleteAccountLiveData
 
     fun hitLogoutApi(token: String, studentId: String) {
         logoutLiveData.postValue(Resources.loading(null))

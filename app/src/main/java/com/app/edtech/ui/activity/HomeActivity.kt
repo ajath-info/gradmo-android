@@ -19,8 +19,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.edtech.R
 import com.app.edtech.base.BaseActivity
@@ -29,6 +31,7 @@ import com.app.edtech.databinding.LayoutMenuBottomSheetBinding
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.menu_item.MenuItemModel
 import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.IS_FIRST_LOGIN_DONE
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
 import com.app.edtech.preferences.UserPreference
@@ -56,6 +59,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+        binding.bottomNavigationView.setupWithNavController(navController)
         sideMenuBinding = binding.sideMenu
         observeApis()
         floatingButtonClick()
@@ -77,11 +81,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "resend otp: ${Gson().toJson(it)}")
-                    if (it.data?.status=="true"){
-                        Toast.makeText(this, it.data.msg, Toast.LENGTH_SHORT).show()
+                    if (it.data?.status==true){
+                        Toast.makeText(this, it.data.message, Toast.LENGTH_SHORT).show()
                         performLogout()
                     }else{
-                        Toast.makeText(this, "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "${it.data?.message}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
@@ -209,7 +213,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         ).show()
     }
     fun performLogout() {
-        Preferences.removeAllPreferencesExcept(this, listOf(FCM_TOKEN))
+        Preferences.removeAllPreferencesExcept(this, listOf(FCM_TOKEN, IS_FIRST_LOGIN_DONE))
         val intent = Intent(this, SignupFlowActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
@@ -373,7 +377,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                      true
                 }
                 R.id.account -> {
-                    navigateToProfile()
+                    if (currentDestId != R.id.editProfileNewFragment) {
+                        navController.navigate(R.id.editProfileNewFragment)
+                    }
+                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 else -> false
@@ -381,17 +388,28 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         }
 
     }
-    private fun navigateToProfile() {
+     fun navigateToHome() {
 //        if (currentDestId != R.id.profileFragment) {
-        navController.navigate(R.id.editProfileNewFragment)
+        navController.navigate(R.id.homeFragment)
 //        }
         binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+         binding.bottomNavigationView.selectedItemId = R.id.homeFragment
         // Load profile image with stroke
     }
 
     private fun fragmentChangeCallback() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
+                R.id.editProfileNewFragment ->{
+                    binding.bottomAppBar.isVisible=false
+                    binding.floatingbtn.isVisible=false
+                    binding.imgBtn.isVisible=false
+                }
+                else -> {
+                    binding.bottomAppBar.isVisible=true
+                    binding.floatingbtn.isVisible=true
+                    binding.imgBtn.isVisible=true
+                }
 //                R.id.profileFragment, R.id.chatListFragment, R.id.searchFragment -> {
 //                    showNavigationView()
 //                    setBottomBarPadding()
