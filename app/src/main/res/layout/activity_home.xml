@@ -43,6 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
+                    app:itemActiveIndicatorStyle="@null"
                     android:id="@+id/bottomNavigationView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -73,8 +74,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:elevation="15dp"
                 android:src="@drawable/search_icon_menu"
                 app:layout_anchor="@id/floatingbtn"

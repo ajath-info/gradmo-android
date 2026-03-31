@@ -22,6 +22,8 @@ class ApiRepository {
     suspend fun verifyLoginOtp(mobile: String,otp:String, userType:String) = service.verifyLoginOtp(mobile, otp, userType)
 
     suspend fun registerUser(model: SignUp) = service.registerUser(model)
+    suspend fun logoutApi(token: String, student_id: String) = service.logout(token, student_id)
+    suspend fun deleteApi(token: String, student_id: String) = service.delete(token, student_id)
 
 
 

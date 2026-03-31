@@ -46,6 +46,15 @@ interface ApiService {
         @Body model: SignUp
     ): LoginResponse
 
+    @FormUrlEncoded
+    @POST("api/user/logout")
+    suspend fun logout(@Header("Authorization") token: String, @Field("student_id") student_id: String
+    ): LoginResponse
+
+    @FormUrlEncoded
+    @POST("api/user/delete-account")
+    suspend fun delete(@Header("Authorization") token: String, @Field("student_id") student_id: String
+    ): LoginResponse
 
 }
 

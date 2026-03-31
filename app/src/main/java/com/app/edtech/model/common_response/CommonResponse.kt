@@ -1,4 +1,4 @@
-package com.app.hihlo.model.common_response
+package com.app.edtech.model.common_response
 
 data class CommonResponse(
     val code: Int,

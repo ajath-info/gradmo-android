@@ -23,7 +23,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun clickEvent() {
-        (activity as? HomeActivity)?.openDrawer()
+        binding.sideMenu.setOnClickListener {
+            (activity as? HomeActivity)?.openDrawer()
+        }
     }
 
     override fun getLayoutId(): Int {

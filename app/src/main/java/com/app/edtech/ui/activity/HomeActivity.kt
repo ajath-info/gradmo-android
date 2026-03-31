@@ -9,9 +9,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -24,8 +26,21 @@ import com.app.edtech.R
 import com.app.edtech.base.BaseActivity
 import com.app.edtech.databinding.ActivityHomeBinding
 import com.app.edtech.databinding.LayoutMenuBottomSheetBinding
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.menu_item.MenuItemModel
+import com.app.edtech.preferences.FCM_TOKEN
+import com.app.edtech.preferences.LOGIN_DATA
+import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.UserPreference
 import com.app.edtech.ui.adapter.MenuAdapter
+import com.app.edtech.ui.signup.activity.SignupFlowActivity
+import com.app.edtech.ui.signup.view_model.HomeActivityViewModel
+import com.app.edtech.utils.CommonDialog
+import com.app.edtech.utils.network_utils.ProcessDialog
+import com.app.edtech.utils.network_utils.Status
+import com.bumptech.glide.Glide
+import com.google.gson.Gson
+import kotlin.text.ifEmpty
 
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
@@ -33,6 +48,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private val CAMERA_MIC_PERMISSION_REQUEST_CODE = 100
     private val OVERLAY_PERMISSION_REQ_CODE = 123
     private lateinit var sideMenuBinding: LayoutMenuBottomSheetBinding
+    private val viewModel: HomeActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +57,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         sideMenuBinding = binding.sideMenu
+        observeApis()
         floatingButtonClick()
         navigationMenuClickListener()
 //        setBottomBarPadding()
@@ -54,7 +71,51 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         initMenu()
 
     }
+    private fun observeApis() {
 
+        viewModel.getDeleteAccountLiveData().observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "resend otp: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                        Toast.makeText(this, it.data.msg, Toast.LENGTH_SHORT).show()
+                        performLogout()
+                    }else{
+                        Toast.makeText(this, "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(this, true)
+                }
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+        viewModel.getLogoutLiveData().observe(this) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "resend otp: ${Gson().toJson(it)}")
+                    if (it.data?.status=="true"){
+                        Toast.makeText(this, it.data.msg, Toast.LENGTH_SHORT).show()
+                        performLogout()
+                    }else{
+                        Toast.makeText(this, "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(this, true)
+                }
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+    }
     private fun initMenu() {
         val menuList = listOf(
             MenuItemModel(R.drawable.home_menu, "Home"),
@@ -71,6 +132,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         )
 
         binding.sideMenu.recyclerMenu.layoutManager = LinearLayoutManager(this)
+        sideMenuBinding.txtName.text = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.name
+        Glide.with(this).load(Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.image).into(sideMenuBinding.imgProfile)
         sideMenuBinding.recyclerMenu.adapter = MenuAdapter(menuList) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (it.title) {
@@ -99,11 +162,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Logout" -> {
-
+                    logOutDialog()
                 }
 
                 "Delete Account" -> {
-
+                    deleteAccountDialog()
                 }
 
                 "Share App" -> {
@@ -117,6 +180,41 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         }
     }
 
+    private fun deleteAccountDialog() {
+        CommonDialog(
+            context = this,
+            title = "Are you sure you want to delete your account permanently?",
+            imageRes = R.drawable.ic_warning,
+            positiveText = "Delete",
+            negativeText = "Cancel",
+            onPositiveClick = {
+                val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.studentId }
+                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.access_token
+                viewModel.hitDeleteAccountApi("Bearer $accessToken", studentId ?: "")
+            }
+        ).show()
+    }
+    fun logOutDialog() {
+        CommonDialog(
+            context = this,
+            title = "Do you want to logout?",
+            imageRes = R.drawable.logout_menu,
+            positiveText = "Logout",
+            negativeText = "Cancel",
+            onPositiveClick = {
+                val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.studentId }
+                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.access_token
+                viewModel.hitLogoutApi("Bearer $accessToken", studentId ?: "")
+            }
+        ).show()
+    }
+    fun performLogout() {
+        Preferences.removeAllPreferencesExcept(this, listOf(FCM_TOKEN))
+        val intent = Intent(this, SignupFlowActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
     fun openDrawer() {
         binding.drawerLayout.openDrawer(GravityCompat.START)
     }
@@ -240,7 +338,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         binding.bottomNavigationView.selectedItemId = R.id.home
     }
     private fun navigationMenuClickListener() {
-        binding.bottomNavigationView.itemIconTintList = null
+//        binding.bottomNavigationView.itemIconTintList = null
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             val currentDestId = navController.currentDestination?.id
             when (item.itemId) {
@@ -430,3 +528,4 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
 
 }
+
