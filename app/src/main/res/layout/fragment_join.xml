@@ -21,6 +21,8 @@
             android:layout_height="wrap_content"
             tools:context=".ui.signup.fragment.SigninFragment">
             <ImageView
+                android:visibility="invisible"
+                android:clickable="false"
                 android:id="@+id/ivBack"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

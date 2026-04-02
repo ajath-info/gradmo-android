@@ -101,7 +101,8 @@ class EditProfileNewFragment : Fragment() {
                             startActivity(Intent(requireActivity(), HomeActivity::class.java))
                         }else{
                             (activity as HomeActivity).updateUserInMenu()
-                            findNavController().popBackStack()
+//                            findNavController().popBackStack()
+                            (activity as HomeActivity).navigateToHome()
                         }
                     }else{
                         Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()

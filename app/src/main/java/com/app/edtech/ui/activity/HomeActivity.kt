@@ -380,7 +380,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
                 R.id.notification -> {
                     if (currentDestId != R.id.notificationFragment) {
-                        navController.navigate(R.id.searchFragment)
+                        navController.navigate(R.id.notificationFragment)
                     }
                     binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                      true
@@ -401,8 +401,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 //        if (currentDestId != R.id.profileFragment) {
         navController.navigate(R.id.homeFragment)
 //        }
+//         binding.bottomNavigationView.menu.findItem(R.id.home).icon = ContextCompat.getDrawable(this, R.drawable.home_icon)
         binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
-         binding.bottomNavigationView.selectedItemId = R.id.homeFragment
+         binding.bottomNavigationView.selectedItemId = R.id.home
         // Load profile image with stroke
     }
 

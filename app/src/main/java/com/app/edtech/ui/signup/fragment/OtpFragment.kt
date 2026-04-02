@@ -64,7 +64,21 @@ class OtpFragment : Fragment() {
     ): View {
         binding = FragmentOtpBinding.inflate(layoutInflater)
         initViews()
+        setUI()
         return binding.root
+    }
+
+    private fun setUI() {
+        binding.apply {
+            if (from=="login") {
+                btnConfirm.text = "Verify your number"
+            }else if (from == "forgot"){
+                btnConfirm.text = "Verify your number"
+            }else{
+                btnConfirm.text = "Verify And Create Account"
+            }
+        }
+
     }
 
 

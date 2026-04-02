@@ -13,6 +13,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.databinding.FragmentNewPasswordBinding
+import com.app.edtech.preferences.Preferences
+import com.app.edtech.preferences.USER_TYPE
 import com.app.edtech.ui.signup.view_model.ResetPasswordViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.network_utils.ProcessDialog
@@ -98,6 +100,8 @@ class NewPasswordFragment : Fragment() {
     private fun checkValidation() {
         val password = binding.password.text.trim().toString()
         val cnfPassword = binding.etCnfpassword.text.trim().toString()
+        val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
+
         if(password.isEmpty()){
             Toast.makeText(requireActivity(), "Please enter new password", Toast.LENGTH_SHORT).show()
         }else if(cnfPassword.isEmpty()){
@@ -109,7 +113,8 @@ class NewPasswordFragment : Fragment() {
             val model = ResetPasswordRequest(
                 mobile = phone,
                 password = password,
-                confirm_password = cnfPassword
+                confirm_password = cnfPassword,
+                user_type = userType
             )
             resetPasswordViewModel.hitResetPassword(model)
 

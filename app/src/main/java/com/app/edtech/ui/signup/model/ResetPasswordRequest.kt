@@ -3,7 +3,8 @@ package com.app.edtech.ui.signup.model
 data class ResetPasswordRequest(
     var mobile: String?=null,
     var password: String?=null,
-    var confirm_password: String?=null
+    var confirm_password: String?=null,
+    var user_type: String?=null,
 )
 
 data class ChangePasswordRequest(
