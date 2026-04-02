@@ -130,7 +130,7 @@ class SigninFragment : BaseFragment<FragmentSigninBinding>() {
                     if (it.data?.status=="true"){
                         Preferences.setStringPreference(requireContext(), IS_FIRST_LOGIN_DONE, "1")
                         Log.i("TAG", "IS_FIRST_LOGIN_DONE: "+Preferences.getStringPreference(requireContext(), IS_FIRST_LOGIN_DONE))
-                        if (it.data.data?.is_profile_completed==1){
+                        if (it.data.data?.isProfileCompleted==1){
                             Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                             Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                             CommonUtils.hideKeyboard(requireActivity())

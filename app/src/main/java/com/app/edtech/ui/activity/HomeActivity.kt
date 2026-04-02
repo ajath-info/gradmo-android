@@ -29,6 +29,7 @@ import com.app.edtech.base.BaseActivity
 import com.app.edtech.databinding.ActivityHomeBinding
 import com.app.edtech.databinding.LayoutMenuBottomSheetBinding
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.login.response.UserData
 import com.app.edtech.model.menu_item.MenuItemModel
 import com.app.edtech.preferences.FCM_TOKEN
 import com.app.edtech.preferences.IS_FIRST_LOGIN_DONE
@@ -52,6 +53,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private val OVERLAY_PERMISSION_REQ_CODE = 123
     private lateinit var sideMenuBinding: LayoutMenuBottomSheetBinding
     private val viewModel: HomeActivityViewModel by viewModels()
+    private var userData = UserData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
         sideMenuBinding = binding.sideMenu
+        userData = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data ?: UserData()
         observeApis()
         floatingButtonClick()
         navigationMenuClickListener()
@@ -137,7 +140,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
         binding.sideMenu.recyclerMenu.layoutManager = LinearLayoutManager(this)
         sideMenuBinding.txtName.text = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.name
-        Glide.with(this).load(Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.image).into(sideMenuBinding.imgProfile)
+        Glide.with(this).load(Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.image).placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(sideMenuBinding.imgProfile)
         sideMenuBinding.recyclerMenu.adapter = MenuAdapter(menuList) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (it.title) {
@@ -193,8 +196,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             negativeText = "Cancel",
             onPositiveClick = {
                 val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.studentId }
-                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.access_token
-                viewModel.hitDeleteAccountApi("Bearer $accessToken", studentId ?: "")
+                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.accessToken
+                viewModel.hitDeleteAccountApi("Bearer $accessToken", studentId.toString())
             }
         ).show()
     }
@@ -207,8 +210,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             negativeText = "Cancel",
             onPositiveClick = {
                 val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.studentId }
-                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.access_token
-                viewModel.hitLogoutApi("Bearer $accessToken", studentId ?: "")
+                val accessToken = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data?.accessToken
+                viewModel.hitLogoutApi("Bearer $accessToken", studentId.toString())
             }
         ).show()
     }
@@ -231,7 +234,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         handleIntentNavigation(intent)
 
     }
-
+    fun updateUserInMenu(){
+        userData = Preferences.getCustomModelPreference<LoginResponse>(this, LOGIN_DATA)?.data ?: UserData()
+        sideMenuBinding.apply {
+            txtName.text = userData.name
+            Glide.with(this@HomeActivity).load(userData.image).placeholder(R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(imgProfile)
+        }
+    }
     private fun handleIntentNavigation(intent: Intent) {
         /*val target = intent.getStringExtra("target_fragment")
         Log.i("TAG", "handleIntentNavigation: "+target)

@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             delay(1000)
             withContext(Dispatchers.Main) {
                 if (Preferences.getStringPreference(this@MainActivity, IS_LOGIN) == "2") {
-                    if(Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.data?.is_profile_completed==0){
+                    if(Preferences.getCustomModelPreference<LoginResponse>(this@MainActivity, LOGIN_DATA)?.data?.isProfileCompleted==0){
                         val intent = Intent(this@MainActivity, SignupFlowActivity::class.java)
                         intent.putExtra("start_from", "incompleteProfile") // or "signup"
                         startActivity(intent)

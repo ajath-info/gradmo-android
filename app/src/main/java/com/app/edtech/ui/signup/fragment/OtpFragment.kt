@@ -134,7 +134,7 @@ class OtpFragment : Fragment() {
                     if (it.data?.status=="true"){
                         if (from=="login") {
                             Preferences.setStringPreference(requireContext(), IS_FIRST_LOGIN_DONE, "1")
-                            if (it.data.data?.is_profile_completed==1){
+                            if (it.data.data?.isProfileCompleted==1){
                                 Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                                 Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                                 CommonUtils.hideKeyboard(requireActivity())
@@ -156,7 +156,7 @@ class OtpFragment : Fragment() {
                             bundle.putString("from","forgot")
                             findNavController().navigate(R.id.newPasswordFragment,bundle)
                         }else if (from == "signup"){
-                            UserPreference.studentId = it.data.data?.studentId ?: ""
+                            UserPreference.studentId = it.data.data?.studentId.toString()
                             UserPreference.loginRequest = LoginRequest(name = it.data.data?.name, mobile = it.data.data?.mobile, email = it.data.data?.email)
                             Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                             val bundle = Bundle()

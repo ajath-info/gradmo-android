@@ -2,6 +2,7 @@ package com.app.edtech.ui.signup.fragment
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -40,6 +42,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.io.FileOutputStream
 
 class EditProfileNewFragment : Fragment() {
     private lateinit var binding:FragmentEditProfileNewBinding
@@ -90,13 +93,14 @@ class EditProfileNewFragment : Fragment() {
                 Status.SUCCESS -> {
                     if (it.data?.status=="true"){
                         Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
-//                        Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
+                        Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                         CommonUtils.hideKeyboard(requireActivity())
                         if (from=="signup"){
                             Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                             requireActivity().finish()
                             startActivity(Intent(requireActivity(), HomeActivity::class.java))
                         }else{
+                            (activity as HomeActivity).updateUserInMenu()
                             findNavController().popBackStack()
                         }
                     }else{
@@ -157,38 +161,57 @@ class EditProfileNewFragment : Fragment() {
 //            findNavController().navigate(R.id.homeFragment)
         }
         binding.updateButton.setOnClickListener {
-            imageUrl = "https://www.flaticon.com/free-icon/user_219970"
             checkValidation()
         }
-            imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val imageUri: Uri? = result.data?.data
+
+                Log.e("IMAGE_DEBUG", "Picked URI: $imageUri")
+
                 if (imageUri != null) {
-//                    openCropActivity(imageUri)
+
                     selectedImageFile = uriToFile(imageUri, requireActivity())
-                    Glide.with(requireContext()).load(imageUri).into(binding.ivUserImage)
-                }else{
+
+                    Log.e("IMAGE_DEBUG", "File path: ${selectedImageFile?.absolutePath}")
+                    Log.e("IMAGE_DEBUG", "File exists: ${selectedImageFile?.exists()}")
+                    Log.e("IMAGE_DEBUG", "File size: ${selectedImageFile?.length()} bytes")
+                    Log.e("IMAGE_DEBUG", "File name: ${selectedImageFile?.name}")
+
+                    Glide.with(requireContext())
+                        .load(imageUri)
+                        .into(binding.ivUserImage)
+
+                } else {
+                    Log.e("IMAGE_DEBUG", "Image URI is NULL")
                     Toast.makeText(requireActivity(), "Cancelled", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Log.e("IMAGE_DEBUG", "Result not OK")
             }
+
         }
     }
 
-    fun uriToFile(uri: Uri, activity: Activity): File {
-        val contentResolver = activity.contentResolver
-        val fileExtension = getFileExtension(uri.toString())
-        val fileName = "image_${System.currentTimeMillis()}.$fileExtension"
-        val file = File(activity.cacheDir, fileName)
+    fun uriToFile(uri: Uri, context: Context): File {
+        val contentResolver = context.contentResolver
+        val mimeType = contentResolver.getType(uri)
 
-        contentResolver.openInputStream(uri)?.use { inputStream ->
-            file.outputStream().use { outputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
+        val extension = MimeTypeMap.getSingleton()
+            .getExtensionFromMimeType(mimeType) ?: "jpg"
+
+        val file = File(context.cacheDir, "image_${System.currentTimeMillis()}.$extension")
+
+        val inputStream = contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(file)
+
+        inputStream?.copyTo(outputStream)
+
+        inputStream?.close()
+        outputStream.close()
 
         return file
     }
-
 
     private fun checkValidation(){
         val etName = binding.etName.text.trim()
@@ -200,7 +223,7 @@ class EditProfileNewFragment : Fragment() {
         val etGrade = binding.etGrade.text.trim()
 
 
-        if(selectedImageFile == null){
+        if(selectedImageFile == null && from=="signup"){
             Toast.makeText(requireActivity(), "Please select your image", Toast.LENGTH_SHORT).show()
         }else if(etName.isEmpty()){
             Toast.makeText(requireActivity(), "Please enter your name", Toast.LENGTH_SHORT).show()
@@ -221,7 +244,7 @@ class EditProfileNewFragment : Fragment() {
         }else{
             val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.studentId }
             val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
-            val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.access_token
+            val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
             /*val model = UpdateProfileRequest(
                 image = imageUrl,
                 name = etName.toString(),
@@ -257,13 +280,17 @@ class EditProfileNewFragment : Fragment() {
             map["student_id"] = studentId!!.toString().toRequestBody()
             Log.e("TAG", "checkValidation: $map")
 //            viewModel.hitUpdateProfile(model, "Bearer $accessToken")
+            Log.e("IMAGE_DEBUG", "Before API selectedImageFile: $selectedImageFile")
+            val imagePart = selectedImageFile?.let {
+                val fileName = if (it.name.contains(".")) it.name else "${it.name}.jpg"
+                Log.e("IMAGE_DEBUG", "Final file name: $fileName")
+                val mimeType = if (fileName.endsWith(".png", ignoreCase = true)) "image/png" else "image/jpeg"
+                val requestFile = it.asRequestBody(mimeType.toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("image", fileName, requestFile)
+            }
             viewModel.hitUpdateProfile(imagePart, map, "Bearer $accessToken")
             //updateApi()
         }
-    }
-    val imagePart = selectedImageFile?.let {
-        val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
-        MultipartBody.Part.createFormData("image", it.name, requestFile)
     }
 }
 
