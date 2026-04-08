@@ -35,5 +35,13 @@
         <item name="android:textColorHint">@color/black</item>
         <item name="android:background">@drawable/bg_login_flow_edittex</item>
     </style>
+        <declare-styleable name="CustomRatingBar">
+            <attr name="numStars" format="integer" />
+            <attr name="rating" format="float" />
+            <attr name="isIndicator" format="boolean" />
+            <attr name="stepSize" format="float" />
+            <attr name="starSize" format="dimension" />
+            <attr name="starSpacing" format="dimension" />
+        </declare-styleable>
 
 </resources>
