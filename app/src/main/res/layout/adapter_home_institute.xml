@@ -7,24 +7,30 @@
     </data>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:paddingBottom="10dp"
+        android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_home_item"
         android:backgroundTint="@color/white">
 
         <androidx.cardview.widget.CardView
+            app:cardElevation="0dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="105dp">
 
             <ImageView
+                android:scaleType="centerCrop"
+                android:src="@drawable/onboarding3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -39,6 +45,7 @@
 
             <com.app.edtech.utils.CustomRatingBar
                 android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:id="@+id/customRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
@@ -46,8 +53,40 @@
                 app:rating="3.0"
                 app:stepSize="0.5"
                 app:isIndicator="false"
-                app:starSize="32dp"
-                app:starSpacing="6dp" />
+                app:starSize="15dp"
+                app:starSpacing="0dp" />
         </LinearLayout>
+        <TextView
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/manrope_semibold"
+            android:textSize="11sp"
+            android:text="Upgrade Classes" />
+        <TextView
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="4dp"
+            android:drawableStart="@drawable/location_icon"
+            android:drawablePadding="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:fontFamily="@font/manrope_regular"
+            android:textSize="9sp"
+            android:text="C-12, Pandara Road, Cannaught Place" />
+        <TextView
+            android:background="@drawable/bg_blue_border"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_3787FF"
+            android:fontFamily="@font/manrope_semibold"
+            android:textSize="9sp"
+            android:text="Hybrid"
+            android:paddingVertical="2dp"
+            android:paddingHorizontal="10dp"/>
     </LinearLayout>
 </layout>

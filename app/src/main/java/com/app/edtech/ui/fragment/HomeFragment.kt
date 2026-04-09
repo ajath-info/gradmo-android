@@ -13,6 +13,7 @@ import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentHomeBinding
 import com.app.edtech.ui.activity.HomeActivity
+import com.app.edtech.ui.adapter.HomeBannerAdapter
 import com.app.edtech.ui.adapter.HomeInstituteAdapter
 import com.app.edtech.ui.view_model.HomeViewModel
 import com.app.edtech.utils.CommonUtils
@@ -25,6 +26,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var homeInstituteAdapter: HomeInstituteAdapter  // replace with your adapter
+    private lateinit var homeBannerAdapter: HomeBannerAdapter  // replace with your adapter
 
     override fun initView(savedInstanceState: Bundle?) {
         setupRecyclerView()
@@ -41,6 +43,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 false
             )
             adapter = homeInstituteAdapter          // attach your adapter here
+            addItemDecoration(
+                CommonUtils.ItemSpacingDecoration(spacing = 16)   // optional spacing helper below
+            )
+        }
+
+
+        homeBannerAdapter = HomeBannerAdapter()
+        binding.bannerRecycler.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = homeBannerAdapter          // attach your adapter here
             addItemDecoration(
                 CommonUtils.ItemSpacingDecoration(spacing = 16)   // optional spacing helper below
             )

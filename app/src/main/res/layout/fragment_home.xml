@@ -50,17 +50,20 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- ── SECTION 1 : BANNER ── -->
-            <ImageView
-                android:id="@+id/bannerImage"
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="10dp"
+                tools:listitem="@layout/adapter_home_banner"
+                android:id="@+id/bannerRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/menu_button" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             <!-- ── SECTION 2 : TITLE + SEARCH ── -->
             <LinearLayout
+                android:layout_marginTop="16dp"
                 android:paddingBottom="16dp"
-                android:background="#E4F1F8"
+                android:background="@color/light_blue_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -101,6 +104,8 @@
 
             <!-- ── SECTION 3 : CATEGORY TITLE + HORIZONTAL RECYCLERVIEW ── -->
             <LinearLayout
+                android:layout_marginTop="16dp"
+                android:background="@color/light_blue_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -117,8 +122,9 @@
                         android:id="@+id/categoryTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/manrope_bold"
-                        android:text="Categories"
+                        android:fontFamily="@font/manrope_semibold"
+                        android:text="Nearby Institutes"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -139,6 +145,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="See All"
+                            android:textColor="@color/black"
                             android:textSize="14sp" />
 
                         <ImageView
@@ -160,6 +167,7 @@
                     android:layout_marginTop="16dp"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
+                    tools:listitem="@layout/adapter_home_institute"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </LinearLayout>
