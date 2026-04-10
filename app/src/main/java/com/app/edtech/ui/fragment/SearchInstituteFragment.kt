@@ -1,32 +1,26 @@
 package com.app.edtech.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
-import com.app.edtech.databinding.FragmentHomeBinding
+import com.app.edtech.databinding.FragmentSearchInstituteBinding
 import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.adapter.HomeBannerAdapter
-import com.app.edtech.ui.adapter.HomeInstituteAdapter
+import com.app.edtech.ui.adapter.SearchInstituteAdapter
 import com.app.edtech.ui.view_model.HomeViewModel
 import com.app.edtech.utils.CommonUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
 
     private val viewModel: HomeViewModel by viewModels()
-    private lateinit var homeInstituteAdapter: HomeInstituteAdapter  // replace with your adapter
+    private lateinit var searchInstituteAdapter: SearchInstituteAdapter  // replace with your adapter
     private lateinit var homeBannerAdapter: HomeBannerAdapter  // replace with your adapter
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -36,14 +30,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun setupRecyclerView() {
-        homeInstituteAdapter = HomeInstituteAdapter()
-        binding.categoryRecyclerView.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = homeInstituteAdapter          // attach your adapter here
+        searchInstituteAdapter = SearchInstituteAdapter()
+        binding.instituteRecycler.apply {
+            adapter = searchInstituteAdapter          // attach your adapter here
             addItemDecoration(
                 CommonUtils.ItemSpacingDecoration(spacing = 16)   // optional spacing helper below
             )
@@ -52,11 +41,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         homeBannerAdapter = HomeBannerAdapter()
         binding.bannerRecycler.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
             adapter = homeBannerAdapter          // attach your adapter here
             addItemDecoration(
                 CommonUtils.ItemSpacingDecoration(spacing = 16)   // optional spacing helper below
@@ -65,16 +49,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun clickEvent() {
-        binding.sideMenu.setOnClickListener {
-            (activity as? HomeActivity)?.openDrawer()
-        }
 
-        binding.seeAllLayout.setOnClickListener {
-            // navigate to full list screen
-        }
-
-        binding.searchField.setOnClickListener {
-            findNavController().navigate(R.id.searchInstituteFragment)
+        binding.searchField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.searchField.text.toString().trim()
+                viewModel.search(query)
+                true
+            } else false
         }
     }
 
@@ -86,5 +67,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_home
+    override fun getLayoutId(): Int = R.layout.fragment_search_institute
 }

@@ -8,7 +8,11 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.app.edtech.ui.fragment.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_searchInstituteFragment"
+            app:destination="@id/searchInstituteFragment" />
+    </fragment>
     <fragment
         android:id="@+id/courseFragment"
         android:name="com.app.edtech.ui.fragment.CourseFragment"
@@ -30,4 +34,8 @@
         android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile_new"/>
+    <fragment
+        android:id="@+id/searchInstituteFragment"
+        android:name="com.app.edtech.ui.fragment.SearchInstituteFragment"
+        android:label="SearchInstituteFragment" />
 </navigation>
