@@ -1,11 +1,16 @@
-package com.app.hihlo.model.static
+package com.app.edtech.model.static
+
+import com.app.edtech.R
 
 object StaticLists {
-    val reelScreenPopupList = listOf("Block", "Report")
-    val homeUploadStoryOptionsList = listOf("Upload from Media", "Cancel")
-    val homeGendersList = listOf("All", "Male", "Female")
-    val uploadReelList = listOf("Upload Photo", "Upload Video")
-    val uploadType = listOf("Upload Post", "Upload Reel")
-    val callTypeList = listOf("Audio Call", "Video Call")
-    val longPressMessageList = listOf("Delete", "Cancel")
+    val batchDetailList = listOf(
+        BatchDetailItem("Live classes", R.drawable.batch_live_class_image),
+        BatchDetailItem("Video Lectures", R.drawable.batch_video_lecture_image),
+        BatchDetailItem("Library", R.drawable.batch_library_image),
+        BatchDetailItem("Attendance", R.drawable.batch_attendence_image),
+        BatchDetailItem("Exams", R.drawable.batch_exam_image),
+        BatchDetailItem("Homework", R.drawable.batch_homework_image),
+    )
 }
+
+data class BatchDetailItem(val name:String, val image:Int)

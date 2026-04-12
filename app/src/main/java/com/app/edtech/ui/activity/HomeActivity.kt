@@ -70,7 +70,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 //        setBottomBarPadding()
         setBottomNavigation()
         fragmentChangeCallback()
-        handleActivityBackButton()
+//        handleActivityBackButton()
 //        requestCameraAndMicrophonePermissions()
         Handler(Looper.getMainLooper()).post {
             handleIntentNavigation(intent)
@@ -262,31 +262,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 val currentDestinationId = navController.currentDestination?.id
 
                 when (currentDestinationId) {
-//                    R.id.homeFragment -> {
-//                        finish()
-//                    }
-//                    R.id.searchFragment, R.id.chatListFragment -> {
-//                        popBackToHome()
-//                    }
-//                    R.id.reelsFragment -> {
-//                        if (UserPreference.navigatedToMyProfile){
-////                            UserPreference.navigatedToMyProfile=false
-//                            navController.popBackStack()
-////                            navigateToProfile(navController.currentDestination?.id, Preferences.getCustomModelPreference<LoginResponse>(this@HomeActivity, LOGIN_DATA)?.payload?.profileImage.toString())
-//                        }else{
-//                            popBackToHome()
-//                        }
-//                    }
-//                    R.id.profileFragment -> {
-////                        popBackToHome()
-//                        navController.popBackStack()
-//                    }
-//                    R.id.openAdFragment -> {
 //
-//                    }
-//                    else -> {
-//                        navController.popBackStack()
-//                    }
                 }
             }
         })
@@ -410,15 +386,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private fun fragmentChangeCallback() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.editProfileNewFragment ->{
-                    binding.bottomAppBar.isVisible=false
-                    binding.floatingbtn.isVisible=false
-                    binding.imgBtn.isVisible=false
-                }
-                else -> {
+                R.id.homeFragment, R.id.homeFragment, R.id.courseFragment, R.id.notificationFragment ->{
                     binding.bottomAppBar.isVisible=true
                     binding.floatingbtn.isVisible=true
                     binding.imgBtn.isVisible=true
+                }
+
+                else -> {
+                    binding.bottomAppBar.isVisible=false
+                    binding.floatingbtn.isVisible=false
+                    binding.imgBtn.isVisible=false
                 }
 //                R.id.profileFragment, R.id.chatListFragment, R.id.searchFragment -> {
 //                    showNavigationView()

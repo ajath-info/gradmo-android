@@ -35,4 +35,5 @@
     <string name="account">Account</string>
     <string name="view_profile">View Profile</string>
     <string name="sign_up">Sign Up</string>
+    <string name="ratings_reviews"><![CDATA[Ratings & Reviews]]></string>
 </resources>

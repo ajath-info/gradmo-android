@@ -3,14 +3,14 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.app.edtech.databinding.AdapterSearchInstituteBinding
+import com.app.edtech.databinding.AdapterInstituteRatingReviewBinding
 
-class SearchInstituteAdapter(private val onInstituteSelected : ()-> Unit) : RecyclerView.Adapter<SearchInstituteAdapter.SearchInstituteViewHolder>() {
-    inner class SearchInstituteViewHolder(val binding: AdapterSearchInstituteBinding) :
+class AdapterInstituteRating(private val onRatingSelected : ()-> Unit) : RecyclerView.Adapter<AdapterInstituteRating.SearchInstituteViewHolder>() {
+    inner class SearchInstituteViewHolder(val binding: AdapterInstituteRatingReviewBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchInstituteViewHolder {
-        val binding = AdapterSearchInstituteBinding.inflate(
+        val binding = AdapterInstituteRatingReviewBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -19,12 +19,12 @@ class SearchInstituteAdapter(private val onInstituteSelected : ()-> Unit) : Recy
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return 2
     }
 
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
         holder.binding.root.setOnClickListener {
-            onInstituteSelected()
+            onRatingSelected()
         }
     }
 }

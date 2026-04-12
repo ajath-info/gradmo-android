@@ -37,5 +37,17 @@
     <fragment
         android:id="@+id/searchInstituteFragment"
         android:name="com.app.edtech.ui.fragment.SearchInstituteFragment"
-        android:label="SearchInstituteFragment" />
+        android:label="SearchInstituteFragment" >
+        <action
+            android:id="@+id/action_searchInstituteFragment_to_instituteDetailsFragment"
+            app:destination="@id/instituteDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/instituteDetailsFragment"
+        android:name="com.app.edtech.ui.fragment.InstituteDetailsFragment"
+        android:label="InstituteDetailsFragment" />
+    <fragment
+        android:id="@+id/batchDetailFragment"
+        android:name="com.app.edtech.ui.fragment.BatchDetailFragment"
+        android:label="BatchDetailFragment" />
 </navigation>
