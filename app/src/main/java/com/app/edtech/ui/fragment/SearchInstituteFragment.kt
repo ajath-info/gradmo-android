@@ -1,14 +1,18 @@
 package com.app.edtech.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
+import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
 import com.app.edtech.databinding.FragmentSearchInstituteBinding
 import com.app.edtech.ui.adapter.HomeBannerAdapter
 import com.app.edtech.ui.adapter.SearchInstituteAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -48,6 +52,9 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
                 true
             } else false
         }
+        binding.filterLayout.setOnClickListener{
+            showBottomSheet()
+        }
     }
 
     private fun observeViewModel() {
@@ -57,6 +64,26 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
 //            }
         }
     }
+    private fun showBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext())
 
+        // Inflate using binding
+        val sheetBinding = FragmentFilterInstituteBottomSheetBinding.inflate(layoutInflater)
+
+        dialog.setContentView(sheetBinding.root)
+
+        // OPTIONAL: make background transparent so rounded corners show
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+        }
+
+        // Handle clicks
+        sheetBinding.closeButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
     override fun getLayoutId(): Int = R.layout.fragment_search_institute
 }
