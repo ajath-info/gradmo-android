@@ -81,4 +81,6 @@ dependencies {
 //    image cropper
 //    implementation("com.github.yalantis:ucrop:2.2.10")
 
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 }

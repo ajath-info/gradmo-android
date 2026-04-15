@@ -16,15 +16,26 @@ abstract class BaseFragment<DB : ViewDataBinding> : Fragment() {
     open fun getLayoutId(): Int {
         return 0 // Default: you should override this
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (!isViewInitialized) {
+            isViewInitialized = true
+            initView(savedInstanceState)
+        }else{
+            restoreView()
+        }
+    }
+    open fun restoreView() {
 
+    }
+    var isViewInitialized = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        initView(savedInstanceState)
-
+        // ✅ Remove initView from here
         return binding.root
     }
     abstract fun initView(savedInstanceState: Bundle?)

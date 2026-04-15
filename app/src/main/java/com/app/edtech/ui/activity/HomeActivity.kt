@@ -324,7 +324,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
     private fun setBottomNavigation() {
         binding.bottomNavigationView.background = null
-        binding.bottomNavigationView.selectedItemId = R.id.home
+//        binding.bottomNavigationView.selectedItemId = R.id.home
     }
     private fun navigationMenuClickListener() {
 //        binding.bottomNavigationView.itemIconTintList = null

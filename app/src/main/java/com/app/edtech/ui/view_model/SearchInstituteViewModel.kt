@@ -6,25 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.app.edtech.model.banner.response.BannerResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
-import com.app.edtech.model.login.request.LoginRequest
-import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
-import com.google.googlejavaformat.Input.Tok
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
-    private var dataLoaded = false
-
-    fun hasLoadedData() = dataLoaded
-
+class SearchInstituteViewModel @Inject constructor() : ViewModel() {
 
     private val bannerLiveDate = SingleLiveEvent<Resources<BannerResponse>>()
 
@@ -32,7 +22,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         return bannerLiveDate
     }
     fun hitBannerDataApi(token: String) {
-        dataLoaded = true  // ✅ Mark as loaded
+
         try {
             bannerLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {

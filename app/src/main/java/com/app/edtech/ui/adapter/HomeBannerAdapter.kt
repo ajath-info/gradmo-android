@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.databinding.AdapterHomeBannerBinding
+import com.app.edtech.model.banner.response.BannerResponse
+import com.bumptech.glide.Glide
 
-class HomeBannerAdapter : RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
+class HomeBannerAdapter(val banners: List<BannerResponse.Data.Banner>) : RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
     inner class HomeBannerViewHolder(val binding: AdapterHomeBannerBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -19,10 +21,12 @@ class HomeBannerAdapter : RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewH
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return banners.size
     }
 
     override fun onBindViewHolder(holder: HomeBannerViewHolder, position: Int) {
-
+        holder.binding.apply {
+            Glide.with(root.context).load(banners[position].image_url).into(imageView)
+        }
     }
 }

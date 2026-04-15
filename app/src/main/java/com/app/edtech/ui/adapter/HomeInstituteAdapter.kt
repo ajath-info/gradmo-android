@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.databinding.AdapterHomeInstituteBinding
+import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.bumptech.glide.Glide
 
-class HomeInstituteAdapter : RecyclerView.Adapter<HomeInstituteAdapter.HomeInstituteViewHolder>() {
+class HomeInstituteAdapter(val institutes: List<InstituteListResponse.Institute>) : RecyclerView.Adapter<HomeInstituteAdapter.HomeInstituteViewHolder>() {
     inner class HomeInstituteViewHolder(val binding: AdapterHomeInstituteBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -19,10 +21,15 @@ class HomeInstituteAdapter : RecyclerView.Adapter<HomeInstituteAdapter.HomeInsti
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return institutes.size
     }
 
     override fun onBindViewHolder(holder: HomeInstituteViewHolder, position: Int) {
-
+        val institute = institutes[position]
+        holder.binding.apply {
+            Glide.with(root.context).load(institute.imageUrl).into(imageView)
+            instituteName.text = institute.name
+            instituteAddress.text = institute.address
+        }
     }
 }

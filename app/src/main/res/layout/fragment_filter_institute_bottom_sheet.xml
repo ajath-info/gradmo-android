@@ -79,7 +79,7 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="A-Z"
+                android:text="Z-A"
                 android:drawableStart="@drawable/selected_icon"
                 android:drawablePadding="10dp"
                 android:textColor="@color/black"

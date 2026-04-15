@@ -1,5 +1,6 @@
 package com.app.edtech.network_call.repository
 
+import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.profile.request.UpdateProfileRequest
 import com.app.edtech.network_call.RetrofitBuilder
@@ -28,8 +29,14 @@ class ApiRepository {
     suspend fun verifyLoginOtp(mobile: String,otp:String, userType:String) = service.verifyLoginOtp(mobile, otp, userType)
 
     suspend fun registerUser(model: SignUp) = service.registerUser(model)
+
     suspend fun logoutApi(token: String, student_id: String) = service.logout(token, student_id)
+
     suspend fun deleteApi(token: String, student_id: String) = service.delete(token, student_id)
+
+    suspend fun getBannerApi(token: String) = service.getBanner(token)
+
+    suspend fun getInstitutesApi(token: String, request: InstitutesListRequest) = service.getInstitutes(token, request)
 
 
 

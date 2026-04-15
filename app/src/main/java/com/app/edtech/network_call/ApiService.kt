@@ -1,5 +1,8 @@
 package com.app.edtech.network_call
 
+import com.app.edtech.model.banner.response.BannerResponse
+import com.app.edtech.model.institute_list.request.InstitutesListRequest
+import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.logout.response.DeleteResponse
@@ -70,5 +73,15 @@ interface ApiService {
     suspend fun delete(@Header("Authorization") token: String, @Field("student_id") student_id: String
     ): DeleteResponse
 
+    @POST("api/batch/slider-list")
+    suspend fun getBanner(
+        @Header("Authorization") token: String
+    ): BannerResponse
+
+    @POST("api/institute/listing")
+    suspend fun getInstitutes(
+        @Header("Authorization") token: String,
+        @Body requestBody: InstitutesListRequest
+    ): InstituteListResponse
 }
 
