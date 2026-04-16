@@ -144,18 +144,23 @@
                         android:layout_width="match_parent"
                         android:layout_marginTop="20dp"
                         android:hint="@string/locality"/>
-                    <EditText
+                    <TextView
                         android:id="@+id/etState"
                         style="@style/CommonLoginFlowEditText"
                         android:layout_width="match_parent"
                         android:layout_marginTop="20dp"
-                        android:hint="@string/state"/>
-                    <EditText
+                        android:hint="@string/state"
+                        android:focusable="false"
+                        android:clickable="true" />
+
+                    <TextView
                         android:id="@+id/etCity"
                         style="@style/CommonLoginFlowEditText"
                         android:layout_width="match_parent"
                         android:layout_marginTop="20dp"
-                        android:hint="@string/city"/>
+                        android:hint="@string/city"
+                        android:focusable="false"
+                        android:clickable="true" />
                     <EditText
                         android:id="@+id/etPincode"
                         style="@style/CommonLoginFlowEditText"

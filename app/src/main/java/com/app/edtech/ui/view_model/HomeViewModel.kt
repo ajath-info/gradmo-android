@@ -21,18 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor() : ViewModel() {
-    private var dataLoaded = false
-
-    fun hasLoadedData() = dataLoaded
-
-
     private val bannerLiveDate = SingleLiveEvent<Resources<BannerResponse>>()
 
     fun getBannerLiveData(): LiveData<Resources<BannerResponse>> {
         return bannerLiveDate
     }
     fun hitBannerDataApi(token: String) {
-        dataLoaded = true  // ✅ Mark as loaded
         try {
             bannerLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {

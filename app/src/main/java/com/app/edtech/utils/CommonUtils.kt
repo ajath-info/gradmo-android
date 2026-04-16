@@ -11,16 +11,38 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
+import com.app.edtech.R
+import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
 
 object CommonUtils {
-    class ItemSpacingDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect, view: View,
-            parent: RecyclerView, state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            if (position != 0) outRect.left = spacing.dpToPx(view.context)
-        }
+    fun updateSortUI(
+        binding: FragmentFilterInstituteBottomSheetBinding,
+        isAsc: Boolean
+    ) {
+        binding.tvAZ.setCompoundDrawablesWithIntrinsicBounds(
+            if (isAsc) R.drawable.selected_icon else R.drawable.unselected_icon,
+            0, 0, 0
+        )
+
+        binding.tvZA.setCompoundDrawablesWithIntrinsicBounds(
+            if (!isAsc) R.drawable.selected_icon else R.drawable.unselected_icon,
+            0, 0, 0
+        )
+    }
+
+    fun updateModeUI(
+        binding: FragmentFilterInstituteBottomSheetBinding,
+        isOffline: Boolean
+    ) {
+        binding.tvOffline.setCompoundDrawablesWithIntrinsicBounds(
+            if (isOffline) R.drawable.selected_icon else R.drawable.unselected_icon,
+            0, 0, 0
+        )
+
+        binding.tvOnline.setCompoundDrawablesWithIntrinsicBounds(
+            if (!isOffline) R.drawable.selected_icon else R.drawable.unselected_icon,
+            0, 0, 0
+        )
     }
 
     fun Int.dpToPx(context: Context): Int =

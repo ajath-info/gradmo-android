@@ -1,5 +1,9 @@
 package com.app.edtech.network_call
 
+import com.app.edtech.model.address.city.GetCitiesRequest
+import com.app.edtech.model.address.city.GetCitiesResponse
+import com.app.edtech.model.address.state.GetStatesRequest
+import com.app.edtech.model.address.state.GetStatesResponse
 import com.app.edtech.model.banner.response.BannerResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
@@ -83,5 +87,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: InstitutesListRequest
     ): InstituteListResponse
+
+    @POST("api/main/city-list")
+    suspend fun getCities(@Body requestBody: GetCitiesRequest): GetCitiesResponse
+
+    @POST("api/main/state-list")
+    suspend fun getStates(@Body requestBody: GetStatesRequest): GetStatesResponse
 }
 

@@ -4,13 +4,18 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.MimeTypeMap
+import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -18,8 +23,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.R
 import com.app.edtech.databinding.FragmentEditProfileNewBinding
+import com.app.edtech.model.address.city.GetCitiesRequest
+import com.app.edtech.model.address.city.GetCitiesResponse
+import com.app.edtech.model.address.state.GetStatesRequest
+import com.app.edtech.model.address.state.GetStatesResponse
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.login.response.UserData
 import com.app.edtech.preferences.IS_LOGIN
@@ -55,6 +66,15 @@ class EditProfileNewFragment : Fragment() {
     val tempDetails = UserPreference.loginRequest
     var userData = UserData()
     private var selectedImageFile: File? = null
+
+    private var stateList = ArrayList<GetStatesResponse.State>()
+    private var cityList = ArrayList<GetCitiesResponse.City>()
+
+    private var selectedStateId: Int? = null
+    private var selectedStateName: String = ""
+
+    private var selectedCityId: Int? = null
+    private var selectedCityName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,6 +140,60 @@ class EditProfileNewFragment : Fragment() {
                 }
             }
         }
+        viewModel.getCitiesLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "Cities success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        if (it.data.status == "true") {
+                            cityList = ArrayList(it.data.cities)
+                            showCityPopup()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+        viewModel.getStatesLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "States success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        if (it.data.status == "true") {
+                            stateList.clear()
+                            stateList = ArrayList(it.data.states)
+                            showStatePopup()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
+
     }
 
     private fun setUI() {
@@ -139,7 +213,9 @@ class EditProfileNewFragment : Fragment() {
                 etPhoneNumber.setText(userData.mobile)
                 etLocality.setText(userData.address)
                 etState.setText(userData.state)
+                selectedStateName = userData.state.toString()
                 etCity.setText(userData.city)
+                selectedCityName = userData.city.toString()
                 etPincode.setText(userData.pincode)
                 etSchoolName.setText(userData.schoolCollegeName)
                 etGrade.setText(userData.grade)
@@ -151,6 +227,17 @@ class EditProfileNewFragment : Fragment() {
     private fun initViews(){
         userData = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data ?: UserData()
         touchHideKeyBoard(binding.root, requireActivity())
+        binding.etState.setOnClickListener {
+            viewModel.hitStatesDataApi(GetStatesRequest(country_id = "105")) // call API
+        }
+
+        binding.etCity.setOnClickListener {
+            if (selectedStateId == null) {
+                Toast.makeText(requireContext(), "Please select state first", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.hitCitiesDataApi(GetCitiesRequest(selectedStateId.toString()))
+            }
+        }
         binding.ivEditIcon.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK).apply {
                 type = "image/*"
@@ -242,25 +329,14 @@ class EditProfileNewFragment : Fragment() {
             Toast.makeText(requireActivity(), "Please enter your school name", Toast.LENGTH_SHORT).show()
         }else if(etGrade.isEmpty()){
             Toast.makeText(requireActivity(), "Please enter your grade", Toast.LENGTH_SHORT).show()
+        }else if(selectedStateName.isEmpty()){
+            Toast.makeText(requireActivity(), "Please select state", Toast.LENGTH_SHORT).show()
+        }else if(selectedCityName.isEmpty()) {
+            Toast.makeText(requireActivity(), "Please select city", Toast.LENGTH_SHORT).show()
         }else{
             val studentId = UserPreference.studentId.ifEmpty { Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.studentId }
             val userType = Preferences.getStringPreference(requireActivity(), USER_TYPE)
             val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-            /*val model = UpdateProfileRequest(
-                image = imageUrl,
-                name = etName.toString(),
-                email = etEmail.toString(),
-                mobile = etPhone.toString(),
-                address = etLocality.toString(),
-                country = "India",
-                state = "Uttar Pradesh",
-                city = "Noida",
-                pincode = etPincode.toString(),
-                school_college_name = etSchoolName.toString(),
-                grade = etGrade.toString(),
-                user_type = userType,
-                student_id = studentId
-            )*/
             val map = HashMap<String, RequestBody>()
 
             fun String.toRequestBody(): RequestBody {
@@ -272,8 +348,8 @@ class EditProfileNewFragment : Fragment() {
             map["mobile"] = etPhone.toString().toRequestBody()
             map["address"] = etLocality.toString().toRequestBody()
             map["country"] = "India".toRequestBody()
-            map["state"] = "Uttar Pradesh".toRequestBody()
-            map["city"] = "Noida".toRequestBody()
+            map["state"] = selectedStateName.toRequestBody()
+            map["city"] = selectedCityName.toRequestBody()
             map["pincode"] = etPincode.toString().toRequestBody()
             map["school_college_name"] = etSchoolName.toString().toRequestBody()
             map["grade"] = etGrade.toString().toRequestBody()
@@ -290,8 +366,95 @@ class EditProfileNewFragment : Fragment() {
                 MultipartBody.Part.createFormData("image", fileName, requestFile)
             }
             viewModel.hitUpdateProfile(imagePart, map, "Bearer $accessToken")
-            //updateApi()
         }
+    }
+    private fun showStatePopup() {
+        showDropdownPopup(
+            anchor = binding.etState,
+            list = stateList,
+            getText = { it.name },
+            isSelected = { it.name == selectedStateName },
+            onItemClick = {
+                selectedStateId = it.id
+                selectedStateName = it.name
+
+                binding.etState.text = it.name
+
+                // 🔥 reset city
+                selectedCityId = null
+                selectedCityName = ""
+                binding.etCity.text = ""
+            }
+        )
+    }
+    private fun showCityPopup() {
+        showDropdownPopup(
+            anchor = binding.etCity,
+            list = cityList,
+            getText = { it.city },
+            isSelected = { it.city == selectedCityName },
+            onItemClick = {
+                selectedCityId = it.id
+                selectedCityName = it.city
+
+                binding.etCity.text = it.city
+            }
+        )
+    }
+    private fun <T> showDropdownPopup(
+        anchor: View,
+        list: List<T>,
+        getText: (T) -> String,
+        isSelected: (T) -> Boolean,
+        onItemClick: (T) -> Unit
+    ) {
+        val view = layoutInflater.inflate(R.layout.popup_list, null)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+
+        val popupWindow = PopupWindow(
+            view,
+            (anchor.width * 0.95).toInt(),
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        recyclerView.adapter = object : RecyclerView.Adapter<PopupVH>() {
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopupVH {
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_simple_text, parent, false)
+                return PopupVH(v)
+            }
+
+            override fun getItemCount() = list.size
+
+            override fun onBindViewHolder(holder: PopupVH, position: Int) {
+                val item = list[position]
+
+                holder.tvText.text = getText(item)
+
+                holder.viewDot.visibility =
+                    if (isSelected(item)) View.VISIBLE else View.GONE
+
+                holder.itemView.setOnClickListener {
+                    onItemClick(item)
+                    popupWindow.dismiss()
+                }
+            }
+        }
+
+        popupWindow.elevation = 10f
+        popupWindow.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+        popupWindow.isOutsideTouchable = true
+
+        popupWindow.showAsDropDown(anchor, 0, 8)
+    }
+
+    class PopupVH(view: View) : RecyclerView.ViewHolder(view) {
+        val tvText: TextView = view.findViewById(R.id.tvText)
+        val viewDot: View = view.findViewById(R.id.viewDot)
     }
 }
 

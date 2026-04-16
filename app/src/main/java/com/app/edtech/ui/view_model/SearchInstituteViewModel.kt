@@ -3,6 +3,8 @@ package com.app.edtech.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.edtech.model.address.city.GetCitiesRequest
+import com.app.edtech.model.address.city.GetCitiesResponse
 import com.app.edtech.model.banner.response.BannerResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
@@ -65,6 +67,36 @@ class SearchInstituteViewModel @Inject constructor() : ViewModel() {
                     )
                 } catch (ex: Exception) {
                     institutesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+
+
+
+    private val citiesLiveDate = SingleLiveEvent<Resources<GetCitiesResponse>>()
+
+    fun getCitiesLiveData(): LiveData<Resources<GetCitiesResponse>> {
+        return citiesLiveDate
+    }
+    fun hitCitiesDataApi(request: GetCitiesRequest) {
+
+        try {
+            citiesLiveDate.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    citiesLiveDate.postValue(
+                        Resources.success(
+                            ApiRepository().getCitiesApi(request)
+                        )
+                    )
+                } catch (ex: Exception) {
+                    citiesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

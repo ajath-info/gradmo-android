@@ -198,11 +198,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setObserver()
         clickEvent()
-
-        initView(savedInstanceState) // ✅ call here
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_home
