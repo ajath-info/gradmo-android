@@ -2,6 +2,10 @@ package com.app.edtech.ui.fragment
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -19,6 +23,7 @@ import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
+import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.adapter.HomeBannerAdapter
 import com.app.edtech.ui.adapter.SearchInstituteAdapter
 import com.app.edtech.ui.view_model.SearchInstituteViewModel
@@ -33,6 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
+    private var totalRecords: Int = 0
     private var currentPage = 1
     private val pageSize = 10   // adjust as per API
     private var isLoading = false
@@ -45,21 +51,33 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
+    private var flow = ""    // "online" / "offline" / ""
+
+    private var searchRunnable: Runnable? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var searchQuery: String = ""
 
     override fun initView(savedInstanceState: Bundle?) {
+        flow = arguments?.getString("flow", "") ?: ""
+        Log.i("TAG", "flow: "+flow)
+        setupUI()
         setupRecyclerView()
 
         currentPage = 1
         isLastPage = false
         instituteList.clear()
-
-        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
-            requireContext(),
-            LOGIN_DATA
-        )?.data?.accessToken
-
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitBannerDataApi("Bearer $accessToken")
         callInstituteApi()
+    }
+
+    private fun setupUI() {
+        when(flow){
+            "seeAll"->{
+                binding.title.text = "Institutes"
+                (activity as HomeActivity).hideNavigationView()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -68,30 +86,26 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
             adapter = homeBannerAdapter
         }
     }
-    private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>) {
-
-        if (!::searchInstituteAdapter.isInitialized) {
-            searchInstituteAdapter = SearchInstituteAdapter(instituteList, ::onInstituteSelected)
-
-            binding.instituteRecycler.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = searchInstituteAdapter
-            }
-
-            addPaginationScroll()
+    private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
+        searchInstituteAdapter = SearchInstituteAdapter(instituteList, ::onInstituteSelected)
+        binding.instituteRecycler.apply {
+            adapter = searchInstituteAdapter
         }
+        addPaginationScroll()
+        binding.tvShowingCount.text = "Showing ${instituteList.size} of ${totalRecords} results"
+        if (!isRestore){
+            val start = instituteList.size
+            instituteList.addAll(institutes)
+            searchInstituteAdapter.notifyItemRangeInserted(start, institutes.size)
+            isLoading = false
 
-        val start = instituteList.size
-        instituteList.addAll(institutes)
-        searchInstituteAdapter.notifyItemRangeInserted(start, institutes.size)
-
-        isLoading = false
-
-        // 👇 Detect last page
-        if (institutes.size < pageSize) {
-            isLastPage = true
+            if (institutes.size < pageSize) {
+                isLastPage = true
+            }
+            binding.tvShowingCount.text = "Showing ${instituteList.size} of ${totalRecords} results"
         }
     }
+
     private fun addPaginationScroll() {
         val layoutManager = binding.instituteRecycler.layoutManager as LinearLayoutManager
 
@@ -118,19 +132,55 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         currentPage++
         callInstituteApi()
     }
-    private fun onInstituteSelected() {
-        findNavController().navigate(R.id.instituteDetailsFragment)
+    private fun onInstituteSelected(institute:InstituteListResponse.Institute) {
+        var bundle = Bundle()
+        bundle.putParcelable("institute", institute)
+        findNavController().navigate(R.id.instituteDetailsFragment, bundle)
     }
 
     private fun clickEvent() {
-
+        binding.backButton.setOnClickListener{
+            findNavController().popBackStack()
+        }
         binding.searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val query = binding.searchField.text.toString().trim()
-//                viewModel.search(query)
+                searchQuery = binding.searchField.text.toString().trim()
+
+                currentPage = 1
+                isLastPage = false
+                instituteList.clear()
+                searchInstituteAdapter.notifyDataSetChanged()
+
+                callInstituteApi()
                 true
             } else false
         }
+        binding.searchField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                searchRunnable?.let { handler.removeCallbacks(it) }
+
+                searchRunnable = Runnable {
+                    val query = s.toString().trim()
+
+                    if (query != searchQuery) {
+                        searchQuery = query
+
+                        // 🔁 Reset pagination
+                        currentPage = 1
+                        isLastPage = false
+                        instituteList.clear()
+                        searchInstituteAdapter.notifyDataSetChanged()
+
+                        callInstituteApi()
+                    }
+                }
+
+                handler.postDelayed(searchRunnable!!, 500) // ⏳ debounce 500ms
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         binding.filterLayout.setOnClickListener {
             showBottomSheet()
         }
@@ -222,7 +272,8 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
             order_type = orderType,     // ✅ dynamic
             mode = selectedMode,        // ✅ dynamic
             page = currentPage.toString(),
-            limit = pageSize.toString()
+            limit = pageSize.toString(),
+            search = searchQuery,
         )
 
         viewModel.hitInstitutesDataApi("Bearer $accessToken", request)
@@ -239,7 +290,8 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-                        setupInstitutesRecycler(it.data.institutes)
+                        totalRecords = it.data.pagination.totalRecords
+                        setupInstitutesRecycler(it.data.institutes, false, totalRecords)
                     } else {
                         Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
                             .show()
@@ -284,7 +336,7 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     }
     override fun restoreView() {
         viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
-            setupInstitutesRecycler(it)
+            setupInstitutesRecycler(it, true, totalRecords)
         }
     }
 

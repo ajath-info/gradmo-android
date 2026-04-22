@@ -20,7 +20,8 @@ class SignupFlowActivity : BaseActivity<ActivitySignupFlowBinding>() {
         val startFrom = intent.getStringExtra("start_from")
 
         val navGraph = navController.navInflater.inflate(R.navigation.signup_flow_nav)
-
+//        var bundle = Bundle()
+//        bundle.putString("from", "signup")
         when (startFrom) {
             "incompleteProfile" -> navGraph.setStartDestination(R.id.editProfileNewFragment)
             else -> navGraph.setStartDestination(R.id.onboardingFragment)

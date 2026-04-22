@@ -108,7 +108,7 @@
             android:textColor="@color/blue_3787FF"
             android:fontFamily="@font/manrope_semibold"
             android:textSize="9sp"
-            android:text="Hybrid"
+            android:text="Offline"
             android:paddingVertical="2dp"
             android:paddingHorizontal="10dp"/>
     </LinearLayout>

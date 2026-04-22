@@ -78,7 +78,14 @@ class EditProfileNewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        from = arguments?.getString("from").toString()
+        val navController = findNavController()
+        val navGraph = navController.graph
+
+        from = arguments?.getString("from") ?: ""
+        if(navController.currentDestination?.id == navGraph.startDestinationId && from.isEmpty()){
+            from = "incompleteProfile"
+        }
+        Log.i("TAG", "onCreate from: $from")
     }
 
     override fun onCreateView(
@@ -96,10 +103,14 @@ class EditProfileNewFragment : Fragment() {
     }
 
     private fun backListener() {
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            if (from!="signup")
-//            findNavController().popBackStack()
-//        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (from!="signup"||from!="incompleteProfile"){
+                (activity as HomeActivity).updateUserInMenu()
+//                            findNavController().popBackStack()
+                (activity as HomeActivity).navigateToHome()
+            }
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,7 +126,7 @@ class EditProfileNewFragment : Fragment() {
                         Toast.makeText(requireContext(), it.data.msg, Toast.LENGTH_SHORT).show()
                         Preferences.setCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA, it.data)
                         CommonUtils.hideKeyboard(requireActivity())
-                        if (from=="signup"){
+                        if (from=="signup" || from=="incompleteProfile"){
                             Preferences.setStringPreference(requireContext(), IS_LOGIN, "2")
                             requireActivity().finish()
                             startActivity(Intent(requireActivity(), HomeActivity::class.java))
@@ -235,7 +246,7 @@ class EditProfileNewFragment : Fragment() {
             if (selectedStateId == null) {
                 Toast.makeText(requireContext(), "Please select state first", Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.hitCitiesDataApi(GetCitiesRequest(selectedStateId.toString()))
+                viewModel.hitCitiesDataApi(GetCitiesRequest(selectedStateId.toString(), limit = "100"))
             }
         }
         binding.ivEditIcon.setOnClickListener {

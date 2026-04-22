@@ -23,6 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/backButton"
                 android:layout_marginStart="20dp"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -32,6 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_bold"
@@ -85,9 +87,9 @@
             app:layout_constraintTop_toBottomOf="@+id/bannerRecycler">
             <TextView
                 android:layout_marginStart="20dp"
-                android:id="@+id/filterResultText"
+                android:id="@+id/tvShowingCount"
                 android:textColor="@color/black"
-                android:text="Showing 10 of 421 results"
+                android:text="Showing -- of -- results"
                 android:fontFamily="@font/manrope_regular"
                 android:textSize="15sp"
                 android:layout_width="wrap_content"

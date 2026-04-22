@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EdTech</string>
+    <string name="app_name">Gradmo</string>
     <string name="login_gradmo">Login Gradmo</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -31,6 +31,7 @@
     <string name="save">Save</string>
     <string name="home">Home</string>
     <string name="course">Course</string>
+    <string name="institutes">Institutes</string>
     <string name="notifications">Notifications</string>
     <string name="account">Account</string>
     <string name="view_profile">View Profile</string>

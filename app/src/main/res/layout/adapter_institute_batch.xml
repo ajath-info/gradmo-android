@@ -25,6 +25,7 @@
             android:layout_height="60dp">
 
             <ImageView
+                android:id="@+id/imageView"
                 android:scaleType="centerCrop"
                 android:src="@drawable/onboarding3"
                 android:layout_width="match_parent"

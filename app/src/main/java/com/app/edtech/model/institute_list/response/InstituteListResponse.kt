@@ -1,5 +1,8 @@
 package com.app.edtech.model.institute_list.response
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class InstituteListResponse(
     val batchId: Any,
     val institutes: List<Institute>,
@@ -11,27 +14,28 @@ data class InstituteListResponse(
     val referenceLongitude: Double,
     val status: String
 ) {
+    @Parcelize
     data class Institute(
-        val address: String,
-        val city: String,
-        val country: String,
-        val distanceKm: Any,
-        val email: String,
-        val image: String,
-        val imageUrl: String,
-        val instituteCode: String,
-        val instituteId: Int,
-        val instituteLatitude: Double,
-        val instituteLongitude: Double,
-        val mobile: String,
-        val name: String,
-        val pincode: String,
-        val role: Int,
-        val schoolCollegeName: String,
-        val state: String,
-        val teachEducation: String,
-        val userType: String
-    )
+        val address: String?=null,
+        val city: String?=null,
+        val country: String?=null,
+        val distanceKm: String?=null,
+        val email: String?=null,
+        val image: String?=null,
+        val imageUrl: String?=null,
+        val instituteCode: String?=null,
+        val instituteId: Int?=null,
+        val instituteLatitude: Double?=null,
+        val instituteLongitude: Double?=null,
+        val mobile: String?=null,
+        val name: String?=null,
+        val pincode: String?=null,
+        val role: Int?=null,
+        val schoolCollegeName: String?=null,
+        val state: String?=null,
+        val teachEducation: String?=null,
+        val userType: String?=null
+    ):Parcelable
 
     data class Pagination(
         val limit: Int,

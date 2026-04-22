@@ -177,16 +177,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>) {
         homeInstituteAdapter = HomeInstituteAdapter(institutes)
         binding.categoryRecyclerView.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
             adapter = homeInstituteAdapter
         }
     }
 
     private fun clickEvent() {
+        binding.seeAllLayout.setOnClickListener {
+            var bundle = Bundle()
+            bundle.putString("flow", "seeAll")
+            findNavController().navigate(R.id.searchInstituteFragment, bundle)
+        }
         binding.sideMenu.setOnClickListener {
             (activity as? HomeActivity)?.openDrawer()
         }

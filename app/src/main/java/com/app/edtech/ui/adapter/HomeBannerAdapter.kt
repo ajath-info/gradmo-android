@@ -3,6 +3,7 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.edtech.R
 import com.app.edtech.databinding.AdapterHomeBannerBinding
 import com.app.edtech.model.banner.response.BannerResponse
 import com.bumptech.glide.Glide
@@ -26,7 +27,7 @@ class HomeBannerAdapter(val banners: List<BannerResponse.Data.Banner>) : Recycle
 
     override fun onBindViewHolder(holder: HomeBannerViewHolder, position: Int) {
         holder.binding.apply {
-            Glide.with(root.context).load(banners[position].image_url).into(imageView)
+            Glide.with(root.context).load(banners[position].image_url).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
         }
     }
 }

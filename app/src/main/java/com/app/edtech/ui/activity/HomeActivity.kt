@@ -16,6 +16,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -70,7 +71,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 //        setBottomBarPadding()
         setBottomNavigation()
         fragmentChangeCallback()
-//        handleActivityBackButton()
+        handleActivityBackButton()
 //        requestCameraAndMicrophonePermissions()
         Handler(Looper.getMainLooper()).post {
             handleIntentNavigation(intent)
@@ -262,19 +263,33 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 val currentDestinationId = navController.currentDestination?.id
 
                 when (currentDestinationId) {
-//
+                    R.id.homeFragment -> {
+                        finish()
+                    }
+                    R.id.searchInstituteFragment, R.id.notification, R.id.searchFragment -> {
+                        popBackToHome()
+                    }
+                    else -> {
+                        navController.popBackStack()
+                    }
                 }
             }
         })
     }
 
+
     private fun popBackToHome() {
-//        val popped = navController.popBackStack(R.id.homeFragment, false)
-//        if (!popped) {
-//            // HomeFragment not in back stack — navigate to it
-//            navController.navigate(R.id.homeFragment)
-//        }
-//        binding.bottomNavigationView.selectedItemId = R.id.home
+        val popped = navController.popBackStack(R.id.homeFragment, false)
+        if (!popped) {
+            // HomeFragment not in back stack — navigate to it
+            navController.navigate(R.id.homeFragment)
+        }
+        binding.bottomNavigationView.selectedItemId = R.id.home
+
+//        val icon = binding.bottomNavigationView.menu.findItem(R.id.home).icon
+//        val tintedIcon = DrawableCompat.wrap(icon!!).mutate()
+//        DrawableCompat.setTint(tintedIcon, ContextCompat.getColor(this, R.color.theme_blue))
+//        binding.bottomNavigationView.menu.findItem(R.id.home).icon = tintedIcon
     }
 
     override fun getLayoutId(): Int {
@@ -342,7 +357,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
                 R.id.course -> {
 //                    if (currentDestId != R.id.chatListFragment) {
-                    navController.navigate(R.id.courseFragment)
+                    navController.navigate(R.id.searchInstituteFragment)
 //                    }
                     binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
@@ -386,49 +401,41 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private fun fragmentChangeCallback() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.homeFragment, R.id.homeFragment, R.id.courseFragment, R.id.notificationFragment ->{
-                    binding.bottomAppBar.isVisible=true
-                    binding.floatingbtn.isVisible=true
-                    binding.imgBtn.isVisible=true
+                R.id.searchInstituteFragment, R.id.notificationFragment, R.id.searchFragment -> {
+                    showNavigationView()
+                    setBottomBarPadding()
                 }
-
-                else -> {
-                    binding.bottomAppBar.isVisible=false
-                    binding.floatingbtn.isVisible=false
-                    binding.imgBtn.isVisible=false
-                }
-//                R.id.profileFragment, R.id.chatListFragment, R.id.searchFragment -> {
-//                    showNavigationView()
-//                    setBottomBarPadding()
-//                }
-//                R.id.homeFragment -> {
+                R.id.homeFragment -> {
 //                    binding.bottomNavigationView.menu.findItem(R.id.home).icon = ContextCompat.getDrawable(this, R.drawable.home_selected)
 //                    setUserProfileImageWithStroke(this, binding.bottomNavigationView, userImageUrl, isSelected = false)
-//                    showNavigationView()
-//                    setBottomBarPadding()
-//                }
-//                R.id.reelsFragment -> {
-////                    binding.imgBtn.setImageResource(R.drawable.reel_icon_selected)
-//                    showNavigationView()
-//                    setBottomBarPadding()
-//                    if (UserPreference.navigatedToMyProfile){
-//                        binding.bottomNavigationView.menu.findItem(R.id.home).icon = ContextCompat.getDrawable(this, R.drawable.home_icon)
-//                        setUserProfileImageWithStroke(this, binding.bottomNavigationView, userImageUrl, isSelected = true)
-//                    }
-//                }
-//                R.id.chatFragment, R.id.newStoryFragment, R.id.predefinedChatFragment, R.id.addReelFragment, R.id.editProfileNewFragment, R.id.storyFragment, R.id.secondStoryFragment, R.id.becomeCreatorStatusFragment, R.id.benifitsOfCreatersFragment, R.id.rateUsFragment, R.id.openImageFragment, R.id.changePasswordFragment  -> {
-//                    clearBottomBarPadding()
-//                    hideNavigationView()
-//
-//                }
-//                else -> {
-//                    setBottomBarPadding()
-//                    showNavigationView()
-//                }
+//                    binding.bottomNavigationView.menu.findItem(R.id.home).icon = ContextCompat.getDrawable(this, R.drawable.home_menu_selected)
+                    showNavigationView()
+                    setBottomBarPadding()
+                }
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment  -> {
+                    clearBottomBarPadding()
+                    hideNavigationView()
+
+                }
+                else -> {
+                    setBottomBarPadding()
+                    showNavigationView()
+                }
             }
         }
     }
-
+    fun showNavigationView() {
+        binding.bottomAppBar.isVisible=true
+        binding.floatingbtn.isVisible=true
+        binding.imgBtn.isVisible=true
+    }
+    fun hideNavigationView(){
+        binding.apply {
+            bottomAppBar.isVisible=false
+            imgBtn.isVisible=false
+            floatingbtn.isVisible=false
+        }
+    }
     private fun requestCameraAndMicrophonePermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 (API 33) and above

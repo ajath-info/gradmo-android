@@ -5,6 +5,8 @@ import com.app.edtech.model.address.city.GetCitiesResponse
 import com.app.edtech.model.address.state.GetStatesRequest
 import com.app.edtech.model.address.state.GetStatesResponse
 import com.app.edtech.model.banner.response.BannerResponse
+import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
+import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.request.LoginRequest
@@ -93,5 +95,8 @@ interface ApiService {
 
     @POST("api/main/state-list")
     suspend fun getStates(@Body requestBody: GetStatesRequest): GetStatesResponse
+
+    @POST("api/institute/details")
+    suspend fun getInstituteDetail(@Header("Authorization") token: String, @Body requestBody: InstituteDetailRequest): InstituteDetailResponse
 }
 

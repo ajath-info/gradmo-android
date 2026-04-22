@@ -3,13 +3,14 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.edtech.R
 import com.app.edtech.databinding.AdapterSearchInstituteBinding
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.bumptech.glide.Glide
 
 class SearchInstituteAdapter(
     val institutes: List<InstituteListResponse.Institute>,
-    private val onInstituteSelected: () -> Unit
+    private val onInstituteSelected: (InstituteListResponse.Institute) -> Unit
 ) : RecyclerView.Adapter<SearchInstituteAdapter.SearchInstituteViewHolder>() {
     inner class SearchInstituteViewHolder(val binding: AdapterSearchInstituteBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -30,12 +31,12 @@ class SearchInstituteAdapter(
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
         val institute = institutes[position]
         holder.binding.apply {
-            Glide.with(root.context).load(institute.imageUrl).into(image)
+            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
             instituteName.text = institute.name
-            instituteAddress.text = institute.address
+            instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
         }
         holder.binding.root.setOnClickListener {
-            onInstituteSelected()
+            onInstituteSelected(institute)
         }
     }
 }

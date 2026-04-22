@@ -94,7 +94,7 @@
             android:textColor="@color/blue_3787FF"
             android:fontFamily="@font/manrope_semibold"
             android:textSize="10sp"
-            android:text="Hybrid"
+            android:text="Offline"
             android:paddingVertical="4dp"
             android:paddingHorizontal="15dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

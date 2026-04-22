@@ -2,6 +2,7 @@ package com.app.edtech.network_call.repository
 
 import com.app.edtech.model.address.city.GetCitiesRequest
 import com.app.edtech.model.address.state.GetStatesRequest
+import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.profile.request.UpdateProfileRequest
@@ -43,6 +44,8 @@ class ApiRepository {
     suspend fun getCitiesApi(request: GetCitiesRequest) = service.getCities(request)
 
     suspend fun getStatesApi(request: GetStatesRequest) = service.getStates(request)
+
+    suspend fun getInstituteDetailApi(token: String, request: InstituteDetailRequest) = service.getInstituteDetail(token, request)
 
 
 

@@ -3,6 +3,7 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.edtech.R
 import com.app.edtech.databinding.AdapterHomeInstituteBinding
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.bumptech.glide.Glide
@@ -27,9 +28,9 @@ class HomeInstituteAdapter(val institutes: List<InstituteListResponse.Institute>
     override fun onBindViewHolder(holder: HomeInstituteViewHolder, position: Int) {
         val institute = institutes[position]
         holder.binding.apply {
-            Glide.with(root.context).load(institute.imageUrl).into(imageView)
+            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
             instituteName.text = institute.name
-            instituteAddress.text = institute.address
+            instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
         }
     }
 }

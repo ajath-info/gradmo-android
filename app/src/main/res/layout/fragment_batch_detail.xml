@@ -22,6 +22,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/backButton"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="20dp"
@@ -82,6 +83,7 @@
                             android:layout_height="83dp">
 
                             <ImageView
+                                android:id="@+id/imageView"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/profile_placeholder"
                                 android:layout_width="match_parent"

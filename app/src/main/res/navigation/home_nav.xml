@@ -50,4 +50,8 @@
         android:id="@+id/batchDetailFragment"
         android:name="com.app.edtech.ui.fragment.BatchDetailFragment"
         android:label="BatchDetailFragment" />
+    <fragment
+        android:id="@+id/batchListFragment"
+        android:name="com.app.edtech.ui.fragment.BatchListFragment"
+        android:label="BatchListFragment" />
 </navigation>

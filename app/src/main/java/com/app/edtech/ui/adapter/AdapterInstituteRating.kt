@@ -4,8 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.databinding.AdapterInstituteRatingReviewBinding
+import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 
-class AdapterInstituteRating(private val onRatingSelected : ()-> Unit) : RecyclerView.Adapter<AdapterInstituteRating.SearchInstituteViewHolder>() {
+class AdapterInstituteRating(
+    private val rating: InstituteDetailResponse.Rating,
+    private val onRatingSelected: () -> Unit
+) : RecyclerView.Adapter<AdapterInstituteRating.SearchInstituteViewHolder>() {
     inner class SearchInstituteViewHolder(val binding: AdapterInstituteRatingReviewBinding) :
         RecyclerView.ViewHolder(binding.root)
 

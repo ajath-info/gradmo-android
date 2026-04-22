@@ -3,9 +3,15 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.edtech.R
 import com.app.edtech.databinding.AdapterInstituteBatchBinding
+import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
+import com.bumptech.glide.Glide
 
-class AdapterInstituteBatch(private val onBatchSelected : ()-> Unit) : RecyclerView.Adapter<AdapterInstituteBatch.SearchInstituteViewHolder>() {
+class AdapterInstituteBatch(
+    private val batches: List<InstituteDetailResponse.Batche>,
+    private val onBatchSelected: (InstituteDetailResponse.Batche) -> Unit
+) : RecyclerView.Adapter<AdapterInstituteBatch.SearchInstituteViewHolder>() {
     inner class SearchInstituteViewHolder(val binding: AdapterInstituteBatchBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -19,12 +25,19 @@ class AdapterInstituteBatch(private val onBatchSelected : ()-> Unit) : RecyclerV
     }
 
     override fun getItemCount(): Int {
-        return 2
+        return if (batches.size>2) 2 else batches.size
     }
 
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
+        val batch = batches[position]
+        holder.binding.apply {
+            Glide.with(root.context).load(batch.batch_image).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            instituteName.text = batch.batch_name
+            tvTeacherName.text = "N/A"
+            tvTime.text = "${batch.start_time} - ${batch.end_time}"
+        }
         holder.binding.root.setOnClickListener {
-            onBatchSelected()
+            onBatchSelected(batch)
         }
     }
 }

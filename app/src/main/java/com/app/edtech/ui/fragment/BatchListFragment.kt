@@ -2,12 +2,16 @@ package com.app.edtech.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
+import com.app.edtech.databinding.FragmentBatchListBinding
 import com.app.edtech.databinding.FragmentInstituteDetailsBinding
 import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
@@ -23,7 +27,7 @@ import com.app.edtech.utils.network_utils.Status
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 
-class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>() {
+class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
     private lateinit var adapterInstituteBatch: AdapterInstituteBatch  // replace with your adapter
     private lateinit var adapterInstituteRating: AdapterInstituteRating  // replace with your adapter
 
@@ -41,13 +45,7 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
     }
 
     private fun setupUI() {
-        binding.apply {
-            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(instituteImage)
-            instituteName.text = institute.name
-            phoneNumber.text = institute.mobile?.ifBlank { "N/A" } ?: ""
-            emailAddress.text = institute.email?.ifBlank { "N/A" } ?: ""
-            instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
-        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,33 +53,22 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
         clickEvent()
         observeViewModel()
     }
-    private fun setupRatingRecycler(rating: InstituteDetailResponse.Rating) {
-        adapterInstituteRating = AdapterInstituteRating(rating, ::onRatingSelected)
-        binding.ratingReviewRecycler.apply {
-            adapter = adapterInstituteRating          // attach your adapter here
-        }
-    }
     private fun setupBatchRecycler(batches: List<InstituteDetailResponse.Batche>) {
         adapterInstituteBatch = AdapterInstituteBatch(batches, ::onBatchSelected)
-        binding.categoryRecyclerView.apply {
+        binding.batchRecycler.apply {
             adapter = adapterInstituteBatch          // attach your adapter here
         }
     }
 
     fun onBatchSelected(batch:InstituteDetailResponse.Batche){
-        val bundle=Bundle()
-        bundle.putParcelable("batch", batch)
-        findNavController().navigate(R.id.batchDetailFragment, bundle)
-    }
-    fun onRatingSelected(){
-
+        findNavController().navigate(R.id.batchDetailFragment)
     }
 
     private fun clickEvent() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
         }
-        binding.seeAllLayout.setOnClickListener {
+        binding.backButton.setOnClickListener{
             findNavController().navigate(R.id.batchListFragment)
         }
     }
@@ -119,5 +106,5 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
             setupBatchRecycler(it)
         }
     }
-    override fun getLayoutId(): Int = R.layout.fragment_institute_details
+    override fun getLayoutId(): Int = R.layout.fragment_batch_list
 }
