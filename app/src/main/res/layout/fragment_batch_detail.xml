@@ -224,6 +224,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
-
+        <com.google.android.material.button.MaterialButton
+            style="@style/CommonButton1"
+            android:backgroundTint="@color/theme_blue"
+            android:id="@+id/enrollButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Enroll to Unlock"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

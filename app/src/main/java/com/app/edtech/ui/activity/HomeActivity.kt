@@ -412,7 +412,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment  -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment  -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 

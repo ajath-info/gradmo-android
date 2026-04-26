@@ -54,4 +54,12 @@
         android:id="@+id/batchListFragment"
         android:name="com.app.edtech.ui.fragment.BatchListFragment"
         android:label="BatchListFragment" />
+    <fragment
+        android:id="@+id/selectPlanFragment"
+        android:name="com.app.edtech.ui.fragment.SelectPlanFragment"
+        android:label="SelectPlanFragment" />
+    <fragment
+        android:id="@+id/paymentSummaryFragment"
+        android:name="com.app.edtech.ui.fragment.PaymentSummaryFragment"
+        android:label="PaymentSummaryFragment" />
 </navigation>

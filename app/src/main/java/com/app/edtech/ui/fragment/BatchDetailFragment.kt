@@ -48,6 +48,9 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
         }
+        binding.enrollButton.setOnClickListener {
+            findNavController().navigate(R.id.selectPlanFragment)
+        }
     }
 
     private fun observeViewModel() {
