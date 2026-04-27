@@ -8,26 +8,40 @@ import com.app.edtech.databinding.AdapterHomeBannerBinding
 import com.app.edtech.model.banner.response.BannerResponse
 import com.bumptech.glide.Glide
 
-class HomeBannerAdapter(val banners: List<BannerResponse.Data.Banner>) : RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
+class HomeBannerAdapter(val banners: List<BannerResponse.Data.Banner>) :
+    RecyclerView.Adapter<HomeBannerAdapter.HomeBannerViewHolder>() {
+
+    // Infinite scroll trick: multiply items
+    private val MULTIPLIER = 1000
+    private val fakeCount get() = if (banners.isEmpty()) 0 else banners.size * MULTIPLIER
+
     inner class HomeBannerViewHolder(val binding: AdapterHomeBannerBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeBannerViewHolder {
         val binding = AdapterHomeBannerBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return HomeBannerViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return banners.size
-    }
+    override fun getItemCount(): Int = fakeCount
 
+    // Real index via modulo → infinite loop effect
     override fun onBindViewHolder(holder: HomeBannerViewHolder, position: Int) {
+        val realPosition = position % banners.size
         holder.binding.apply {
-            Glide.with(root.context).load(banners[position].image_url).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            Glide.with(root.context)
+                .load(banners[realPosition].image_url)
+                .placeholder(R.drawable.banner_placeholder)
+                .error(R.drawable.banner_placeholder)
+                .into(imageView)
         }
     }
+
+    // Returns the real index for dot indicator
+    fun getRealPosition(position: Int): Int = if (banners.isEmpty()) 0 else position % banners.size
+
+    // Start position at middle to allow scrolling both ways
+    fun getStartPosition(): Int = (fakeCount / 2) - ((fakeCount / 2) % banners.size)
 }

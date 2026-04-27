@@ -38,4 +38,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="ratings_reviews"><![CDATA[Ratings & Reviews]]></string>
     <string name="enhance_your_learning_experience_with_us">Enhance your learning experience with us</string>
+    <string name="promo_code">Promo Code</string>
+    <string name="enter_your_promo_code">Enter Your Promo Code</string>
+    <string name="grand_total">Grand Total</string>
 </resources>

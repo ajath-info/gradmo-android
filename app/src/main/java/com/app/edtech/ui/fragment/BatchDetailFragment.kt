@@ -62,4 +62,8 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_batch_detail
+
+    override fun restoreView() {
+        setupRecyclerView()
+    }
 }

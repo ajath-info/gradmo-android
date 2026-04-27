@@ -8,10 +8,10 @@
 
     <androidx.cardview.widget.CardView
         app:cardElevation="0dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginHorizontal="5dp"
         app:cardCornerRadius="25dp"
-        android:layout_width="290dp"
-        android:layout_height="170dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"

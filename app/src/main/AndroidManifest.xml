@@ -12,6 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EdTech">
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="YOUR_RAZORPAY_KEY_ID" />
         <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="false" />

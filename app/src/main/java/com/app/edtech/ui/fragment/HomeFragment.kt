@@ -5,14 +5,18 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentHomeBinding
@@ -49,14 +53,117 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val LOCATION_PERMISSION_REQUEST = 1001
 
-    override fun initView(savedInstanceState: Bundle?) {
-        fusedLocationClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
+    // ── Auto-scroll ──────────────────────────────────────────────────────
+    private val autoScrollHandler = Handler(Looper.getMainLooper())
+    private val AUTO_SCROLL_DELAY = 3000L  // 3 seconds
 
-        getLocationAndHitApi()
-        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        viewModel.hitBannerDataApi("Bearer $accessToken")
+    private val autoScrollRunnable = object : Runnable {
+        override fun run() {
+            val itemCount = homeBannerAdapter.itemCount
+            if (itemCount == 0) return
+            val nextItem = binding.bannerViewPager.currentItem + 1
+            binding.bannerViewPager.setCurrentItem(nextItem, true)
+            autoScrollHandler.postDelayed(this, AUTO_SCROLL_DELAY)
+        }
     }
+
+    // ── Dot Indicator ────────────────────────────────────────────────────
+    private val dots = mutableListOf<ImageView>()
+
+    override fun initView(savedInstanceState: Bundle?) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        getLocationAndHitApi()
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
+            requireContext(), LOGIN_DATA
+        )?.data?.accessToken
+        if (viewModel.getBannerLiveData().value?.data == null) {
+            viewModel.hitBannerDataApi("Bearer $accessToken")
+        }
+    }
+
+    // ── Banner Setup ─────────────────────────────────────────────────────
+    fun setUpBannerViewPager(banners: List<BannerResponse.Data.Banner>) {
+        homeBannerAdapter = HomeBannerAdapter(banners)
+        binding.bannerViewPager.adapter = homeBannerAdapter
+
+        // Start at the middle for infinite feel
+        val startPos = homeBannerAdapter.getStartPosition()
+        binding.bannerViewPager.setCurrentItem(startPos, false)
+
+        setupDotIndicator(banners.size)
+        setupPageChangeListener(banners.size)
+        startAutoScroll()
+    }
+
+    // ── Dots ─────────────────────────────────────────────────────────────
+    private fun setupDotIndicator(count: Int) {
+        dots.clear()
+        binding.dotsIndicator.removeAllViews()
+
+        repeat(count) { index ->
+            val dot = ImageView(requireContext()).apply {
+                setImageResource(
+                    if (index == 0) R.drawable.dot_active else R.drawable.dot_inactive
+                )
+                val size = 10.dpToPx()
+                val params = LinearLayout.LayoutParams(size, size).apply {
+                    setMargins(4.dpToPx(), 0, 4.dpToPx(), 0)
+                }
+                layoutParams = params
+            }
+            dots.add(dot)
+            binding.dotsIndicator.addView(dot)
+        }
+    }
+
+    private fun updateDots(realPosition: Int) {
+        dots.forEachIndexed { index, dot ->
+            dot.setImageResource(
+                if (index == realPosition) R.drawable.dot_active else R.drawable.dot_inactive
+            )
+        }
+    }
+
+    private fun setupPageChangeListener(realCount: Int) {
+        binding.bannerViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val realPos = homeBannerAdapter.getRealPosition(position)
+                updateDots(realPos)
+            }
+        })
+    }
+
+    // ── Auto Scroll Controls ─────────────────────────────────────────────
+    private fun startAutoScroll() {
+        autoScrollHandler.removeCallbacks(autoScrollRunnable)
+        autoScrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY)
+    }
+
+    private fun stopAutoScroll() {
+        autoScrollHandler.removeCallbacks(autoScrollRunnable)
+    }
+
+    // Stop when fragment is not visible, resume when it is
+    override fun onPause() {
+        super.onPause()
+        stopAutoScroll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::homeBannerAdapter.isInitialized) startAutoScroll()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopAutoScroll()
+    }
+
+    // ── Extension ────────────────────────────────────────────────────────
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
+
 
     // ✅ STEP 1: Check permission → fetch location
     private fun getLocationAndHitApi() {
@@ -160,20 +267,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
     }
 
-    // ================= EXISTING CODE =================
-
-    fun setUpBannerRecycler(banners: List<BannerResponse.Data.Banner>) {
-        homeBannerAdapter = HomeBannerAdapter(banners)
-        binding.bannerRecycler.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = homeBannerAdapter
-        }
-    }
-
     private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>) {
         homeInstituteAdapter = HomeInstituteAdapter(institutes)
         binding.categoryRecyclerView.apply {
@@ -209,7 +302,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             when (it.status) {
                 Status.SUCCESS -> {
                     if (it.data?.status == "true") {
-                        setUpBannerRecycler(it.data.data.banners)
+                        setUpBannerViewPager(it.data.data.banners)
                     }
                     ProcessDialog.dismissDialog(true)
                 }
@@ -246,7 +339,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun restoreView() {
         viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
-            setUpBannerRecycler(it)
+            setUpBannerViewPager(it)
         }
         viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
             setupInstitutesRecycler(it)

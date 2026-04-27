@@ -83,4 +83,7 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
+    implementation("com.razorpay:checkout:1.6.40")
+
+
 }

@@ -9,15 +9,19 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
 import com.app.edtech.databinding.FragmentSearchInstituteBinding
+import com.app.edtech.model.banner.response.BannerResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.response.LoginResponse
@@ -56,13 +60,23 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     private var searchRunnable: Runnable? = null
     private val handler = Handler(Looper.getMainLooper())
     private var searchQuery: String = ""
+    private val autoScrollHandler = Handler(Looper.getMainLooper())
+    private val AUTO_SCROLL_DELAY = 3000L  // 3 seconds
+
+    private val autoScrollRunnable = object : Runnable {
+        override fun run() {
+            val itemCount = homeBannerAdapter.itemCount
+            if (itemCount == 0) return
+            val nextItem = binding.bannerViewPager.currentItem + 1
+            binding.bannerViewPager.setCurrentItem(nextItem, true)
+            autoScrollHandler.postDelayed(this, AUTO_SCROLL_DELAY)
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         flow = arguments?.getString("flow", "") ?: ""
         Log.i("TAG", "flow: "+flow)
         setupUI()
-        setupRecyclerView()
-
         currentPage = 1
         isLastPage = false
         instituteList.clear()
@@ -80,12 +94,90 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         }
     }
 
-    private fun setupRecyclerView() {
-        homeBannerAdapter = HomeBannerAdapter(listOf())
-        binding.bannerRecycler.apply {
-            adapter = homeBannerAdapter
+    fun setUpBannerViewPager(banners: List<BannerResponse.Data.Banner>) {
+        homeBannerAdapter = HomeBannerAdapter(banners)
+        binding.bannerViewPager.adapter = homeBannerAdapter
+
+        // Start at the middle for infinite feel
+        val startPos = homeBannerAdapter.getStartPosition()
+        binding.bannerViewPager.setCurrentItem(startPos, false)
+
+        setupDotIndicator(banners.size)
+        setupPageChangeListener(banners.size)
+        startAutoScroll()
+    }
+    private val dots = mutableListOf<ImageView>()
+
+    // ── Dots ─────────────────────────────────────────────────────────────
+    private fun setupDotIndicator(count: Int) {
+        dots.clear()
+        binding.dotsIndicator.removeAllViews()
+
+        repeat(count) { index ->
+            val dot = ImageView(requireContext()).apply {
+                setImageResource(
+                    if (index == 0) R.drawable.dot_active else R.drawable.dot_inactive
+                )
+                val size = 10.dpToPx()
+                val params = LinearLayout.LayoutParams(size, size).apply {
+                    setMargins(4.dpToPx(), 0, 4.dpToPx(), 0)
+                }
+                layoutParams = params
+            }
+            dots.add(dot)
+            binding.dotsIndicator.addView(dot)
         }
     }
+
+    private fun updateDots(realPosition: Int) {
+        dots.forEachIndexed { index, dot ->
+            dot.setImageResource(
+                if (index == realPosition) R.drawable.dot_active else R.drawable.dot_inactive
+            )
+        }
+    }
+
+    private fun setupPageChangeListener(realCount: Int) {
+        binding.bannerViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val realPos = homeBannerAdapter.getRealPosition(position)
+                updateDots(realPos)
+            }
+        })
+    }
+
+    // ── Auto Scroll Controls ─────────────────────────────────────────────
+    private fun startAutoScroll() {
+        autoScrollHandler.removeCallbacks(autoScrollRunnable)
+        autoScrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY)
+    }
+
+    private fun stopAutoScroll() {
+        autoScrollHandler.removeCallbacks(autoScrollRunnable)
+    }
+
+    // Stop when fragment is not visible, resume when it is
+    override fun onPause() {
+        super.onPause()
+        stopAutoScroll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::homeBannerAdapter.isInitialized) startAutoScroll()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopAutoScroll()
+    }
+
+    // ── Extension ────────────────────────────────────────────────────────
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
+
+
     private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
         searchInstituteAdapter = SearchInstituteAdapter(instituteList, ::onInstituteSelected)
         binding.instituteRecycler.apply {
@@ -285,6 +377,25 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_search_institute
     private fun setObserver() {
+        viewModel.getBannerLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    if (it.data?.status == "true") {
+                        setUpBannerViewPager(it.data.data.banners)
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
         viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -337,6 +448,9 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     override fun restoreView() {
         viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
             setupInstitutesRecycler(it, true, totalRecords)
+        }
+        viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
+            setUpBannerViewPager(it)
         }
     }
 
