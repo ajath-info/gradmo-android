@@ -8,6 +8,7 @@ import com.app.edtech.model.address.city.GetCitiesResponse
 import com.app.edtech.model.banner.response.BannerResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.plan_detail.PlanDetailsResponse
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
@@ -17,25 +18,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectPlanViewModel @Inject constructor() : ViewModel() {
-    private val institutesLiveDate = SingleLiveEvent<Resources<InstituteListResponse>>()
+    private val planDetailLiveDate = SingleLiveEvent<Resources<PlanDetailsResponse>>()
 
-    fun getInstitutesLiveData(): LiveData<Resources<InstituteListResponse>> {
-        return institutesLiveDate
+    fun getPlanDetailLiveData(): LiveData<Resources<PlanDetailsResponse>> {
+        return planDetailLiveDate
     }
-    fun hitInstitutesDataApi(token: String, request: InstitutesListRequest) {
+    fun hitPlanDetailApi(token: String, batchId: String) {
 
         try {
-            institutesLiveDate.postValue(Resources.loading(null))
+            planDetailLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {
                 try {
-                    institutesLiveDate.postValue(
+                    planDetailLiveDate.postValue(
                         Resources.success(
-                            ApiRepository().getInstitutesApi(token, request
+                            ApiRepository().getPlanDetailsApi(token, batchId
                             )
                         )
                     )
                 } catch (ex: Exception) {
-                    institutesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+                    planDetailLiveDate.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

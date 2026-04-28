@@ -47,7 +47,7 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-//        viewModel.hitBannerDataApi("Bearer $accessToken")
+        viewModel.hitPlanDetailApi("Bearer $accessToken", "1")
     }
 
     private fun clickEvent() {
@@ -65,14 +65,14 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_select_plan
     private fun setObserver() {
-        viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
+        viewModel.getPlanDetailLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
 
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
@@ -89,7 +89,7 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
         }
     }
     override fun restoreView() {
-        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
+        viewModel.getPlanDetailLiveData().value?.data?.data?.let {
 //            setupInstitutesRecycler(it, true, totalRecords)
         }
     }

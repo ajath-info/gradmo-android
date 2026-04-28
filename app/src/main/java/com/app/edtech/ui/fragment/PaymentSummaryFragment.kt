@@ -74,6 +74,9 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>(),
         binding.paymentButton.setOnClickListener {
             startRazorpayCheckout()
         }
+        binding.promoCodeLayout.setOnClickListener {
+            findNavController().navigate(R.id.promocodeListFragment)
+        }
     }
 
     // ─── Initialize & Launch Razorpay Checkout ─────────────────────────
@@ -169,7 +172,20 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>(),
 
     override fun getLayoutId(): Int = R.layout.fragment_payment_summary
 
-    private fun setObserver() {}
+    private fun setObserver() {
+        findNavController()
+            .currentBackStackEntry
+            ?.savedStateHandle
+            ?.getLiveData<String>("selected_promo_code")
+            ?.observe(viewLifecycleOwner) { promoCode ->
+                if (!promoCode.isNullOrEmpty()) {
+                    // Use the promo code here
+                    Log.d("TAG", "Received promo code: $promoCode")
+                    binding.promoCodeText.setText(promoCode)   // show on UI
+//                    applyPromoCode(promoCode)                // call your discount logic
+                }
+            }
+    }
 
     override fun restoreView() {}
 }

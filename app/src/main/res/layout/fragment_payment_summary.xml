@@ -293,12 +293,15 @@
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="15dp" />
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/promoCodeLayout"
                     android:layout_marginTop="12dp"
                     android:layout_marginHorizontal="10dp"
                     android:background="@drawable/bg_black_border"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
+                        android:id="@+id/promoCodeText"
+                        android:editable="false"
                         android:hint="@string/enter_your_promo_code"
                         android:textColor="@color/black"
                         android:background="@null"

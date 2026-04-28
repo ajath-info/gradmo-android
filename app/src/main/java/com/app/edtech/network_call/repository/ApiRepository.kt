@@ -47,6 +47,8 @@ class ApiRepository {
 
     suspend fun getInstituteDetailApi(token: String, request: InstituteDetailRequest) = service.getInstituteDetail(token, request)
 
+    suspend fun getPromocodesApi(token: String, batch_id: String) = service.getPromocodes(token, batch_id)
 
+    suspend fun getPlanDetailsApi(token: String, batch_id: String) = service.getPlanDetails(token, batch_id)
 
 }

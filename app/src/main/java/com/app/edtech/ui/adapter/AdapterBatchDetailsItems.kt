@@ -8,7 +8,7 @@ import com.app.edtech.model.static.BatchDetailItem
 
 class AdapterBatchDetailsItems(
     val list: List<BatchDetailItem>,
-    private val onItemSelected: () -> Unit
+    private val onItemSelected: (BatchDetailItem, Int) -> Unit
 ) : RecyclerView.Adapter<AdapterBatchDetailsItems.SearchInstituteViewHolder>() {
     inner class SearchInstituteViewHolder(val binding: AdapterBatchDetailItemsBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -32,7 +32,7 @@ class AdapterBatchDetailsItems(
             image.setImageResource(list[position].image)
         }
         holder.binding.root.setOnClickListener {
-            onItemSelected()
+            onItemSelected(list[position], position)
         }
     }
 }

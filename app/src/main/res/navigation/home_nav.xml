@@ -66,4 +66,8 @@
         android:id="@+id/successPaymentFragment"
         android:name="com.app.edtech.ui.fragment.SuccessPaymentFragment"
         android:label="SuccessPaymentFragment" />
+    <fragment
+        android:id="@+id/promocodeListFragment"
+        android:name="com.app.edtech.ui.fragment.PromocodeListFragment"
+        android:label="PromocodeListFragment" />
 </navigation>

@@ -12,7 +12,9 @@ import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.logout.response.DeleteResponse
+import com.app.edtech.model.plan_detail.PlanDetailsResponse
 import com.app.edtech.model.profile.request.UpdateProfileRequest
+import com.app.edtech.model.promocode.response.PromocodeListResponse
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
@@ -98,5 +100,13 @@ interface ApiService {
 
     @POST("api/institute/details")
     suspend fun getInstituteDetail(@Header("Authorization") token: String, @Body requestBody: InstituteDetailRequest): InstituteDetailResponse
+
+    @FormUrlEncoded
+    @POST("api/plan/promo-codes")
+    suspend fun getPromocodes(@Header("Authorization") token: String, @Field("batch_id") mobile: String,): PromocodeListResponse
+
+    @FormUrlEncoded
+    @POST("api/plan/plans")
+    suspend fun getPlanDetails(@Header("Authorization") token: String, @Field("batch_id") mobile: String,): PlanDetailsResponse
 }
 

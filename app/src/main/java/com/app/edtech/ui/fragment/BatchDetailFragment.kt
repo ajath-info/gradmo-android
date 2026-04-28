@@ -8,10 +8,12 @@ import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentBatchDetailBinding
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.static.BatchDetailItem
 import com.app.edtech.model.static.StaticLists
 import com.app.edtech.ui.adapter.AdapterBatchDetailsItems
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
+import org.openjdk.tools.javac.util.Position
 
 class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     private lateinit var adapterBatchDetailsItems: AdapterBatchDetailsItems  // replace with your adapter
@@ -40,8 +42,12 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
             adapter = adapterBatchDetailsItems
         }
     }
-    fun onBatchItemSelected(){
+    fun onBatchItemSelected(item:BatchDetailItem, position: Int){
+        when(position){
+            0->{
 
+            }
+        }
     }
 
     private fun clickEvent() {
