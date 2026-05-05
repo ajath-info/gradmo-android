@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <!-- Activity -->
     <application
         android:name=".utils.MyApplication"
         android:allowBackup="true"
@@ -15,6 +27,11 @@
         <meta-data
             android:name="com.razorpay.ApiKey"
             android:value="YOUR_RAZORPAY_KEY_ID" />
+        <activity
+            android:name=".ui.activity.ZoomVideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
         <activity
             android:name=".ui.activity.HomeActivity"
             android:exported="false" />
@@ -30,6 +47,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Add inside <application> -->
+        <activity
+            android:name=".ui.activity.RazorpayPaymentActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:exported="false" />
     </application>
 
 </manifest>

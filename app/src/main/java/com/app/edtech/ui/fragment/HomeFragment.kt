@@ -25,6 +25,8 @@ import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.LOGIN_DATA
+import com.app.edtech.preferences.PAYMENT_GATEWAY_ID
+import com.app.edtech.preferences.PAYMENT_GATEWAY_SECRET_KEY
 import com.app.edtech.preferences.Preferences
 import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.adapter.HomeBannerAdapter
@@ -76,6 +78,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(), LOGIN_DATA
         )?.data?.accessToken
+        viewModel.hitThirdPartyCredentialsDataApi("Bearer $accessToken")
         if (viewModel.getBannerLiveData().value?.data == null) {
             viewModel.hitBannerDataApi("Bearer $accessToken")
         }
@@ -322,6 +325,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 Status.SUCCESS -> {
                     if (it.data?.status == "true") {
                         setupInstitutesRecycler(it.data.institutes)
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
+        viewModel.getThirdPartyCredentialsLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    if (it.data?.status == "true") {
+                        Log.i("TAG", "setObserver: "+ Gson().toJson(it.data))
+                        Preferences.setStringPreference(requireContext(), PAYMENT_GATEWAY_ID, it.data.payment_gateway_api_credentials.Key_id)
+                        Preferences.setStringPreference(requireContext(), PAYMENT_GATEWAY_SECRET_KEY, it.data.payment_gateway_api_credentials.secret_key)
                     }
                     ProcessDialog.dismissDialog(true)
                 }

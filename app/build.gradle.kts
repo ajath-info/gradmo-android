@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.app.edtech"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -84,6 +84,8 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
     implementation("com.razorpay:checkout:1.6.40")
-
+    implementation("us.zoom.videosdk:zoomvideosdk-core:2.5.5")          // mandatory
+    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.5.5")     // screen share annotation (optional)
+    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.5.5")   // virtual background (optional)
 
 }

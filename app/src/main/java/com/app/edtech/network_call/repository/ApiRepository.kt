@@ -51,4 +51,8 @@ class ApiRepository {
 
     suspend fun getPlanDetailsApi(token: String, batch_id: String) = service.getPlanDetails(token, batch_id)
 
+    suspend fun getThirdPartyCredentialsApi(token: String) = service.getThirdPartyCredentials(token)
+
+    suspend fun createOrderApi(token: String, amount_in_rupees: String) = service.createOrder(token, amount_in_rupees)
+
 }

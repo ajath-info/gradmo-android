@@ -70,4 +70,8 @@
         android:id="@+id/promocodeListFragment"
         android:name="com.app.edtech.ui.fragment.PromocodeListFragment"
         android:label="PromocodeListFragment" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.app.edtech.ui.fragment.LibraryFragment"
+        android:label="LibraryFragment" />
 </navigation>

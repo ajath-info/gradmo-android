@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
@@ -23,8 +24,12 @@ class SuccessPaymentFragment : BaseFragment<FragmentSuccessPaymentBinding>() {
 
     }
     private fun clickEvent() {
-
-
+        binding.paymentButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.homeFragment,
+                null,
+                NavOptions.Builder().setPopUpTo(R.id.homeFragment, false).build())
+        }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

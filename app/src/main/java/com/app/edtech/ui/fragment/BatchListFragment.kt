@@ -68,9 +68,6 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
         }
-        binding.backButton.setOnClickListener{
-            findNavController().navigate(R.id.batchListFragment)
-        }
     }
 
     private fun observeViewModel() {

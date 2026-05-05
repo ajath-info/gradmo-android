@@ -5,6 +5,7 @@ import com.app.edtech.model.address.city.GetCitiesResponse
 import com.app.edtech.model.address.state.GetStatesRequest
 import com.app.edtech.model.address.state.GetStatesResponse
 import com.app.edtech.model.banner.response.BannerResponse
+import com.app.edtech.model.create_order.CreateOrderResponse
 import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
@@ -15,6 +16,7 @@ import com.app.edtech.model.logout.response.DeleteResponse
 import com.app.edtech.model.plan_detail.PlanDetailsResponse
 import com.app.edtech.model.profile.request.UpdateProfileRequest
 import com.app.edtech.model.promocode.response.PromocodeListResponse
+import com.app.edtech.model.third_party_credentials.ThirdPartyCredentialsResponse
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
@@ -23,6 +25,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -108,5 +111,13 @@ interface ApiService {
     @FormUrlEncoded
     @POST("api/plan/plans")
     suspend fun getPlanDetails(@Header("Authorization") token: String, @Field("batch_id") mobile: String,): PlanDetailsResponse
+
+    @GET("api/main/get_defaults_requirements")
+    suspend fun getThirdPartyCredentials(@Header("Authorization") token: String): ThirdPartyCredentialsResponse
+
+    @FormUrlEncoded
+    @POST("api/payment/razorpay/create-order")
+    suspend fun createOrder(@Header("Authorization") token: String, @Field("amount_in_rupees") mobile: String,): CreateOrderResponse
+
 }
 
