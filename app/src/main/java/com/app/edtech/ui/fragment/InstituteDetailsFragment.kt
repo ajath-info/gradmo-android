@@ -34,9 +34,9 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         institute = arguments?.getParcelable("institute") ?: InstituteListResponse.Institute()
-        Log.i("TAG", "institute: " + Gson().toJson(institute))
+        Log.i("TAG", "institute in institute detail: " + Gson().toJson(institute))
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        viewModel.hitInstitutesDataApi("Bearer $accessToken", InstituteDetailRequest("69"))
+        viewModel.hitInstitutesDataApi("Bearer $accessToken", InstituteDetailRequest(institute.instituteId.toString()))
         setupUI()
     }
 
@@ -82,7 +82,9 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
             findNavController().popBackStack()
         }
         binding.seeAllLayout.setOnClickListener {
-            findNavController().navigate(R.id.batchListFragment)
+            var bundle = Bundle()
+            bundle.putParcelable("institute", institute)
+            findNavController().navigate(R.id.batchListFragment, bundle)
         }
     }
 

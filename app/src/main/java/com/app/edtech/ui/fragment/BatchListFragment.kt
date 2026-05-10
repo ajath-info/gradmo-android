@@ -38,9 +38,9 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         institute = arguments?.getParcelable("institute") ?: InstituteListResponse.Institute()
-        Log.i("TAG", "institute: " + Gson().toJson(institute))
+        Log.i("TAG", "institute in batchlist: " + Gson().toJson(institute))
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        viewModel.hitInstitutesDataApi("Bearer $accessToken", InstituteDetailRequest("69"))
+        viewModel.hitInstitutesDataApi("Bearer $accessToken", InstituteDetailRequest(institute.instituteId.toString()))
         setupUI()
     }
 
@@ -61,7 +61,9 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
     }
 
     fun onBatchSelected(batch:InstituteDetailResponse.Batche){
-        findNavController().navigate(R.id.batchDetailFragment)
+        val bundle=Bundle()
+        bundle.putParcelable("batch", batch)
+        findNavController().navigate(R.id.batchDetailFragment, bundle)
     }
 
     private fun clickEvent() {

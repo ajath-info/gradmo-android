@@ -5,6 +5,7 @@ import com.app.edtech.model.address.city.GetCitiesResponse
 import com.app.edtech.model.address.state.GetStatesRequest
 import com.app.edtech.model.address.state.GetStatesResponse
 import com.app.edtech.model.banner.response.BannerResponse
+import com.app.edtech.model.batch_detail.BatchDetailResponse
 import com.app.edtech.model.create_order.CreateOrderResponse
 import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
@@ -17,6 +18,8 @@ import com.app.edtech.model.plan_detail.PlanDetailsResponse
 import com.app.edtech.model.profile.request.UpdateProfileRequest
 import com.app.edtech.model.promocode.response.PromocodeListResponse
 import com.app.edtech.model.third_party_credentials.ThirdPartyCredentialsResponse
+import com.app.edtech.model.verify_payment.VerifyPaymentRequest
+import com.app.edtech.model.verify_payment.VerifyPaymentResponse
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
@@ -118,6 +121,14 @@ interface ApiService {
     @FormUrlEncoded
     @POST("api/payment/razorpay/create-order")
     suspend fun createOrder(@Header("Authorization") token: String, @Field("amount_in_rupees") mobile: String,): CreateOrderResponse
+
+    @POST("api/payment/razorpay/verify-payment")
+    suspend fun verifyPayment(@Header("Authorization") token: String, @Body requestBody: VerifyPaymentRequest,): VerifyPaymentResponse
+
+    @FormUrlEncoded
+    @POST("api/batch/batch-details")
+    suspend fun batchDetails(@Header("Authorization") token: String, @Field("batch_id") mobile: String,): BatchDetailResponse
+
 
 }
 

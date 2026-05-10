@@ -124,7 +124,7 @@
                             android:textColor="@color/black"
                             android:fontFamily="@font/manrope_bold"
                             android:textSize="17sp"
-                            android:text="Upgrade Classes" />
+                            android:text="" />
                         <TextView
                             android:id="@+id/batchName"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -139,7 +139,7 @@
                             android:textColor="@color/black"
                             android:fontFamily="@font/manrope_bold"
                             android:textSize="11sp"
-                            android:text="Ujjwal Gupta" />
+                            android:text="" />
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/teacherLayout"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -159,7 +159,7 @@
                                 android:textColor="@color/black"
                                 android:fontFamily="@font/manrope_regular"
                                 android:textSize="11sp"
-                                android:text="Ujjwal Gupta" />
+                                android:text="" />
                             <TextView
                                 android:id="@+id/tvTiming"
                                 app:layout_constraintStart_toEndOf="@id/tvTeacherName"
@@ -173,7 +173,7 @@
                                 android:textColor="@color/black"
                                 android:fontFamily="@font/manrope_regular"
                                 android:textSize="11sp"
-                                android:text="3:00 pm - 4:00 pm" />
+                                android:text="" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <TextView
@@ -220,6 +220,16 @@
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="2"
                     android:orientation="vertical"/>
+                <View
+                    android:id="@+id/blurView"
+                    android:elevation="10dp"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="#40000000"
+                    app:layout_constraintTop_toBottomOf="@id/batchDetailLayout"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

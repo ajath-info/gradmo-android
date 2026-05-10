@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_semibold"
-                    android:text="₹499  / 12 Month"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="20sp"/>
                 <TextView
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_regular"
-                    android:text="This is one time platform fees paid for the features. Tuition fees for the batch not included"
+                    android:text="This is one time platform fees paid for the features. Tuition fees for the batch not included."
                     android:textColor="@color/white"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_semibold"
-                    android:text="₹499  / 12 Month"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="20sp"/>
                 <TextView

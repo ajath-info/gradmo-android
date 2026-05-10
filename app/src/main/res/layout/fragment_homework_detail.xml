@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerLayout"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="45dp"
+            android:paddingBottom="15dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_marginStart="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/back_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_bold"
+                android:text="Homework"
+                android:textColor="@color/black"
+                android:textSize="21sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                app:cardCornerRadius="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="230dp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/video_lecture_placeholder"/>
+<!--                    <ImageView-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        android:layout_width="72dp"-->
+<!--                        android:layout_height="72dp"-->
+<!--                        android:scaleType="centerCrop"-->
+<!--                        android:src="@drawable/plat_button"/>-->
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/name"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Newton’s First Law"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                android:fontFamily="@font/manrope_bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feb 20, 2026"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:fontFamily="@font/manrope_regular"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+<!--            <TextView-->
+<!--                android:drawableStart="@drawable/clock_icon"-->
+<!--                android:drawablePadding="5dp"-->
+<!--                android:id="@+id/tvSize"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="35 Minutes"-->
+<!--                android:textColor="@color/gray"-->
+<!--                android:textSize="12sp"-->
+<!--                android:fontFamily="@font/manrope_semibold"-->
+<!--                android:maxLines="1"-->
+<!--                android:ellipsize="end"/>-->
+<!--            <LinearLayout-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+<!--                <TextView-->
+<!--                    android:background="@drawable/bg_grade_tag"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingVertical="3dp"-->
+<!--                    android:paddingHorizontal="9dp"-->
+<!--                    android:backgroundTint="#4DC9D1"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="10sp"-->
+<!--                    android:text="Class 12th"/>-->
+<!--                <TextView-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:background="@drawable/bg_grade_tag"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingVertical="3dp"-->
+<!--                    android:paddingHorizontal="9dp"-->
+<!--                    android:backgroundTint="#0082CD"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="10sp"-->
+<!--                    android:text="Design"/>-->
+<!--            </LinearLayout>-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/manrope_regular"
+                android:text="Newton’s First Law Newton’s First Law Newton’s First Law Newton’s First Law Newton’s First Law... "/>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

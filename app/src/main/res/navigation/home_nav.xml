@@ -74,4 +74,28 @@
         android:id="@+id/libraryFragment"
         android:name="com.app.edtech.ui.fragment.LibraryFragment"
         android:label="LibraryFragment" />
+    <fragment
+        android:id="@+id/videoLecturesFragment"
+        android:name="com.app.edtech.ui.fragment.VideoLecturesFragment"
+        android:label="VideoLecturesFragment" />
+    <fragment
+        android:id="@+id/videoLectureDetailFragment"
+        android:name="com.app.edtech.ui.fragment.VideoLectureDetailFragment"
+        android:label="VideoLectureDetailFragment" />
+    <fragment
+        android:id="@+id/seeAttendenceFragment"
+        android:name="com.app.edtech.ui.fragment.SeeAttendenceFragment"
+        android:label="SeeAttendenceFragment" />
+    <fragment
+        android:id="@+id/homeworkFragment"
+        android:name="com.app.edtech.ui.fragment.HomeworkFragment"
+        android:label="HomeworkFragment" />
+    <fragment
+        android:id="@+id/homeworkDetailFragment"
+        android:name="com.app.edtech.ui.fragment.HomeworkDetailFragment"
+        android:label="HomeworkDetailFragment" />
+    <fragment
+        android:id="@+id/upcomingExamListFragment"
+        android:name="com.app.edtech.ui.fragment.UpcomingExamListFragment"
+        android:label="UpcomingExamListFragment" />
 </navigation>

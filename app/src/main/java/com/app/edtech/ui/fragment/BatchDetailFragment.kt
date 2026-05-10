@@ -4,41 +4,99 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentBatchDetailBinding
+import com.app.edtech.model.batch_detail.BatchDetailResponse
+import com.app.edtech.model.batch_detail.BatchDetails
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.static.BatchDetailItem
 import com.app.edtech.model.static.StaticLists
+import com.app.edtech.preferences.LOGIN_DATA
+import com.app.edtech.preferences.Preferences
 import com.app.edtech.ui.activity.ZoomVideoActivity
 import com.app.edtech.ui.adapter.AdapterBatchDetailsItems
+import com.app.edtech.ui.view_model.BatchDetailsViewModel
+import com.app.edtech.ui.view_model.PaymentSummaryViewModel
+import com.app.edtech.utils.CommonUtils.convertTimeFormat
+import com.app.edtech.utils.network_utils.ProcessDialog
+import com.app.edtech.utils.network_utils.Status
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.openjdk.tools.javac.util.Position
+import kotlin.getValue
 
 class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     private lateinit var adapterBatchDetailsItems: AdapterBatchDetailsItems  // replace with your adapter
-    private var batch: InstituteDetailResponse.Batche = InstituteDetailResponse.Batche()
+    lateinit var batch: BatchDetails
+    private val viewModel: BatchDetailsViewModel by viewModels()
 
     override fun initView(savedInstanceState: Bundle?) {
-        batch = arguments?.getParcelable("batch") ?: InstituteDetailResponse.Batche()
+        var batchItem = arguments?.getParcelable("batch") ?: InstituteDetailResponse.Batche()
         setupRecyclerView()
-        setupUI()
-        clickEvent()
         observeViewModel()
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+        viewModel.hitBatchDetailsApi("Bearer $accessToken", batchItem.id.toString())
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+        clickEvent()
+    }
+    private fun setObserver() {
+        viewModel.getBatchDetailsLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "getBatchDetailsLiveData success: ${Gson().toJson(it)}")
+                    if (it.data?.status == true) {
+                        Log.i("TAG", "getBatchDetailsLiveData: "+ Gson().toJson(it.data))
+                        batch = it.data.batch_details
+                        setupUI()
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "getBatchDetailsLiveData Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
     }
 
     private fun setupUI() {
         binding.apply {
-            Glide.with(root.context).load(batch.batch_image).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
-            instituteName.text = batch.batch_name
+            /*if (batch.enrollment.status==0){
+                blurView.isVisible=true
+                recyclerBatchDetailItem.isEnabled=false
+                recyclerBatchDetailItem.isClickable=false
+            }else{
+                blurView.isVisible=false
+                recyclerBatchDetailItem.isEnabled=true
+                recyclerBatchDetailItem.isClickable=true
+            }*/
+            Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            instituteName.text = batch.batchName
             tvTeacherName.text = "N/A"
-            tvTiming.text = "${batch.start_time} - ${batch.end_time}"
+            tvTiming.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
     }
 
@@ -47,19 +105,35 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         binding.recyclerBatchDetailItem.apply {
             adapter = adapterBatchDetailsItems
         }
+//        if (batch)
     }
     fun onBatchItemSelected(item:BatchDetailItem, position: Int){
         when(position){
             0->{
                 openZoomClass()
-//                requestPermissionsAndJoin()
+            }
+            1->{
+                findNavController().navigate(R.id.videoLecturesFragment)
+            }
+            2->{
+                openLibrary()
             }
             3->{
-                openZoomClass()
-//                requestPermissionsAndJoin()
+                findNavController().navigate(R.id.seeAttendenceFragment)
+            }
+            4->{
+                findNavController().navigate(R.id.upcomingExamListFragment)
+            }
+            5->{
+                findNavController().navigate(R.id.homeworkFragment)
             }
         }
     }
+
+    private fun openLibrary() {
+        findNavController().navigate(R.id.libraryFragment)
+    }
+
     companion object {
         // For testing — later this will come from your API (batch.zoom_link or batch.meeting_url)
         private const val TEST_ZOOM_LINK = "https://zoom.us/test"
@@ -101,7 +175,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     }
     private fun openZoomSession() {
         val intent = Intent(requireContext(), ZoomVideoActivity::class.java).apply {
-            putExtra(ZoomVideoActivity.EXTRA_SESSION_NAME, "batch-${batch.batch_name}-live")
+            putExtra(ZoomVideoActivity.EXTRA_SESSION_NAME, "batch-${batch.batchName}-live")
             putExtra(ZoomVideoActivity.EXTRA_SESSION_TOKEN, getSessionToken()) // see below
             putExtra(ZoomVideoActivity.EXTRA_USER_NAME, "Student")
         }
@@ -119,7 +193,9 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
             findNavController().popBackStack()
         }
         binding.enrollButton.setOnClickListener {
-            findNavController().navigate(R.id.selectPlanFragment)
+            var bundle = Bundle()
+            bundle.putString("batch_price", batch.batch_price.toString())
+            findNavController().navigate(R.id.selectPlanFragment, bundle)
         }
     }
 
@@ -134,6 +210,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     override fun getLayoutId(): Int = R.layout.fragment_batch_detail
 
     override fun restoreView() {
+        if (::batch.isInitialized) setupUI()
         setupRecyclerView()
     }
 }

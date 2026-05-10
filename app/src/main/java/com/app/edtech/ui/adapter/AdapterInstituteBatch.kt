@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.R
 import com.app.edtech.databinding.AdapterInstituteBatchBinding
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
+import com.app.edtech.utils.CommonUtils.convertTimeFormat
 import com.bumptech.glide.Glide
 
 class AdapterInstituteBatch(
@@ -34,7 +35,7 @@ class AdapterInstituteBatch(
             Glide.with(root.context).load(batch.batch_image).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
             instituteName.text = batch.batch_name
             tvTeacherName.text = "N/A"
-            tvTime.text = "${batch.start_time} - ${batch.end_time}"
+            tvTime.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
         holder.binding.root.setOnClickListener {
             onBatchSelected(batch)

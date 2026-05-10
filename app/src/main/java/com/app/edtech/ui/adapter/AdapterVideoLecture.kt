@@ -3,18 +3,18 @@ package com.app.edtech.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.app.edtech.databinding.AdapterLibraryBookListBinding
+import com.app.edtech.databinding.AdapterVideoLectureBinding
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 
-class AdapterLibraryBook(
+class AdapterVideoLecture(
     val books: List<InstituteListResponse.Institute>,
-    private val onInstituteSelected: (InstituteListResponse.Institute) -> Unit
-) : RecyclerView.Adapter<AdapterLibraryBook.LibraryBookViewHolder>() {
-    inner class LibraryBookViewHolder(val binding: AdapterLibraryBookListBinding) :
+    private val onInstituteSelected: (/*InstituteListResponse.Institute*/) -> Unit
+) : RecyclerView.Adapter<AdapterVideoLecture.LibraryBookViewHolder>() {
+    inner class LibraryBookViewHolder(val binding: AdapterVideoLectureBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryBookViewHolder {
-        val binding = AdapterLibraryBookListBinding.inflate(
+        val binding = AdapterVideoLectureBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -34,7 +34,7 @@ class AdapterLibraryBook(
 //            instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
         }
         holder.binding.root.setOnClickListener {
-//            onInstituteSelected(book)
+            onInstituteSelected(/*book*/)
         }
     }
 }

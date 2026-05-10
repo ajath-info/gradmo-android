@@ -13,6 +13,7 @@ import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentPaymentSummaryBinding
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.verify_payment.VerifyPaymentRequest
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.PAYMENT_GATEWAY_ID
 import com.app.edtech.preferences.Preferences
@@ -62,91 +63,6 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
             findNavController().navigate(R.id.promocodeListFragment)
         }
     }
-
-    /*// ─── Initialize & Launch Razorpay Checkout ─────────────────────────
-    private fun startRazorpayCheckout(orderId: String) {
-        val checkout = Checkout()
-        checkout.setKeyID(RAZORPAY_KEY_ID)
-
-        // Optional: Set your app logo on the Razorpay sheet
-        checkout.setImage(R.drawable.ic_launcher_foreground)
-
-        try {
-            val options = JSONObject().apply {
-                put("name", R.string.app_name)   // Shown on checkout sheet
-                put("description", "Payment")       // Short description
-                put("order_id", orderId)                  // ← From your backend (MANDATORY)
-                put("currency", "INR")
-                put("amount", paymentAmount)               // In PAISE
-
-                // Prefill user details (optional but improves UX)
-                put("prefill", JSONObject().apply {
-                    put("email", userEmail)
-                    put("contact", userContact)
-                    put("name", userName)
-                })
-
-                // Restrict/allow payment methods (optional)
-                put("method", JSONObject().apply {
-                    put("netbanking", true)
-                    put("card", true)
-                    put("upi", true)
-                    put("wallet", true)
-                })
-
-                // Theme color (optional)
-                put("theme", JSONObject().apply {
-                    put("color", "#6C63FF")  // Your brand color
-                })
-            }
-
-            // requireActivity() is needed — Razorpay needs an Activity reference
-            checkout.open(requireActivity(), options)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Error starting payment: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // ─── Payment SUCCESS Callback ───────────────────────────────────────
-    override fun onPaymentSuccess(razorpayPaymentId: String?, data: PaymentData?) {
-        *//*
-         * razorpayPaymentId → e.g., "pay_XXXXXXXXXXXXXXXXXX"  (verify this on your backend)
-         * data.orderId      → matches the orderId you passed
-         * data.signature    → use this + orderId + paymentId to verify on backend (HMAC SHA256)
-         *
-         * ⚠️ IMPORTANT: Always verify the signature on your SERVER before marking order as paid.
-         *//*
-        Log.d("Razorpay", "Payment Success: $razorpayPaymentId")
-        Log.d("Razorpay", "Order ID: ${data?.orderId}")
-        Log.d("Razorpay", "Signature: ${data?.signature}")
-
-        // TODO: Send razorpayPaymentId, orderId, signature to your backend for verification
-        // After backend confirms → navigate to success screen
-        findNavController().navigate(R.id.successPaymentFragment)
-    }
-
-    // ─── Payment FAILURE Callback ───────────────────────────────────────
-    override fun onPaymentError(errorCode: Int, errorDescription: String?, data: PaymentData?) {
-        *//*
-         * Common Error Codes:
-         *   Checkout.NETWORK_ERROR  (2) → No internet
-         *   Checkout.INVALID_OPTIONS(3) → Bad JSON options
-         *   Checkout.PAYMENT_CANCELED(0)→ User dismissed the sheet
-         *   Checkout.TLS_ERROR      (6) → TLS handshake failed
-         *//*
-        Log.e("Razorpay", "Payment Failed: Code=$errorCode | $errorDescription")
-
-        val userMessage = when (errorCode) {
-            Checkout.NETWORK_ERROR    -> "No internet connection. Please try again."
-            Checkout.PAYMENT_CANCELED -> "Payment was cancelled."
-            else                      -> "Payment failed: $errorDescription"
-        }
-
-        Toast.makeText(requireContext(), userMessage, Toast.LENGTH_LONG).show()
-        // Optionally navigate to a failure screen or stay on this fragment
-    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -205,6 +121,30 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
                 }
             }
         }
+        viewModel.getVerifyPaymentLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "getVerifyPaymentLiveData success: ${Gson().toJson(it)}")
+                    if (it.data?.status == true) {
+                        Log.i("TAG", "getVerifyPaymentLiveData: "+ Gson().toJson(it.data))
+                        findNavController().navigate(R.id.successPaymentFragment)
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "api Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
     }
 
     override fun restoreView() {}
@@ -227,8 +167,26 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
                 .previousBackStackEntry
                 ?.savedStateHandle
                 ?.set("payment_status", "success")
-
-            findNavController().navigate(R.id.successPaymentFragment)
+            val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+//            var request = VerifyPaymentRequest(
+//                batch_offer_price = "0",
+//                grand_total_before_discount = "0",
+//                batch_price = "0",
+//                tuition_fee = "0",
+//                discount_amount = "0",
+//                currency = "INR",
+//                tuition_12_month_total = "0",
+//                renewal_plan_id = TODO(),
+//                razorpay_order_id = orderId.toString(),
+//                monthly_subtotal = TODO(),
+//                total_payable = TODO(),
+//                batch_id = TODO(),
+//                razorpay_signature = signature.toString(),
+//                razorpay_payment_id = paymentId.toString(),
+//                student_id = ,
+//                first_payment_plan_id = TODO()
+//            )
+//            viewModel.hitVerifyPaymentDataApi("Bearer $accessToken", request)
 
         } else {
             // ── FAILURE / CANCELLED ───────────────────────────────────

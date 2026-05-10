@@ -7,7 +7,10 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -17,16 +20,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
-import com.app.edtech.databinding.FragmentLibraryBinding
+import com.app.edtech.databinding.FragmentVideoLecturesBinding
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
 import com.app.edtech.ui.activity.HomeActivity
-import com.app.edtech.ui.adapter.AdapterLibraryBook
-import com.app.edtech.ui.adapter.SearchInstituteAdapter
-import com.app.edtech.ui.view_model.LibraryViewModel
+import com.app.edtech.ui.adapter.AdapterVideoLecture
+import com.app.edtech.ui.view_model.VideoLectureViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.CommonUtils.updateModeUI
 import com.app.edtech.utils.CommonUtils.updateSortUI
@@ -38,7 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
 @AndroidEntryPoint
-class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
+class VideoLecturesFragment : BaseFragment<FragmentVideoLecturesBinding>() {
     private var totalRecords: Int = 0
     private var currentPage = 1
     private val pageSize = 10   // adjust as per API
@@ -46,8 +48,8 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     private var isLastPage = false
 
     private val BooksList = mutableListOf<InstituteListResponse.Institute>()
-    private val viewModel: LibraryViewModel by viewModels()
-    private lateinit var libraryBooksAdapter: AdapterLibraryBook  // replace with your adapter
+    private val viewModel: VideoLectureViewModel by viewModels()
+    private lateinit var libraryBooksAdapter: AdapterVideoLecture  // replace with your adapter
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
@@ -80,7 +82,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     }
 
     private fun setupBooksRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
-        libraryBooksAdapter = AdapterLibraryBook(BooksList, ::onBookSelected)
+        libraryBooksAdapter = AdapterVideoLecture(BooksList, ::onBookSelected)
         binding.instituteRecycler.apply {
             adapter = libraryBooksAdapter
         }
@@ -125,10 +127,10 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         currentPage++
         callInstituteApi()
     }
-    private fun onBookSelected(institute:InstituteListResponse.Institute) {
-        var bundle = Bundle()
-        bundle.putParcelable("institute", institute)
-        findNavController().navigate(R.id.instituteDetailsFragment, bundle)
+    private fun onBookSelected(/*institute:InstituteListResponse.Institute*/) {
+//        var bundle = Bundle()
+//        bundle.putParcelable("institute", institute)
+        findNavController().navigate(R.id.videoLectureDetailFragment/*, bundle*/)
     }
 
     private fun clickEvent() {
@@ -276,7 +278,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         setObserver()
         clickEvent()
     }
-    override fun getLayoutId(): Int = R.layout.fragment_library
+    override fun getLayoutId(): Int = R.layout.fragment_video_lectures
     private fun setObserver() {
         viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
@@ -305,9 +307,11 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
 
     }
     override fun restoreView() {
-        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
-            setupBooksRecycler(it, true, totalRecords)
-        }
+        //        after api implement uncomment api and remove setupBooksRecycler()
+//        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
+//            setupBooksRecycler(it, true, totalRecords)
+//        }
+        setupBooksRecycler(listOf(), false, totalRecords)
     }
 
 }

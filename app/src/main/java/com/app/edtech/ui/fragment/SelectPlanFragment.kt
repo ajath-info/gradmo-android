@@ -25,6 +25,7 @@ import com.app.edtech.databinding.FragmentSelectPlanBinding
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.plan_detail.PlanDetailsResponse
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
 import com.app.edtech.ui.activity.HomeActivity
@@ -44,8 +45,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
     private val viewModel: SelectPlanViewModel by viewModels()
+    lateinit var planDetail: PlanDetailsResponse.Data
+    private var batch_price = ""
 
     override fun initView(savedInstanceState: Bundle?) {
+        arguments?.let {
+            batch_price = it.getString("batch_price").toString()
+        }
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitPlanDetailApi("Bearer $accessToken", "1")
     }
@@ -70,7 +76,8 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-
+                        planDetail = it.data.data
+                        setupUI()
                     } else {
                         Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -82,15 +89,21 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
                 }
 
                 Status.ERROR -> {
-                    Log.e("TAG", "Login Failed: ${it.message}")
+                    Log.e("TAG", "Failed: ${it.message}")
                     ProcessDialog.dismissDialog(true)
                 }
             }
         }
     }
+
+    private fun setupUI() {
+        binding.yearlyAmount.text = "₹${planDetail.plans.get(0).amount}  / 12 Month"
+        binding.batchAmount.text = "₹${batch_price}  / 12 Month"
+    }
+
     override fun restoreView() {
         viewModel.getPlanDetailLiveData().value?.data?.data?.let {
-//            setupInstitutesRecycler(it, true, totalRecords)
+            setupUI()
         }
     }
 

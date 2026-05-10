@@ -412,7 +412,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment  -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment  -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 

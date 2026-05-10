@@ -6,6 +6,7 @@ import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.profile.request.UpdateProfileRequest
+import com.app.edtech.model.verify_payment.VerifyPaymentRequest
 import com.app.edtech.network_call.RetrofitBuilder
 import com.app.edtech.ui.signup.model.ChangePasswordRequest
 import com.app.edtech.ui.signup.model.ResetPasswordRequest
@@ -54,5 +55,10 @@ class ApiRepository {
     suspend fun getThirdPartyCredentialsApi(token: String) = service.getThirdPartyCredentials(token)
 
     suspend fun createOrderApi(token: String, amount_in_rupees: String) = service.createOrder(token, amount_in_rupees)
+
+    suspend fun verifyPaymentApi(token: String, request: VerifyPaymentRequest) = service.verifyPayment(token, request)
+
+    suspend fun batchDetailsApi(token: String, batch_id: String) = service.batchDetails(token, batch_id)
+
 
 }

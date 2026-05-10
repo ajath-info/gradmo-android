@@ -13,8 +13,27 @@ import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.app.edtech.R
 import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 object CommonUtils {
+
+    fun convertTimeFormat(
+        inputTime: String,
+        inputFormat: String,
+        outputFormat: String
+    ): String? {
+        return try {
+            val inputSdf = SimpleDateFormat(inputFormat, Locale.getDefault())
+            val outputSdf = SimpleDateFormat(outputFormat, Locale.getDefault())
+
+            val date = inputSdf.parse(inputTime)
+            outputSdf.format(date!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
     fun updateSortUI(
         binding: FragmentFilterInstituteBottomSheetBinding,
         isAsc: Boolean
