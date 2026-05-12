@@ -4,6 +4,7 @@ import com.app.edtech.model.address.city.GetCitiesRequest
 import com.app.edtech.model.address.state.GetStatesRequest
 import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
+import com.app.edtech.model.library_list.LibraryListRequest
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.profile.request.UpdateProfileRequest
 import com.app.edtech.model.verify_payment.VerifyPaymentRequest
@@ -59,6 +60,9 @@ class ApiRepository {
     suspend fun verifyPaymentApi(token: String, request: VerifyPaymentRequest) = service.verifyPayment(token, request)
 
     suspend fun batchDetailsApi(token: String, batch_id: String) = service.batchDetails(token, batch_id)
+
+    suspend fun getLibraryListApi(token: String, request: LibraryListRequest) = service.getLibraryList(token, request)
+
 
 
 }

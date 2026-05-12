@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.edtech.model.address.city.GetCitiesRequest
 import com.app.edtech.model.address.city.GetCitiesResponse
-import com.app.edtech.model.banner.response.BannerResponse
-import com.app.edtech.model.institute_list.request.InstitutesListRequest
-import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.library_list.LibraryListRequest
+import com.app.edtech.model.library_list.LibraryListResponse
 import com.app.edtech.network_call.repository.ApiRepository
 import com.app.edtech.utils.network_utils.Resources
 import com.app.edtech.utils.network_utils.SingleLiveEvent
@@ -17,25 +16,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor() : ViewModel() {
-    private val institutesLiveDate = SingleLiveEvent<Resources<InstituteListResponse>>()
+    private val libraryLiveDate = SingleLiveEvent<Resources<LibraryListResponse>>()
 
-    fun getInstitutesLiveData(): LiveData<Resources<InstituteListResponse>> {
-        return institutesLiveDate
+    fun getLibraryLiveData(): LiveData<Resources<LibraryListResponse>> {
+        return libraryLiveDate
     }
-    fun hitInstitutesDataApi(token: String, request: InstitutesListRequest) {
+    fun hitLibraryDataApi(token: String, request: LibraryListRequest) {
 
         try {
-            institutesLiveDate.postValue(Resources.loading(null))
+            libraryLiveDate.postValue(Resources.loading(null))
             viewModelScope.launch {
                 try {
-                    institutesLiveDate.postValue(
+                    libraryLiveDate.postValue(
                         Resources.success(
-                            ApiRepository().getInstitutesApi(token, request
+                            ApiRepository().getLibraryListApi(token, request
                             )
                         )
                     )
                 } catch (ex: Exception) {
-                    institutesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+                    libraryLiveDate.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

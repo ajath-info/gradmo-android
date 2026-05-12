@@ -113,7 +113,7 @@ class PromocodeListFragment : BaseFragment<FragmentPromocodeListBinding>() {
         findNavController()
             .previousBackStackEntry
             ?.savedStateHandle
-            ?.set("selected_promo_code", selected.code)   // pass any key-value here
+            ?.set("selected_promo_code", selected)   // pass any key-value here
         findNavController().popBackStack()
     }
 

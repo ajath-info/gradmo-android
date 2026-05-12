@@ -18,14 +18,13 @@ import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentFilterInstituteBottomSheetBinding
 import com.app.edtech.databinding.FragmentLibraryBinding
-import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.library_list.LibraryListRequest
+import com.app.edtech.model.library_list.LibraryListResponse
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.Preferences
-import com.app.edtech.ui.activity.HomeActivity
 import com.app.edtech.ui.adapter.AdapterLibraryBook
-import com.app.edtech.ui.adapter.SearchInstituteAdapter
 import com.app.edtech.ui.view_model.LibraryViewModel
 import com.app.edtech.utils.CommonUtils
 import com.app.edtech.utils.CommonUtils.updateModeUI
@@ -45,21 +44,22 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     private var isLoading = false
     private var isLastPage = false
 
-    private val BooksList = mutableListOf<InstituteListResponse.Institute>()
+    private val BooksList = mutableListOf<LibraryListResponse.Data.Library>()
     private val viewModel: LibraryViewModel by viewModels()
     private lateinit var libraryBooksAdapter: AdapterLibraryBook  // replace with your adapter
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
-    private var flow = ""    // "online" / "offline" / ""
+    private var batch_id = ""    // "online" / "offline" / ""
 
     private var searchRunnable: Runnable? = null
     private val handler = Handler(Looper.getMainLooper())
     private var searchQuery: String = ""
 
     override fun initView(savedInstanceState: Bundle?) {
-        flow = arguments?.getString("flow", "") ?: ""
-        Log.i("TAG", "flow: "+flow)
+
+        batch_id = arguments?.getString("batch_id", "") ?: ""
+        Log.i("TAG", "batch_id: "+batch_id)
         setupUI()
         currentPage = 1
         isLastPage = false
@@ -67,19 +67,14 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
 
 //        replace with library api, and set adapter from inside of api response
         setupBooksRecycler(listOf(), false, totalRecords)
-//        callInstituteApi()
+        callLibraryApi()
     }
 
     private fun setupUI() {
-        when(flow){
-            "seeAll"->{
-                binding.title.text = "Institutes"
-                (activity as HomeActivity).hideNavigationView()
-            }
-        }
+
     }
 
-    private fun setupBooksRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
+    private fun setupBooksRecycler(institutes: List<LibraryListResponse.Data.Library>, isRestore:Boolean, totalRecords:Int) {
         libraryBooksAdapter = AdapterLibraryBook(BooksList, ::onBookSelected)
         binding.instituteRecycler.apply {
             adapter = libraryBooksAdapter
@@ -123,12 +118,12 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     private fun loadNextPage() {
         isLoading = true
         currentPage++
-        callInstituteApi()
+        callLibraryApi()
     }
-    private fun onBookSelected(institute:InstituteListResponse.Institute) {
-        var bundle = Bundle()
-        bundle.putParcelable("institute", institute)
-        findNavController().navigate(R.id.instituteDetailsFragment, bundle)
+    private fun onBookSelected(institute:LibraryListResponse.Data.Library) {
+//        var bundle = Bundle()
+//        bundle.putParcelable("institute", institute)
+//        findNavController().navigate(R.id.instituteDetailsFragment, bundle)
     }
 
     private fun clickEvent() {
@@ -144,7 +139,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
                 BooksList.clear()
                 libraryBooksAdapter.notifyDataSetChanged()
 
-                callInstituteApi()
+                callLibraryApi()
                 true
             } else false
         }
@@ -164,7 +159,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
                         BooksList.clear()
                         libraryBooksAdapter.notifyDataSetChanged()
 
-                        callInstituteApi()
+                        callLibraryApi()
                     }
                 }
 
@@ -250,26 +245,19 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         BooksList.clear()
         libraryBooksAdapter.notifyDataSetChanged()
 
-        callInstituteApi()
+        callLibraryApi()
     }
-    private fun callInstituteApi() {
+    private fun callLibraryApi() {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(),
             LOGIN_DATA
         )?.data?.accessToken
 
-        val request = InstitutesListRequest(
-            latitude = "28.93466857138595",
-            longitude = "78.34283781396569",
-            order_field = "name",
-            order_type = orderType,     // ✅ dynamic
-            mode = selectedMode,        // ✅ dynamic
-            page = currentPage.toString(),
-            limit = pageSize.toString(),
-            search = searchQuery,
+        val request = LibraryListRequest(
+            batch_id =batch_id
         )
 
-        viewModel.hitInstitutesDataApi("Bearer $accessToken", request)
+        viewModel.hitLibraryDataApi("Bearer $accessToken", request)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -278,15 +266,15 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_library
     private fun setObserver() {
-        viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
+        viewModel.getLibraryLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-                        totalRecords = it.data.pagination.totalRecords
-                        setupBooksRecycler(it.data.institutes, false, totalRecords)
+                        totalRecords = it.data.data.pagination.totalRecords
+                        setupBooksRecycler(it.data.data.library, false, totalRecords)
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
                             .show()
                     }
                     ProcessDialog.dismissDialog(true)
@@ -305,7 +293,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
 
     }
     override fun restoreView() {
-        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
+        viewModel.getLibraryLiveData().value?.data?.data?.library?.let {
             setupBooksRecycler(it, true, totalRecords)
         }
     }

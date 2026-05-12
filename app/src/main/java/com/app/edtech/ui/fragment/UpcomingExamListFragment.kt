@@ -134,7 +134,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
     private fun onBookSelected(/*institute:InstituteListResponse.Institute*/) {
 //        var bundle = Bundle()
 //        bundle.putParcelable("institute", institute)
-        findNavController().navigate(R.id.videoLectureDetailFragment/*, bundle*/)
+        findNavController().navigate(R.id.giveAssessmentFragment/*, bundle*/)
     }
 
     private fun clickEvent() {

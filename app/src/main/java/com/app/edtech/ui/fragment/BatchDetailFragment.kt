@@ -84,15 +84,17 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
 
     private fun setupUI() {
         binding.apply {
-            /*if (batch.enrollment.status==0){
+            if (batch.enrollment.status==0){
                 blurView.isVisible=true
                 recyclerBatchDetailItem.isEnabled=false
                 recyclerBatchDetailItem.isClickable=false
+                enrollButton.isVisible=true
             }else{
                 blurView.isVisible=false
                 recyclerBatchDetailItem.isEnabled=true
                 recyclerBatchDetailItem.isClickable=true
-            }*/
+                enrollButton.isVisible=false
+            }
             Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
             instituteName.text = batch.batchName
             tvTeacherName.text = "N/A"
@@ -131,7 +133,9 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     }
 
     private fun openLibrary() {
-        findNavController().navigate(R.id.libraryFragment)
+        var bundle = Bundle()
+        bundle.putString("batch_id", batch.batch_id.toString())
+        findNavController().navigate(R.id.libraryFragment, bundle)
     }
 
     companion object {
@@ -195,6 +199,8 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         binding.enrollButton.setOnClickListener {
             var bundle = Bundle()
             bundle.putString("batch_price", batch.batch_price.toString())
+            bundle.putString("batch_offer_price", batch.batch_offer_price.toString())
+            bundle.putString("batch_id", batch.batch_id.toString())
             findNavController().navigate(R.id.selectPlanFragment, bundle)
         }
     }

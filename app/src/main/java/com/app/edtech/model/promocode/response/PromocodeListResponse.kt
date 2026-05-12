@@ -1,5 +1,8 @@
 package com.app.edtech.model.promocode.response
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class PromocodeListResponse(
     val `data`: Data,
     val message: String,
@@ -17,6 +20,7 @@ data class PromocodeListResponse(
             val totalRecords: Int
         )
 
+        @Parcelize
         data class PromoCode(
             val code: String,
             val createdAt: String,
@@ -28,6 +32,6 @@ data class PromocodeListResponse(
             val usedCount: Int,
             val validFrom: String,
             val validTo: String
-        )
+        ): Parcelable
     }
 }

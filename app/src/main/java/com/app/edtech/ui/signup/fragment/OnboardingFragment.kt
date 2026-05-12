@@ -37,10 +37,14 @@ class OnboardingFragment : BaseFragment<FragmentOnboardingBinding>() {
     override fun getLayoutId(): Int = R.layout.fragment_onboarding
 
     override fun initView(savedInstanceState: Bundle?) {
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupViewPager()
         setupClicks()
     }
-
     private fun setupViewPager() {
         adapter = OnboardingAdapter(onboardingList)
 

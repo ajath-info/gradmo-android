@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#4D4D4D" />
+    <!-- No corners: left side of card is straight, right side rounded to blend -->
+    <corners
+        android:bottomLeftRadius="12dp"
+        android:topLeftRadius="12dp" />
+</shape>

@@ -98,4 +98,8 @@
         android:id="@+id/upcomingExamListFragment"
         android:name="com.app.edtech.ui.fragment.UpcomingExamListFragment"
         android:label="UpcomingExamListFragment" />
+    <fragment
+        android:id="@+id/giveAssessmentFragment"
+        android:name="com.app.edtech.ui.fragment.GiveAssessmentFragment"
+        android:label="GiveAssessmentFragment" />
 </navigation>

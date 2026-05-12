@@ -71,7 +71,7 @@
             android:ellipsize="end"
             android:text="Upgrade Classes" />
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_marginStart="10dp"
@@ -84,11 +84,12 @@
             <TextView
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="26dp"
+                android:layout_marginEnd="6dp"
                 android:id="@+id/instituteAddress"
-                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:fontFamily="@font/manrope_regular"

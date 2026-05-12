@@ -2,6 +2,7 @@ package com.app.edtech.ui.get_started.fragment
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
@@ -22,6 +23,10 @@ class GetStartedFragment : BaseFragment<FragmentGetStartedBinding>() {
         isFirstLoginDone = Preferences.getStringPreference(requireContext(), IS_FIRST_LOGIN_DONE) ?: ""
         Log.i("TAG", "isFirstLoginDone: "+isFirstLoginDone)
         setUI()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         onClick()
     }
     private fun setUI() {

@@ -16,13 +16,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
     }
     buildFeatures {
         dataBinding = true
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -75,8 +79,8 @@ dependencies {
 
     implementation("me.relex:circleindicator:2.1.6")
 
-    implementation("com.amazonaws:aws-android-sdk-s3:2.72.0")
-    implementation("com.amazonaws:aws-android-sdk-core:2.72.0")
+//    implementation("com.amazonaws:aws-android-sdk-s3:2.72.0")
+//    implementation("com.amazonaws:aws-android-sdk-core:2.72.0")
 
 //    image cropper
 //    implementation("com.github.yalantis:ucrop:2.2.10")
@@ -85,7 +89,7 @@ dependencies {
 
     implementation("com.razorpay:checkout:1.6.40")
     implementation("us.zoom.videosdk:zoomvideosdk-core:2.5.5")          // mandatory
-    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.5.5")     // screen share annotation (optional)
-    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.5.5")   // virtual background (optional)
+//    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.5.5")     // screen share annotation (optional)
+//    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.5.5")   // virtual background (optional)
 
 }

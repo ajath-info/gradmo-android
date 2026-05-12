@@ -47,10 +47,14 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
     private val viewModel: SelectPlanViewModel by viewModels()
     lateinit var planDetail: PlanDetailsResponse.Data
     private var batch_price = ""
+    private var batch_offer_price = ""
+    private var batch_id = ""
 
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             batch_price = it.getString("batch_price").toString()
+            batch_offer_price = it.getString("batch_offer_price").toString()
+            batch_id = it.getString("batch_id").toString()
         }
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitPlanDetailApi("Bearer $accessToken", "1")
@@ -61,7 +65,12 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
             findNavController().popBackStack()
         }
         binding.continueButton.setOnClickListener {
-            findNavController().navigate(R.id.paymentSummaryFragment)
+            var bundle = Bundle()
+            bundle.putString("platform_fee", planDetail.plans.get(0).amount.toString())
+            bundle.putString("batch_price", batch_price)
+            bundle.putString("batch_offer_price", batch_offer_price)
+            bundle.putString("batch_id", batch_id)
+            findNavController().navigate(R.id.paymentSummaryFragment, bundle)
         }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,8 +106,8 @@ class SelectPlanFragment : BaseFragment<FragmentSelectPlanBinding>() {
     }
 
     private fun setupUI() {
-        binding.yearlyAmount.text = "₹${planDetail.plans.get(0).amount}  / 12 Month"
-        binding.batchAmount.text = "₹${batch_price}  / 12 Month"
+        binding.yearlyAmount.text = "₹ ${planDetail.plans.get(0).amount}"
+        binding.batchAmount.text = "₹ ${batch_price}  / 12 Month"
     }
 
     override fun restoreView() {

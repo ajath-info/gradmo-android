@@ -11,6 +11,8 @@ import com.app.edtech.model.institute_detail.request.InstituteDetailRequest
 import com.app.edtech.model.institute_detail.response.InstituteDetailResponse
 import com.app.edtech.model.institute_list.request.InstitutesListRequest
 import com.app.edtech.model.institute_list.response.InstituteListResponse
+import com.app.edtech.model.library_list.LibraryListRequest
+import com.app.edtech.model.library_list.LibraryListResponse
 import com.app.edtech.model.login.request.LoginRequest
 import com.app.edtech.model.login.response.LoginResponse
 import com.app.edtech.model.logout.response.DeleteResponse
@@ -129,6 +131,11 @@ interface ApiService {
     @POST("api/batch/batch-details")
     suspend fun batchDetails(@Header("Authorization") token: String, @Field("batch_id") mobile: String,): BatchDetailResponse
 
+    @POST("api/batch/library-list")
+    suspend fun getLibraryList(
+        @Header("Authorization") token: String,
+        @Body requestBody: LibraryListRequest
+    ): LibraryListResponse
 
 }
 

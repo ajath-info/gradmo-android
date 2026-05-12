@@ -13,6 +13,7 @@ import com.app.edtech.R
 import com.app.edtech.base.BaseFragment
 import com.app.edtech.databinding.FragmentPaymentSummaryBinding
 import com.app.edtech.model.login.response.LoginResponse
+import com.app.edtech.model.promocode.response.PromocodeListResponse
 import com.app.edtech.model.verify_payment.VerifyPaymentRequest
 import com.app.edtech.preferences.LOGIN_DATA
 import com.app.edtech.preferences.PAYMENT_GATEWAY_ID
@@ -33,12 +34,28 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
     private val viewModel: PaymentSummaryViewModel by viewModels()
     // ─── Required Parameters ───────────────────────────────────────────
     private var RAZORPAY_KEY_ID = ""
-    private var paymentAmount: Int = 10000     // Amount in PAISE (e.g., ₹500 = 50000)
     private var userEmail: String = ""     // Prefill user email
     private var userContact: String = ""   // Prefill user phone
     private var userName: String = ""      // Prefill user name
+    private var batch_price = ""
+    private var batch_offer_price = ""
+    private var batch_id = ""
+    private var platform_fee = ""
+    private var grandTotal = ""
+    private var subTotal = ""
+    private lateinit var promoCode: PromocodeListResponse.Data.PromoCode
 
     override fun initView(savedInstanceState: Bundle?) {
+        arguments?.let {
+            batch_price = it.getString("batch_price").toString()
+            batch_offer_price = it.getString("batch_offer_price").toString()
+            batch_id = it.getString("batch_id").toString()
+            platform_fee = it.getString("platform_fee").toString()
+        }
+        Log.i("TAG", "payment summary: "+batch_price)
+        Log.i("TAG", "payment summary: "+batch_offer_price)
+        Log.i("TAG", "payment summary: "+batch_id)
+        Log.i("TAG", "payment summary: "+platform_fee)
         // ── Pre-warm Razorpay (optional but recommended for faster checkout) ──
         Checkout.preload(requireContext())
         RAZORPAY_KEY_ID = Preferences.getStringPreference(requireContext(), PAYMENT_GATEWAY_ID) ?: ""
@@ -47,8 +64,16 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
     }
 
     private fun setupUI() {
-        // Populate your UI with order/payment details here
-        // e.g., binding.amountText.text = "₹${paymentAmount / 100}"
+            binding.tutionFee.text = "₹ ${batch_price}/month"
+            binding.enrollmentFee.text = "₹ ${batch_offer_price}"
+            this.subTotal = (batch_offer_price.toInt()*12).toString()
+            binding.subTotal.text = "₹ ${subTotal}"
+            binding.tvTotal.text = "₹ ${batch_offer_price.toInt()*12}"
+            binding.grandSubTotal.text = "₹ ${subTotal}"
+            binding.platformFee.text = "₹ ${platform_fee}"
+            grandTotal = "${platform_fee.toInt() + (batch_offer_price.toInt()*12)}"
+            binding.tvGrandTotal.text = "₹ ${grandTotal}"
+            binding.tvFinalTotal.text = "₹ ${grandTotal}"
     }
 
     private fun clickEvent() {
@@ -88,13 +113,16 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
         findNavController()
             .currentBackStackEntry
             ?.savedStateHandle
-            ?.getLiveData<String>("selected_promo_code")
+            ?.getLiveData<PromocodeListResponse.Data.PromoCode>("selected_promo_code")
             ?.observe(viewLifecycleOwner) { promoCode ->
-                if (!promoCode.isNullOrEmpty()) {
-                    // Use the promo code here
-                    Log.d("TAG", "Received promo code: $promoCode")
-                    binding.promoCodeText.setText(promoCode)   // show on UI
-//                    applyPromoCode(promoCode)                // call your discount logic
+                promoCode?.let {
+                    Log.d("TAG", "Received promo code: ${Gson().toJson(promoCode)}")
+                    setupUI()
+                    this.promoCode = promoCode
+                    binding.promoCodeText.setText(promoCode.code)
+
+                    binding.tvFinalTotal.text = "₹ ${platform_fee.toInt() + (batch_offer_price.toInt()*12 - promoCode.discountValue)}"
+                    grandTotal = "${platform_fee.toInt() + (batch_offer_price.toInt()*12 - promoCode.discountValue)}"
                 }
             }
         viewModel.getCreateOrderLiveData().observe(viewLifecycleOwner) {
@@ -125,7 +153,7 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "getVerifyPaymentLiveData success: ${Gson().toJson(it)}")
-                    if (it.data?.status == true) {
+                    if (it.data?.status == "true") {
                         Log.i("TAG", "getVerifyPaymentLiveData: "+ Gson().toJson(it.data))
                         findNavController().navigate(R.id.successPaymentFragment)
                     } else {
@@ -147,7 +175,9 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
         }
     }
 
-    override fun restoreView() {}
+    override fun restoreView() {
+        setupUI()
+    }
 
     // ─── Register launcher (at class level, before onViewCreated) ──────
     private val paymentLauncher = registerForActivityResult(
@@ -167,26 +197,28 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
                 .previousBackStackEntry
                 ?.savedStateHandle
                 ?.set("payment_status", "success")
-            val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-//            var request = VerifyPaymentRequest(
-//                batch_offer_price = "0",
-//                grand_total_before_discount = "0",
-//                batch_price = "0",
-//                tuition_fee = "0",
-//                discount_amount = "0",
-//                currency = "INR",
-//                tuition_12_month_total = "0",
-//                renewal_plan_id = TODO(),
-//                razorpay_order_id = orderId.toString(),
-//                monthly_subtotal = TODO(),
-//                total_payable = TODO(),
-//                batch_id = TODO(),
-//                razorpay_signature = signature.toString(),
-//                razorpay_payment_id = paymentId.toString(),
-//                student_id = ,
-//                first_payment_plan_id = TODO()
-//            )
-//            viewModel.hitVerifyPaymentDataApi("Bearer $accessToken", request)
+            val loginData = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data
+            val accessToken = loginData?.accessToken
+            val studentId = loginData?.studentId
+            var request = VerifyPaymentRequest(
+                batch_offer_price = batch_offer_price,
+                grand_total_before_discount = (grandTotal.toInt() - promoCode.discountValue.toInt()).toString(),
+                batch_price = batch_price,
+                tuition_fee = (batch_price.toInt()*12).toString(),
+                discount_amount = if (::promoCode.isInitialized) promoCode.discountValue.toString() else "0",
+                currency = "INR",
+                tuition_12_month_total = (batch_price.toInt() *12).toString(),
+                renewal_plan_id = 0,
+                razorpay_order_id = orderId.toString(),
+                monthly_subtotal = batch_price,
+                total_payable = grandTotal,
+                batch_id = batch_id,
+                razorpay_signature = signature.toString(),
+                razorpay_payment_id = paymentId.toString(),
+                student_id = studentId.toString(),
+                first_payment_plan_id = 0
+            )
+            viewModel.hitVerifyPaymentDataApi("Bearer $accessToken", request)
 
         } else {
             // ── FAILURE / CANCELLED ───────────────────────────────────
@@ -213,7 +245,7 @@ class PaymentSummaryFragment : BaseFragment<FragmentPaymentSummaryBinding>() {  
         val intent = Intent(requireContext(), RazorpayPaymentActivity::class.java).apply {
             putExtra(RazorpayPaymentActivity.EXTRA_KEY_ID,       RAZORPAY_KEY_ID)
             putExtra(RazorpayPaymentActivity.EXTRA_ORDER_ID,     orderId)
-            putExtra(RazorpayPaymentActivity.EXTRA_AMOUNT,       paymentAmount)
+            putExtra(RazorpayPaymentActivity.EXTRA_AMOUNT,       grandTotal.toInt()*100)
             putExtra(RazorpayPaymentActivity.EXTRA_USER_NAME,    userName)
             putExtra(RazorpayPaymentActivity.EXTRA_USER_EMAIL,   userEmail)
             putExtra(RazorpayPaymentActivity.EXTRA_USER_CONTACT, userContact)
