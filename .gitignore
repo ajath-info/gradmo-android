@@ -1,8 +1,10 @@
 # Gradle
 .gradle/
 build/
+/build/
 **/build/
-
+*.apk
+*.aab
 # Local config
 local.properties
 
