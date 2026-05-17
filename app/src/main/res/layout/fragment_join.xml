@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.app.edtech.ui.signup.view_model.JoinViewModel" />
+            type="com.app.gradmo.ui.signup.view_model.JoinViewModel" />
     </data>
 
     <ScrollView

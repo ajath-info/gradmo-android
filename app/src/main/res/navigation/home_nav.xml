@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.app.edtech.ui.fragment.HomeFragment"
+        android:name="com.app.gradmo.ui.fragment.HomeFragment"
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_searchInstituteFragment"
@@ -15,28 +15,28 @@
     </fragment>
     <fragment
         android:id="@+id/courseFragment"
-        android:name="com.app.edtech.ui.fragment.CourseFragment"
+        android:name="com.app.gradmo.ui.fragment.CourseFragment"
         android:label="CourseFragment" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.app.edtech.ui.fragment.SearchFragment"
+        android:name="com.app.gradmo.ui.fragment.SearchFragment"
         android:label="SearchFragment" />
     <fragment
         android:id="@+id/editProfileNewFragment2"
-        android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
+        android:name="com.app.gradmo.ui.signup.fragment.EditProfileNewFragment"
         android:label="EditProfileNewFragment" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.app.edtech.ui.fragment.NotificationFragment"
+        android:name="com.app.gradmo.ui.fragment.NotificationFragment"
         android:label="NotificationFragment" />
     <fragment
         android:id="@+id/editProfileNewFragment"
-        android:name="com.app.edtech.ui.signup.fragment.EditProfileNewFragment"
+        android:name="com.app.gradmo.ui.signup.fragment.EditProfileNewFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile_new"/>
     <fragment
         android:id="@+id/searchInstituteFragment"
-        android:name="com.app.edtech.ui.fragment.SearchInstituteFragment"
+        android:name="com.app.gradmo.ui.fragment.SearchInstituteFragment"
         android:label="SearchInstituteFragment" >
         <action
             android:id="@+id/action_searchInstituteFragment_to_instituteDetailsFragment"
@@ -44,62 +44,62 @@
     </fragment>
     <fragment
         android:id="@+id/instituteDetailsFragment"
-        android:name="com.app.edtech.ui.fragment.InstituteDetailsFragment"
+        android:name="com.app.gradmo.ui.fragment.InstituteDetailsFragment"
         android:label="InstituteDetailsFragment" />
     <fragment
         android:id="@+id/batchDetailFragment"
-        android:name="com.app.edtech.ui.fragment.BatchDetailFragment"
+        android:name="com.app.gradmo.ui.fragment.BatchDetailFragment"
         android:label="BatchDetailFragment" />
     <fragment
         android:id="@+id/batchListFragment"
-        android:name="com.app.edtech.ui.fragment.BatchListFragment"
+        android:name="com.app.gradmo.ui.fragment.BatchListFragment"
         android:label="BatchListFragment" />
     <fragment
         android:id="@+id/selectPlanFragment"
-        android:name="com.app.edtech.ui.fragment.SelectPlanFragment"
+        android:name="com.app.gradmo.ui.fragment.SelectPlanFragment"
         android:label="SelectPlanFragment" />
     <fragment
         android:id="@+id/paymentSummaryFragment"
-        android:name="com.app.edtech.ui.fragment.PaymentSummaryFragment"
+        android:name="com.app.gradmo.ui.fragment.PaymentSummaryFragment"
         android:label="PaymentSummaryFragment" />
     <fragment
         android:id="@+id/successPaymentFragment"
-        android:name="com.app.edtech.ui.fragment.SuccessPaymentFragment"
+        android:name="com.app.gradmo.ui.fragment.SuccessPaymentFragment"
         android:label="SuccessPaymentFragment" />
     <fragment
         android:id="@+id/promocodeListFragment"
-        android:name="com.app.edtech.ui.fragment.PromocodeListFragment"
+        android:name="com.app.gradmo.ui.fragment.PromocodeListFragment"
         android:label="PromocodeListFragment" />
     <fragment
         android:id="@+id/libraryFragment"
-        android:name="com.app.edtech.ui.fragment.LibraryFragment"
+        android:name="com.app.gradmo.ui.fragment.LibraryFragment"
         android:label="LibraryFragment" />
     <fragment
         android:id="@+id/videoLecturesFragment"
-        android:name="com.app.edtech.ui.fragment.VideoLecturesFragment"
+        android:name="com.app.gradmo.ui.fragment.VideoLecturesFragment"
         android:label="VideoLecturesFragment" />
     <fragment
         android:id="@+id/videoLectureDetailFragment"
-        android:name="com.app.edtech.ui.fragment.VideoLectureDetailFragment"
+        android:name="com.app.gradmo.ui.fragment.VideoLectureDetailFragment"
         android:label="VideoLectureDetailFragment" />
     <fragment
         android:id="@+id/seeAttendenceFragment"
-        android:name="com.app.edtech.ui.fragment.SeeAttendenceFragment"
+        android:name="com.app.gradmo.ui.fragment.SeeAttendenceFragment"
         android:label="SeeAttendenceFragment" />
     <fragment
         android:id="@+id/homeworkFragment"
-        android:name="com.app.edtech.ui.fragment.HomeworkFragment"
+        android:name="com.app.gradmo.ui.fragment.HomeworkFragment"
         android:label="HomeworkFragment" />
     <fragment
         android:id="@+id/homeworkDetailFragment"
-        android:name="com.app.edtech.ui.fragment.HomeworkDetailFragment"
+        android:name="com.app.gradmo.ui.fragment.HomeworkDetailFragment"
         android:label="HomeworkDetailFragment" />
     <fragment
         android:id="@+id/upcomingExamListFragment"
-        android:name="com.app.edtech.ui.fragment.UpcomingExamListFragment"
+        android:name="com.app.gradmo.ui.fragment.UpcomingExamListFragment"
         android:label="UpcomingExamListFragment" />
     <fragment
         android:id="@+id/giveAssessmentFragment"
-        android:name="com.app.edtech.ui.fragment.GiveAssessmentFragment"
+        android:name="com.app.gradmo.ui.fragment.GiveAssessmentFragment"
         android:label="GiveAssessmentFragment" />
 </navigation>

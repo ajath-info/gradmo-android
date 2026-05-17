@@ -45,7 +45,7 @@
                 android:textSize="11sp"
                 android:text="4.5" />
 
-            <com.app.edtech.utils.CustomRatingBar
+            <com.app.gradmo.utils.CustomRatingBar
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"
                 android:id="@+id/customRatingBar"

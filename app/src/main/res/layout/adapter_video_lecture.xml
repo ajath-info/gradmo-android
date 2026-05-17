@@ -25,6 +25,7 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp">
                 <ImageView
+                    android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/video_lecture_placeholder"/>
@@ -51,7 +52,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"/>
                 <TextView
-                    android:id="@+id/tvDate"
+                    android:id="@+id/tvDes"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -62,7 +63,7 @@
                     android:maxLines="2"
                     android:ellipsize="end"/>
                 <TextView
-                    android:id="@+id/tvSize"
+                    android:id="@+id/tvDate"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

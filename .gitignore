@@ -4,6 +4,7 @@ build/
 /build/
 **/build/
 *.apk
+app/release/
 *.aab
 # Local config
 local.properties

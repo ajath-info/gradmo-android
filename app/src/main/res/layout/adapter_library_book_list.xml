@@ -16,6 +16,7 @@
 
         <LinearLayout
             android:paddingBottom="10dp"
+            android:paddingHorizontal="10dp"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
                 android:src="@drawable/library_book_placeholder" />
 
             <TextView
+                android:gravity="center_horizontal"
                 android:id="@+id/name"
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
@@ -35,7 +37,9 @@
                 android:text="Chapter_1.pdf"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:fontFamily="@font/manrope_bold" />
+                android:fontFamily="@font/manrope_bold"
+                android:maxLines="2"
+                android:ellipsize="end"/>
 
             <TextView
                 android:id="@+id/tvSize"

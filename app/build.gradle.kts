@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.app.edtech"
+    namespace = "com.app.gradmo"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.app.edtech"
+        applicationId = "com.app.gradmo"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
