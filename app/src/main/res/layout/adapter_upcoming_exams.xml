@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="177dp">
                 <ImageView
+                    android:id="@+id/imageView"
                     android:scaleType="centerCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -144,6 +145,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/subjectName"
                         android:backgroundTint="@color/white"
                         app:cornerRadius="20dp"
                         app:strokeWidth="1dp"
@@ -159,6 +161,7 @@
                         android:maxLines="1"
                         android:ellipsize="end"/>
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tvGrade"
                         android:layout_marginStart="10dp"
                         android:backgroundTint="@color/white"
                         app:cornerRadius="20dp"

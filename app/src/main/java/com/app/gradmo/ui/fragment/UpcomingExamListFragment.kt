@@ -18,6 +18,8 @@ import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentFilterInstituteBottomSheetBinding
 import com.app.gradmo.databinding.FragmentUpcomingExamListBinding
+import com.app.gradmo.model.exam_list.ExamsListRequest
+import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.login.response.LoginResponse
@@ -45,13 +47,14 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
     private var isLoading = false
     private var isLastPage = false
 
-    private val BooksList = mutableListOf<InstituteListResponse.Institute>()
+    private val BooksList = mutableListOf<UpcomingExamListResponse.Data.UpcomingExam>()
     private val viewModel: UpcomingExamsViewModel by viewModels()
     private lateinit var libraryBooksAdapter: AdapterUpcomingExams  // replace with your adapter
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
-    private var flow = ""    // "online" / "offline" / ""
+    private var flow = ""
+    private var batch_id = ""
 
     private var searchRunnable: Runnable? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -59,6 +62,8 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
 
     override fun initView(savedInstanceState: Bundle?) {
         flow = arguments?.getString("flow", "") ?: ""
+        batch_id = arguments?.getString("batch_id", "") ?: ""
+        Log.i("TAG", "batch_id: "+batch_id)
         Log.i("TAG", "flow: "+flow)
         setupUI()
         currentPage = 1
@@ -67,7 +72,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
 
 //        replace with library api, and set adapter from inside of api response
         setupBooksRecycler(listOf(), false, totalRecords)
-//        callInstituteApi()
+        callUpcomingnExamsApi()
     }
 
     private fun setupUI() {
@@ -79,7 +84,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
         }
     }
 
-    private fun setupBooksRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
+    private fun setupBooksRecycler(institutes: List<UpcomingExamListResponse.Data.UpcomingExam>, isRestore:Boolean, totalRecords:Int) {
         libraryBooksAdapter = AdapterUpcomingExams(BooksList, ::onBookSelected)
         binding.instituteRecycler.apply {
             adapter = libraryBooksAdapter
@@ -123,12 +128,12 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
     private fun loadNextPage() {
         isLoading = true
         currentPage++
-        callInstituteApi()
+        callUpcomingnExamsApi()
     }
-    private fun onBookSelected(/*institute:InstituteListResponse.Institute*/) {
-//        var bundle = Bundle()
-//        bundle.putParcelable("institute", institute)
-        findNavController().navigate(R.id.giveAssessmentFragment/*, bundle*/)
+    private fun onBookSelected(exam:UpcomingExamListResponse.Data.UpcomingExam) {
+        var bundle = Bundle()
+        bundle.putParcelable("exam", exam)
+        findNavController().navigate(R.id.giveAssessmentFragment, bundle)
     }
 
     private fun clickEvent() {
@@ -144,7 +149,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
                 BooksList.clear()
                 libraryBooksAdapter.notifyDataSetChanged()
 
-                callInstituteApi()
+                callUpcomingnExamsApi()
                 true
             } else false
         }
@@ -164,7 +169,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
                         BooksList.clear()
                         libraryBooksAdapter.notifyDataSetChanged()
 
-                        callInstituteApi()
+                        callUpcomingnExamsApi()
                     }
                 }
 
@@ -250,26 +255,21 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
         BooksList.clear()
         libraryBooksAdapter.notifyDataSetChanged()
 
-        callInstituteApi()
+        callUpcomingnExamsApi()
     }
-    private fun callInstituteApi() {
+    private fun callUpcomingnExamsApi() {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(),
             LOGIN_DATA
         )?.data?.accessToken
 
-        val request = InstitutesListRequest(
-            latitude = "28.93466857138595",
-            longitude = "78.34283781396569",
-            order_field = "name",
-            order_type = orderType,     // ✅ dynamic
-            mode = selectedMode,        // ✅ dynamic
+        val request = ExamsListRequest(
+            batch_id = batch_id,
             page = currentPage.toString(),
             limit = pageSize.toString(),
-            search = searchQuery,
         )
 
-        viewModel.hitInstitutesDataApi("Bearer $accessToken", request)
+        viewModel.hitUpcomingExamsDataApi("Bearer $accessToken", request)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -278,15 +278,15 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
     }
     override fun getLayoutId(): Int = R.layout.fragment_upcoming_exam_list
     private fun setObserver() {
-        viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
+        viewModel.getUpcomingExamsLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
+                    Log.e("TAG", "getUpcomingExamsLiveData success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-                        totalRecords = it.data.pagination.totalRecords
-                        setupBooksRecycler(it.data.institutes, false, totalRecords)
+                        totalRecords = it.data.data.pagination.totalRecords
+                        setupBooksRecycler(it.data.data.upcomingExams, false, totalRecords)
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
                             .show()
                     }
                     ProcessDialog.dismissDialog(true)
@@ -297,19 +297,18 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
                 }
 
                 Status.ERROR -> {
-                    Log.e("TAG", "Login Failed: ${it.message}")
+                    Log.e("TAG", "getUpcomingExamsLiveData Failed: ${it.message}")
                     ProcessDialog.dismissDialog(true)
                 }
             }
         }
 
+
     }
     override fun restoreView() {
-        //        after api implement uncomment api and remove setupBooksRecycler()
-//        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
-//            setupBooksRecycler(it, true, totalRecords)
-//        }
-        setupBooksRecycler(listOf(), false, totalRecords)
+        viewModel.getUpcomingExamsLiveData().value?.data?.data?.upcomingExams?.let {
+            setupBooksRecycler(it, true, totalRecords)
+        }
     }
 
 }

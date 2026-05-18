@@ -2,6 +2,7 @@ package com.app.gradmo.network_call.repository
 
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.state.GetStatesRequest
+import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.library_list.LibraryListRequest
@@ -65,6 +66,8 @@ class ApiRepository {
     suspend fun getHomeworkListApi(token: String, request: LibraryListRequest) = service.getHomeworkList(token, request)
 
     suspend fun getVideoLectureListApi(token: String, request: LibraryListRequest) = service.getVideoLectureList(token, request)
+
+    suspend fun getUpcomingExamsListApi(token: String, request: ExamsListRequest) = service.getUpcomingExamsList(token, request)
 
 
 

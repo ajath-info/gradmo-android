@@ -91,5 +91,7 @@ dependencies {
     implementation("us.zoom.videosdk:zoomvideosdk-core:2.5.5")          // mandatory
 //    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.5.5")     // screen share annotation (optional)
 //    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.5.5")   // virtual background (optional)
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
 
 }

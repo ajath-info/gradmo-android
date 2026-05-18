@@ -3,12 +3,16 @@ package com.app.gradmo.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.gradmo.R
 import com.app.gradmo.databinding.AdapterUpcomingExamsBinding
+import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
+import com.app.gradmo.utils.CommonUtils.convertTimeFormat
+import com.bumptech.glide.Glide
 
 class AdapterUpcomingExams(
-    val books: List<InstituteListResponse.Institute>,
-    private val onInstituteSelected: (/*InstituteListResponse.Institute*/) -> Unit
+    val books: List<UpcomingExamListResponse.Data.UpcomingExam>,
+    private val onInstituteSelected: (UpcomingExamListResponse.Data.UpcomingExam) -> Unit
 ) : RecyclerView.Adapter<AdapterUpcomingExams.LibraryBookViewHolder>() {
     inner class LibraryBookViewHolder(val binding: AdapterUpcomingExamsBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -23,18 +27,22 @@ class AdapterUpcomingExams(
     }
 
     override fun getItemCount(): Int {
-        return /*books.size*/15
+        return books.size
     }
 
     override fun onBindViewHolder(holder: LibraryBookViewHolder, position: Int) {
-//        val book = books[position]
+        val book = books[position]
         holder.binding.apply {
-//            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
-//            instituteName.text = institute.name
-//            instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
+            Glide.with(root.context).load("").placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            name.text = book.name
+            tvNoOfQuestions.text = book.totalQuestion
+            tvDuration.text = book.timeDuration
+            name.text = book.name
+            tvCompletedBy.text = book.completeBy
+//            tvCompletedBy.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(book.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
-        holder.binding.root.setOnClickListener {
-            onInstituteSelected(/*book*/)
+        holder.binding.startAssessmentButton.setOnClickListener {
+            onInstituteSelected(book)
         }
     }
 }

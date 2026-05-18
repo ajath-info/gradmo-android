@@ -102,4 +102,8 @@
         android:id="@+id/giveAssessmentFragment"
         android:name="com.app.gradmo.ui.fragment.GiveAssessmentFragment"
         android:label="GiveAssessmentFragment" />
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.app.gradmo.ui.fragment.VideoPlayerFragment"
+        android:label="VideoPlayerFragment" />
 </navigation>

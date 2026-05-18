@@ -41,7 +41,7 @@ class HomeworkDetailFragment : BaseFragment<FragmentHomeworkDetailBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_homework_detail
     override fun restoreView() {
-
+        setupUI()
     }
 
 }

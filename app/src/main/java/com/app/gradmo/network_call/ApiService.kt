@@ -7,6 +7,8 @@ import com.app.gradmo.model.address.state.GetStatesResponse
 import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.batch_detail.BatchDetailResponse
 import com.app.gradmo.model.create_order.CreateOrderResponse
+import com.app.gradmo.model.exam_list.ExamsListRequest
+import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.homework.HomeworkListResponse
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
@@ -149,6 +151,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: LibraryListRequest
     ): VideoLectureListResponse
+
+    @POST("api/batch/upcoming-exam-list")
+    suspend fun getUpcomingExamsList(
+        @Header("Authorization") token: String,
+        @Body requestBody: ExamsListRequest
+    ): UpcomingExamListResponse
 
 }
 

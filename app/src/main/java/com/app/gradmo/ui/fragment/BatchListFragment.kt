@@ -15,6 +15,7 @@ import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
+import com.app.gradmo.ui.adapter.AdapterBatchList
 import com.app.gradmo.ui.adapter.AdapterInstituteBatch
 import com.app.gradmo.ui.adapter.AdapterInstituteRating
 import com.app.gradmo.ui.view_model.InstituteDetailsViewModel
@@ -23,7 +24,7 @@ import com.app.gradmo.utils.network_utils.Status
 import com.google.gson.Gson
 
 class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
-    private lateinit var adapterInstituteBatch: AdapterInstituteBatch  // replace with your adapter
+    private lateinit var adapterInstituteBatch: AdapterBatchList  // replace with your adapter
     private lateinit var adapterInstituteRating: AdapterInstituteRating  // replace with your adapter
 
     private val viewModel: InstituteDetailsViewModel by viewModels()
@@ -49,7 +50,7 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
         observeViewModel()
     }
     private fun setupBatchRecycler(batches: List<InstituteDetailResponse.Batche>) {
-        adapterInstituteBatch = AdapterInstituteBatch(batches, ::onBatchSelected)
+        adapterInstituteBatch = AdapterBatchList(batches, ::onBatchSelected)
         binding.batchRecycler.apply {
             adapter = adapterInstituteBatch          // attach your adapter here
         }

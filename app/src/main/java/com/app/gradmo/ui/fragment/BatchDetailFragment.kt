@@ -120,12 +120,17 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 findNavController().navigate(R.id.seeAttendenceFragment)
             }
             4->{
-                findNavController().navigate(R.id.upcomingExamListFragment)
+                openUpcomingExams()
             }
             5->{
                 openHomework()
             }
         }
+    }
+    private fun openUpcomingExams() {
+        var bundle = Bundle()
+        bundle.putString("batch_id", batch.batch_id.toString())
+        findNavController().navigate(R.id.upcomingExamListFragment, bundle)
     }
     private fun openVideoLecture() {
         var bundle = Bundle()
