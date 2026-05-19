@@ -52,7 +52,7 @@
                     android:elevation="0dp"
                     app:itemTextColor="@drawable/bottom_nav_item_color_state"
                     app:itemIconTint="@drawable/bottom_nav_item_color_state"
-                    app:itemPaddingTop="12dp"
+                    app:itemPaddingTop="16dp"
                     app:labelVisibilityMode="labeled"
 
                     app:menu="@menu/bottom_menu" />

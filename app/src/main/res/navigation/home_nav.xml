@@ -106,4 +106,12 @@
         android:id="@+id/videoPlayerFragment"
         android:name="com.app.gradmo.ui.fragment.VideoPlayerFragment"
         android:label="VideoPlayerFragment" />
+    <fragment
+        android:id="@+id/testCompletedFragment"
+        android:name="com.app.gradmo.ui.fragment.TestCompletedFragment"
+        android:label="TestCompletedFragment" />
+    <fragment
+        android:id="@+id/completedExamListFragment"
+        android:name="com.app.gradmo.ui.fragment.CompletedExamListFragment"
+        android:label="CompletedExamListFragment" />
 </navigation>

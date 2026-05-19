@@ -177,7 +177,7 @@ class VideoLecturesFragment : BaseFragment<FragmentVideoLecturesBinding>() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
         binding.filterLayout.setOnClickListener {
-            showBottomSheet()
+//            showBottomSheet()
         }
     }
 

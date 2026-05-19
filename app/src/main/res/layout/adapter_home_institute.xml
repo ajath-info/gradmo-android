@@ -25,7 +25,7 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:scaleType="centerCrop"
-                android:src="@drawable/onboarding3"
+                android:background="@drawable/banner_placeholder_new"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </androidx.cardview.widget.CardView>
@@ -43,7 +43,7 @@
                 android:textColor="@color/gray"
                 android:fontFamily="@font/manrope_semibold"
                 android:textSize="11sp"
-                android:text="4.5" />
+                android:text="0.0" />
 
             <com.app.gradmo.utils.CustomRatingBar
                 android:layout_weight="1"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 app:numStars="5"
-                app:rating="3.0"
+                app:rating="0.0"
                 app:stepSize="0.5"
                 app:isIndicator="false"
                 app:starSize="15dp"

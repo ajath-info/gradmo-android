@@ -8,58 +8,67 @@ import com.app.gradmo.R
 import com.app.gradmo.databinding.ItemAssessmentOptionBinding
 import com.app.gradmo.model.static.AssessmentOption
 
+// ─────────────────────────────────────────────────────────────
+// AssessmentOptionAdapter.kt
+// Options are plain strings parsed from API: ["A1","A2","A","A4"]
+// ─────────────────────────────────────────────────────────────
+
+import android.content.res.ColorStateList
+
 class AssessmentOptionAdapter(
-    private val options: List<AssessmentOption>,
-    private val onOptionSelected: (Int) -> Unit
+    private val options: List<String>,
+    preSelectedIndex: Int = -1,
+    private val onOptionSelected: (index: Int) -> Unit
 ) : RecyclerView.Adapter<AssessmentOptionAdapter.OptionViewHolder>() {
 
-    private var selectedOptionId: Int = -1
+    private var selectedIndex: Int = preSelectedIndex
+
+    // Labels A, B, C, D ... for up to 6 options
     private val optionLabels = listOf("A", "B", "C", "D", "E", "F")
-
-    fun setSelectedOption(optionId: Int) {
-        val prev = selectedOptionId
-        selectedOptionId = optionId
-        if (prev != -1) notifyItemChanged(prev)
-        if (optionId != -1) notifyItemChanged(optionId)
-    }
-
-    fun clearSelection() {
-        val prev = selectedOptionId
-        selectedOptionId = -1
-        if (prev != -1) notifyItemChanged(prev)
-    }
 
     inner class OptionViewHolder(
         private val binding: ItemAssessmentOptionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(option: AssessmentOption, position: Int) {
-            val isSelected = option.id == selectedOptionId
+        fun bind(optionText: String, position: Int) {
+            val isSelected = position == selectedIndex
             val ctx = binding.root.context
 
-            binding.tvOptionLabel.text = optionLabels.getOrElse(position) { (position + 1).toString() }
-            binding.tvOptionText.text = option.optionText
+            binding.tvOptionLabel.text = optionLabels.getOrElse(position) { "${position + 1}" }
+            binding.tvOptionText.text = optionText
 
             if (isSelected) {
-                // Blue card + white text
+                // ── Selected state: entire card turns blue, text turns white
                 binding.optionCard.setCardBackgroundColor(
                     ContextCompat.getColor(ctx, R.color.colorPrimary)
                 )
                 binding.tvOptionText.setTextColor(
                     ContextCompat.getColor(ctx, R.color.white)
                 )
+                // Keep label badge dark grey regardless of selection
+                binding.tvOptionLabel.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(ctx, R.color.option_label_gray) // dark grey
+                )
             } else {
-                // White card + dark text
+                // ── Unselected state: white card, dark text
                 binding.optionCard.setCardBackgroundColor(
                     ContextCompat.getColor(ctx, R.color.white)
                 )
                 binding.tvOptionText.setTextColor(
                     ContextCompat.getColor(ctx, R.color.black)
                 )
+                binding.tvOptionLabel.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(ctx, R.color.option_label_gray)
+                )
             }
 
             binding.root.setOnClickListener {
-                onOptionSelected(option.id)
+                val previousIndex = selectedIndex
+                selectedIndex = position
+                // Refresh only the two affected items (efficient)
+                notifyItemChanged(previousIndex)
+                notifyItemChanged(selectedIndex)
+                onOptionSelected(position)
             }
         }
     }
@@ -75,5 +84,5 @@ class AssessmentOptionAdapter(
         holder.bind(options[position], position)
     }
 
-    override fun getItemCount() = options.size
+    override fun getItemCount(): Int = options.size
 }

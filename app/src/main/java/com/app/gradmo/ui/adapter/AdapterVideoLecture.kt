@@ -32,7 +32,7 @@ class AdapterVideoLecture(
     override fun onBindViewHolder(holder: LibraryBookViewHolder, position: Int) {
         val book = books[position]
         holder.binding.apply {
-            Glide.with(root.context).load(book.url).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
+            Glide.with(root.context).load(book.url).placeholder(R.drawable.video_lecture_placeholder).error(R.drawable.video_lecture_placeholder).into(image)
             name.text = book.title
             tvDes.text = book.description
             tvDate.text = CommonUtils.convertTimeFormat(book.addedAt ?: "", "yyyy-MM-dd HH:mm:ss", "MMM dd, yyyy")?.ifBlank { "N/A" } ?: ""

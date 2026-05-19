@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:padding="18dp"
                 android:id="@+id/image"
                 android:src="@drawable/batch_attendence_image"
                 android:layout_width="95dp"

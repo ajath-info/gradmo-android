@@ -32,9 +32,10 @@ class AdapterInstituteBatch(
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
         val batch = batches[position]
         holder.binding.apply {
-            Glide.with(root.context).load(batch.batch_image).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            Glide.with(root.context).load(batch).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
             instituteName.text = batch.batch_name
-            tvTeacherName.text = "N/A"
+//            tvTeacherName.text = "N/A"
+            tvTeacherName.text = "Offline"
             tvTime.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
         holder.binding.root.setOnClickListener {

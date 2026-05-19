@@ -28,7 +28,7 @@
             <ImageView
                 android:id="@+id/image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/onboarding3"
+                android:background="@drawable/batch_placeholder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </androidx.cardview.widget.CardView>
@@ -52,7 +52,7 @@
                 android:textColor="@color/gray"
                 android:fontFamily="@font/manrope_semibold"
                 android:textSize="11sp"
-                android:text="4.5" />
+                android:text="0.0" />
 
         </LinearLayout>
 

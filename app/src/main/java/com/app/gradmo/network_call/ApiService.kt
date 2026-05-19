@@ -1,12 +1,17 @@
 package com.app.gradmo.network_call
 
+import com.app.gradmo.model.exam_details.ExamDetailsResponse
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
 import com.app.gradmo.model.address.state.GetStatesRequest
 import com.app.gradmo.model.address.state.GetStatesResponse
+import com.app.gradmo.model.attendence.AttendanceListRequest
+import com.app.gradmo.model.attendence.AttendanceListResponse
 import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.batch_detail.BatchDetailResponse
 import com.app.gradmo.model.create_order.CreateOrderResponse
+import com.app.gradmo.model.exam_details.ExamDetailsRequest
+import com.app.gradmo.model.exam_list.ExamDashboardResponse
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.homework.HomeworkListResponse
@@ -21,6 +26,7 @@ import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.logout.response.DeleteResponse
 import com.app.gradmo.model.plan_detail.PlanDetailsResponse
 import com.app.gradmo.model.promocode.response.PromocodeListResponse
+import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.third_party_credentials.ThirdPartyCredentialsResponse
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentResponse
@@ -157,6 +163,30 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: ExamsListRequest
     ): UpcomingExamListResponse
+
+    @POST("api/batch/upcoming-exam-details")
+    suspend fun getUpcomingExamsDetails(
+        @Header("Authorization") token: String,
+        @Body requestBody: ExamDetailsRequest
+    ): ExamDetailsResponse
+
+    @POST("api/batch/student-exam-dashboard")
+    suspend fun getExamDashboardData(
+        @Header("Authorization") token: String,
+        @Body requestBody: ExamsListRequest
+    ): ExamDashboardResponse
+
+    @POST("api/batch/student-submit-exam")
+    suspend fun submitExam(
+        @Header("Authorization") token: String,
+        @Body requestBody: SubmitExamRequest
+    ): ExamDashboardResponse
+
+    @POST("api/user/attendance-list")
+    suspend fun getAttendance(
+        @Header("Authorization") token: String,
+        @Body requestBody: AttendanceListRequest
+    ): AttendanceListResponse
 
 }
 

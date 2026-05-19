@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
+import com.app.gradmo.model.exam_details.ExamDetailsRequest
+import com.app.gradmo.model.exam_list.ExamDashboardResponse
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
@@ -39,6 +41,38 @@ class UpcomingExamsViewModel @Inject constructor() : ViewModel() {
                     )
                 } catch (ex: Exception) {
                     upcomingExamsLiveData.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+
+
+
+
+    private val examDashboardLiveData = SingleLiveEvent<Resources<ExamDashboardResponse>>()
+
+    fun getExamDashboardLiveData(): LiveData<Resources<ExamDashboardResponse>> {
+        return examDashboardLiveData
+    }
+    fun hitExamDashboardApi(token: String, request: ExamsListRequest) {
+
+        try {
+            examDashboardLiveData.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    examDashboardLiveData.postValue(
+                        Resources.success(
+                            ApiRepository().getExamDashboardDataApi(token, request
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    examDashboardLiveData.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

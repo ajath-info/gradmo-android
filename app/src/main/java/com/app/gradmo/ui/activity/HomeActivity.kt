@@ -297,6 +297,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private fun floatingButtonClick() {
         binding.floatingbtn.setOnClickListener {
             binding.bottomNavigationView.selectedItemId = R.id.search
+            binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
         }
     }
     private fun clearBottomBarPadding() {
@@ -346,25 +347,20 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             val currentDestId = navController.currentDestination?.id
             when (item.itemId) {
                 R.id.home -> {
-//                    if (currentDestId != R.id.homeFragment) {
-                        navController.navigate(R.id.homeFragment)
-//                    }else{
-//                        supportFragmentManager.setFragmentResult("home_click", Bundle())
-//                    }
+                    navController.navigate(R.id.homeFragment)
                     binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 R.id.course -> {
-//                    if (currentDestId != R.id.chatListFragment) {
-                    navController.navigate(R.id.searchInstituteFragment)
-//                    }
+                    val bundle = Bundle().apply {
+                        putString("flow", "seeAll")
+                    }
+                    navController.navigate(R.id.searchInstituteFragment, bundle)
                     binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 R.id.search -> {
-//                    if (currentDestId != R.id.reelsFragment) {
-                    navController.navigate(R.id.searchFragment)
-//                    }
+                    navController.navigate(R.id.searchInstituteFragment)
                     binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
@@ -411,7 +407,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.videoPlayerFragment  -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 

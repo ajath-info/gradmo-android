@@ -71,6 +71,7 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
     fun onBatchSelected(batch:InstituteDetailResponse.Batche){
         val bundle=Bundle()
         bundle.putParcelable("batch", batch)
+        bundle.putString("instituteName", institute.name)
         findNavController().navigate(R.id.batchDetailFragment, bundle)
     }
     fun onRatingSelected(){
@@ -84,6 +85,7 @@ class InstituteDetailsFragment : BaseFragment<FragmentInstituteDetailsBinding>()
         binding.seeAllLayout.setOnClickListener {
             var bundle = Bundle()
             bundle.putParcelable("institute", institute)
+            bundle.putString("instituteName", institute.name)
             findNavController().navigate(R.id.batchListFragment, bundle)
         }
     }

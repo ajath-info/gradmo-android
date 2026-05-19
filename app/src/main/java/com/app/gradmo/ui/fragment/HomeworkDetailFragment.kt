@@ -22,7 +22,7 @@ class HomeworkDetailFragment : BaseFragment<FragmentHomeworkDetailBinding>() {
 
     private fun setupUI() {
         binding.apply {
-            Glide.with(requireContext()).load(homeworkData.attachmentUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
+            Glide.with(requireContext()).load(homeworkData.attachmentUrl).into(image)
             name.text = homeworkData.subjectName
             description.text = homeworkData.description
             tvDate.text = CommonUtils.convertTimeFormat(homeworkData.addedAt ?: "", "yyyy-MM-dd HH:mm:ss", "MMM dd, yyyy")?.ifBlank { "N/A" } ?: ""

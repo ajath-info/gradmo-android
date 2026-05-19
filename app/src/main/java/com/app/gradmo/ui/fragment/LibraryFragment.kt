@@ -1,7 +1,12 @@
 package com.app.gradmo.ui.fragment
 
+import android.app.AlertDialog
+import android.app.DownloadManager
+import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -119,10 +124,39 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
         currentPage++
         callLibraryApi()
     }
-    private fun onBookSelected(institute:LibraryListResponse.Data.Library) {
-//        var bundle = Bundle()
-//        bundle.putParcelable("institute", institute)
-//        findNavController().navigate(R.id.instituteDetailsFragment, bundle)
+    private fun onBookSelected(institute: LibraryListResponse.Data.Library) {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Download File")
+            .setMessage("Do you want to download this file?")
+            .setPositiveButton("Yes") { _, _ ->
+
+                val request = DownloadManager.Request(Uri.parse(institute.downloadUrl))
+                    .setTitle(institute.fileName)
+                    .setDescription("Downloading file...")
+                    .setNotificationVisibility(
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                    )
+                    .setAllowedOverMetered(true)
+                    .setAllowedOverRoaming(true)
+                    .setDestinationInExternalPublicDir(
+                        Environment.DIRECTORY_DOWNLOADS,
+                        institute.fileName
+                    )
+
+                val downloadManager =
+                    requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                downloadManager.enqueue(request)
+
+                Toast.makeText(
+                    requireContext(),
+                    "Download started",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun clickEvent() {
@@ -169,7 +203,7 @@ class LibraryFragment : BaseFragment<FragmentLibraryBinding>() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
         binding.filterLayout.setOnClickListener {
-            showBottomSheet()
+//            showBottomSheet()
         }
     }
 

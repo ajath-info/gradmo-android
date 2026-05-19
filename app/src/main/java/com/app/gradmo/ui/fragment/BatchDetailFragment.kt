@@ -36,10 +36,12 @@ import kotlin.getValue
 class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     private lateinit var adapterBatchDetailsItems: AdapterBatchDetailsItems  // replace with your adapter
     lateinit var batch: BatchDetails
+    var instituteName: String = ""
     private val viewModel: BatchDetailsViewModel by viewModels()
 
     override fun initView(savedInstanceState: Bundle?) {
         var batchItem = arguments?.getParcelable("batch") ?: InstituteDetailResponse.Batche()
+        instituteName = arguments?.getString("instituteName") ?: ""
         setupRecyclerView()
         observeViewModel()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
@@ -91,9 +93,10 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 recyclerBatchDetailItem.isClickable=true
                 enrollButton.isVisible=false
             }
-            Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
-            instituteName.text = batch.batchName
-            tvTeacherName.text = "N/A"
+            Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
+            instituteName.text = this@BatchDetailFragment.instituteName
+            batchName.text = batch.batchName
+            tvTeacherName.text = batch.instructor
             tvTiming.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
     }
@@ -117,7 +120,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 openLibrary()
             }
             3->{
-                findNavController().navigate(R.id.seeAttendenceFragment)
+                openSeeAttendance()
             }
             4->{
                 openUpcomingExams()
@@ -126,6 +129,11 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 openHomework()
             }
         }
+    }
+    private fun openSeeAttendance() {
+        var bundle = Bundle()
+        bundle.putString("batch_id", batch.batch_id.toString())
+        findNavController().navigate(R.id.seeAttendenceFragment, bundle)
     }
     private fun openUpcomingExams() {
         var bundle = Bundle()

@@ -28,7 +28,7 @@ class HomeInstituteAdapter(val institutes: List<InstituteListResponse.Institute>
     override fun onBindViewHolder(holder: HomeInstituteViewHolder, position: Int) {
         val institute = institutes[position]
         holder.binding.apply {
-            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder_new).error(R.drawable.banner_placeholder_new).into(imageView)
             instituteName.text = institute.name
             instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
             root.setOnClickListener {

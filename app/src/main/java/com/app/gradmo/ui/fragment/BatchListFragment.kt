@@ -26,6 +26,7 @@ import com.google.gson.Gson
 class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
     private lateinit var adapterInstituteBatch: AdapterBatchList  // replace with your adapter
     private lateinit var adapterInstituteRating: AdapterInstituteRating  // replace with your adapter
+    var instituteName: String = ""
 
     private val viewModel: InstituteDetailsViewModel by viewModels()
 
@@ -34,6 +35,7 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         institute = arguments?.getParcelable("institute") ?: InstituteListResponse.Institute()
+        instituteName = arguments?.getString("instituteName") ?: ""
         Log.i("TAG", "institute in batchlist: " + Gson().toJson(institute))
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitInstitutesDataApi("Bearer $accessToken", InstituteDetailRequest(institute.instituteId.toString()))
@@ -59,6 +61,7 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
     fun onBatchSelected(batch:InstituteDetailResponse.Batche){
         val bundle=Bundle()
         bundle.putParcelable("batch", batch)
+        bundle.putString("instituteName", institute.name)
         findNavController().navigate(R.id.batchDetailFragment, bundle)
     }
 

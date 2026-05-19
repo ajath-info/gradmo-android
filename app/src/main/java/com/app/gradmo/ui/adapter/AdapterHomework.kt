@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.R
+import com.app.gradmo.databinding.AdapterHomeworkBinding
 import com.app.gradmo.databinding.AdapterVideoLectureBinding
 import com.app.gradmo.model.homework.HomeworkListResponse
 import com.app.gradmo.utils.CommonUtils
@@ -13,11 +14,11 @@ class AdapterHomework(
     val books: List<HomeworkListResponse.HomeWork>,
     private val onInstituteSelected: (HomeworkListResponse.HomeWork) -> Unit
 ) : RecyclerView.Adapter<AdapterHomework.LibraryBookViewHolder>() {
-    inner class LibraryBookViewHolder(val binding: AdapterVideoLectureBinding) :
+    inner class LibraryBookViewHolder(val binding: AdapterHomeworkBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryBookViewHolder {
-        val binding = AdapterVideoLectureBinding.inflate(
+        val binding = AdapterHomeworkBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -32,7 +33,7 @@ class AdapterHomework(
     override fun onBindViewHolder(holder: LibraryBookViewHolder, position: Int) {
         val book = books[position]
         holder.binding.apply {
-            Glide.with(root.context).load(book.attachmentUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
+            Glide.with(root.context).load(book.attachmentUrl).placeholder(R.drawable.homework_placeholder).error(R.drawable.homework_placeholder).into(image)
             name.text = book.subjectName
             tvDes.text = book.description
             tvDate.text = CommonUtils.convertTimeFormat(book.addedAt ?: "", "yyyy-MM-dd HH:mm:ss", "MMM dd, yyyy")?.ifBlank { "N/A" } ?: ""        }

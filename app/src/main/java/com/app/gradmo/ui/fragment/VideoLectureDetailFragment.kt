@@ -23,7 +23,7 @@ class VideoLectureDetailFragment : BaseFragment<FragmentVideoLectureDetailBindin
 
     private fun setupUI() {
         binding.apply {
-            Glide.with(requireContext()).load(videoData.url).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(imageView)
+            Glide.with(requireContext()).load(videoData.url).placeholder(R.color.theme_blue).error(R.color.theme_blue).into(imageView)
             name.text = videoData.title
             description.text = videoData.description
             tvDate.text = CommonUtils.convertTimeFormat(videoData.addedAt ?: "", "yyyy-MM-dd HH:mm:ss", "MMM dd, yyyy")?.ifBlank { "N/A" } ?: ""

@@ -31,7 +31,7 @@ class SearchInstituteAdapter(
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
         val institute = institutes[position]
         holder.binding.apply {
-            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.banner_placeholder).error(R.drawable.banner_placeholder).into(image)
+            Glide.with(root.context).load(institute.imageUrl).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(image)
             instituteName.text = institute.name
             instituteAddress.text = institute.address?.ifBlank { "N/A" } ?: ""
         }

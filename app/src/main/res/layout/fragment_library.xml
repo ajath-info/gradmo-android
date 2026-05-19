@@ -61,7 +61,7 @@
                 android:drawableStart="@drawable/search_icon"
                 android:drawablePadding="10dp"
                 android:fontFamily="@font/manrope_semibold"
-                android:hint="Chapter"
+                android:hint="Search"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:paddingHorizontal="16dp"

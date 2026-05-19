@@ -33,8 +33,8 @@ class HomeBannerAdapter(val banners: List<BannerResponse.Data.Banner>) :
         holder.binding.apply {
             Glide.with(root.context)
                 .load(banners[realPosition].image_url)
-                .placeholder(R.drawable.banner_placeholder)
-                .error(R.drawable.banner_placeholder)
+                .placeholder(R.drawable.banner_placeholder_new)
+                .error(R.drawable.banner_placeholder_new)
                 .into(imageView)
         }
     }

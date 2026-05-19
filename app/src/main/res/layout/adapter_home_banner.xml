@@ -17,6 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/onboarding3"/>
+            android:background="@drawable/banner_placeholder_new"/>
     </androidx.cardview.widget.CardView>
 </layout>

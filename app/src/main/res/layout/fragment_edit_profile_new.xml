@@ -74,7 +74,7 @@
                         android:id="@+id/ivUserImage"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/profile_placeholder"/>
+                        android:background="@drawable/user_profile_placeholder"/>
                 </com.google.android.material.card.MaterialCardView>
                 <ImageView
                     android:id="@+id/ivEditIcon"

@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/video_lecture_placeholder"/>
+                        android:src="@color/theme_blue"/>
                     <ImageView
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
                 android:textColor="@color/black"
                 android:textSize="26sp"
                 android:fontFamily="@font/manrope_bold"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:ellipsize="end"/>
             <TextView
                 android:id="@+id/tvDate"
@@ -101,6 +101,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"/>
             <TextView
+                android:visibility="gone"
                 android:drawableStart="@drawable/clock_icon"
                 android:drawablePadding="5dp"
                 android:id="@+id/tvSize"

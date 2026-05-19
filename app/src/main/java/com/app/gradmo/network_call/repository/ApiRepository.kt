@@ -2,11 +2,14 @@ package com.app.gradmo.network_call.repository
 
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.state.GetStatesRequest
+import com.app.gradmo.model.attendence.AttendanceListRequest
+import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.library_list.LibraryListRequest
 import com.app.gradmo.model.login.request.LoginRequest
+import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
 import com.app.gradmo.network_call.RetrofitBuilder
 import com.app.gradmo.ui.signup.model.ChangePasswordRequest
@@ -69,6 +72,11 @@ class ApiRepository {
 
     suspend fun getUpcomingExamsListApi(token: String, request: ExamsListRequest) = service.getUpcomingExamsList(token, request)
 
+    suspend fun getUpcomingExamsDetailsApi(token: String, request: ExamDetailsRequest) = service.getUpcomingExamsDetails(token, request)
 
+    suspend fun getExamDashboardDataApi(token: String, request: ExamsListRequest) = service.getExamDashboardData(token, request)
 
+    suspend fun submitExamApi(token: String, request: SubmitExamRequest) = service.submitExam(token, request)
+
+    suspend fun getAttendanceApi(token: String, request: AttendanceListRequest) = service.getAttendance(token, request)
 }

@@ -212,7 +212,7 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
 
         sheetBinding.tvOffline.setOnClickListener {
             selectedMode = "offline"
-            CommonUtils.updateModeUI(sheetBinding, isOffline = true)
+            updateModeUI(sheetBinding, isOffline = true)
         }
 
         sheetBinding.tvOnline.setOnClickListener {
@@ -265,11 +265,12 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
 
         val request = ExamsListRequest(
             batch_id = batch_id,
-            page = currentPage.toString(),
-            limit = pageSize.toString(),
+//            page = currentPage.toString(),
+//            limit = pageSize.toString(),
         )
 
-        viewModel.hitUpcomingExamsDataApi("Bearer $accessToken", request)
+//        viewModel.hitUpcomingExamsDataApi("Bearer $accessToken", request)
+        viewModel.hitExamDashboardApi("Bearer $accessToken", request)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -302,7 +303,33 @@ class UpcomingExamListFragment : BaseFragment<FragmentUpcomingExamListBinding>()
                 }
             }
         }
+        viewModel.getExamDashboardLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "getUpcomingExamsLiveData success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        totalRecords = it.data.data.upcomingExams.size + it.data.data.completedExams.size
+                        val list = mutableListOf<UpcomingExamListResponse.Data.UpcomingExam>()
+                        list.addAll(it.data.data.upcomingExams)
+                        list.addAll(it.data.data.completedExams)
+                        setupBooksRecycler(list, false, totalRecords)
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
 
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "getUpcomingExamsLiveData Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
 
     }
     override fun restoreView() {

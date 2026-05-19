@@ -4,24 +4,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.gradmo.model.exam_details.ExamDetailsRequest
+import com.app.gradmo.model.exam_details.ExamDetailsResponse
+import com.app.gradmo.model.exam_list.ExamDashboardResponse
+import com.app.gradmo.model.exam_list.ExamsListRequest
+import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.static.AssessmentOption
 import com.app.gradmo.model.static.AssessmentQuestion
+import com.app.gradmo.model.submit_exam.SubmitExamRequest
+import com.app.gradmo.network_call.repository.ApiRepository
+import com.app.gradmo.utils.network_utils.Resources
+import com.app.gradmo.utils.network_utils.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class GiveAssessmentViewModel @Inject constructor(
-    // inject your repository here when API is ready
-    // private val repository: AssessmentRepository
-) : ViewModel() {
+class GiveAssessmentViewModel @Inject constructor() : ViewModel() {
 
     // ── Timer ────────────────────────────────────────────────
     /** Total duration for the assessment in seconds. Change as needed or pass from API. */
     private var totalTimerSeconds: Int = 30 * 60  // default 30 minutes
-
+    val startedAt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
     private val _timerText = MutableLiveData<String>()
     val timerText: LiveData<String> = _timerText
 
@@ -44,7 +53,34 @@ class GiveAssessmentViewModel @Inject constructor(
     init {
         loadStaticQuestions()   // replace with loadQuestionsFromApi() when ready
     }
+// ── Exam Details LiveData (already wired in your repo/viewmodel) ──────────
+    // Keep your existing getUpcomingExamsDetailsLiveData() function here.
+    // Only timer logic is added below.
 
+    // ── Timer ─────────────────────────────────────────────────────────────────
+    fun startTimer(durationSeconds: Int) {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            var remaining = durationSeconds
+            while (remaining >= 0) {
+                val minutes = remaining / 60
+                val seconds = remaining % 60
+                _timerText.postValue(String.format("%02d:%02d", minutes, seconds))
+                delay(1_000L)
+                remaining--
+            }
+            _timerFinished.postValue(true)
+        }
+    }
+
+    fun stopTimer() {
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
     // ── Static / Dummy data (replace with API call) ──────────
     private fun loadStaticQuestions() {
         val staticList = listOf(
@@ -94,27 +130,6 @@ class GiveAssessmentViewModel @Inject constructor(
     //     }
     // }
 
-    // ── Timer logic ──────────────────────────────────────────
-    fun startTimer(durationSeconds: Int = totalTimerSeconds) {
-        totalTimerSeconds = durationSeconds
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            var remaining = totalTimerSeconds
-            while (remaining >= 0) {
-                val minutes = remaining / 60
-                val seconds = remaining % 60
-                _timerText.postValue(String.format("%02d:%02d", minutes, seconds))
-                delay(1_000)
-                remaining--
-            }
-            _timerFinished.postValue(true)
-        }
-    }
-
-    fun stopTimer() {
-        timerJob?.cancel()
-    }
-
     // ── Navigation ───────────────────────────────────────────
     fun goToNextQuestion() {
         val list = _questions.value ?: return
@@ -147,8 +162,60 @@ class GiveAssessmentViewModel @Inject constructor(
         return list.getOrNull(_currentIndex.value ?: 0)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        timerJob?.cancel()
+    private val upcomingExamsDetailsLiveData = SingleLiveEvent<Resources<ExamDetailsResponse>>()
+
+    fun getUpcomingExamsDetailsLiveData(): LiveData<Resources<ExamDetailsResponse>> {
+        return upcomingExamsDetailsLiveData
+    }
+    fun hitUpcomingExamsDetailsDataApi(token: String, request: ExamDetailsRequest) {
+
+        try {
+            upcomingExamsDetailsLiveData.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    upcomingExamsDetailsLiveData.postValue(
+                        Resources.success(
+                            ApiRepository().getUpcomingExamsDetailsApi(token, request
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    upcomingExamsDetailsLiveData.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+
+    private val submitExamsLiveData = SingleLiveEvent<Resources<ExamDashboardResponse>>()
+
+    fun getSubmitExamsLiveData(): LiveData<Resources<ExamDashboardResponse>> {
+        return submitExamsLiveData
+    }
+    fun hitSubmitExamsDataApi(token: String, request: SubmitExamRequest) {
+
+        try {
+            submitExamsLiveData.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    submitExamsLiveData.postValue(
+                        Resources.success(
+                            ApiRepository().submitExamApi(token, request
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    submitExamsLiveData.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 }
