@@ -77,10 +77,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(), LOGIN_DATA
         )?.data?.accessToken
-        val name = Preferences.getCustomModelPreference<LoginResponse>(
-            requireContext(), LOGIN_DATA
-        )?.data?.name
-        binding.headerName.text = "Hi, ${name}"
+        setHeaderName()
+
         Log.i("TAG", "LOGIN_DATA: "+ Gson().toJson(Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(), LOGIN_DATA
         )?.data))
@@ -88,6 +86,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         if (viewModel.getBannerLiveData().value?.data == null) {
             viewModel.hitBannerDataApi("Bearer $accessToken")
         }
+    }
+
+    private fun setHeaderName() {
+        val name = Preferences.getCustomModelPreference<LoginResponse>(
+            requireContext(), LOGIN_DATA
+        )?.data?.name
+        binding.headerName.text = "Hi, ${name}"
     }
 
     // ── Banner Setup ─────────────────────────────────────────────────────
@@ -372,6 +377,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun restoreView() {
+        setHeaderName()
+
         viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
             setUpBannerViewPager(it)
         }

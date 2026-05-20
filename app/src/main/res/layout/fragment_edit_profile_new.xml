@@ -162,6 +162,13 @@
                         android:focusable="false"
                         android:clickable="true" />
                     <EditText
+                        android:id="@+id/etCountry"
+                        android:editable="false"
+                        style="@style/CommonLoginFlowEditText"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="15dp"
+                        android:text="INDIA"/>
+                    <EditText
                         android:id="@+id/etPincode"
                         style="@style/CommonLoginFlowEditText"
                         android:layout_width="match_parent"

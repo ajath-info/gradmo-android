@@ -7,6 +7,7 @@
     <color name="gray_3E3E47">#3E3E47</color>
     <color name="white">#FFFFFFFF</color>
     <color name="theme_blue">#4E74F9</color>
+    <color name="splash_bg">#6F21CF</color>
     <color name="theme_green">#0DCA68</color>
     <color name="theme_red">#D35202</color>
     <color name="gray_menu_icon">#767372</color>

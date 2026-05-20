@@ -40,6 +40,12 @@ class VideoPlayerFragment : BaseFragment<FragmentVideoPlayerBinding>() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
     // Save position before fragment is destroyed
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -98,12 +104,12 @@ class VideoPlayerFragment : BaseFragment<FragmentVideoPlayerBinding>() {
     }
 
     private fun hideSystemUi() {
-        val windowInsetsController = WindowCompat.getInsetsController(
-            requireActivity().window, requireActivity().window.decorView
-        )
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+//        val windowInsetsController = WindowCompat.getInsetsController(
+//            requireActivity().window, requireActivity().window.decorView
+//        )
+//        windowInsetsController.systemBarsBehavior =
+//            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_video_player

@@ -145,7 +145,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (it.title) {
                 "Home" -> {
-
+                    navController.navigate(R.id.homeFragment)
+                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                 }
 
                 "My Batches" -> {
@@ -153,7 +154,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Edit Profile" -> {
-
+                    navController.navigate(R.id.editProfileNewFragment)
+                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                 }
 
                 "Payment History" -> {
