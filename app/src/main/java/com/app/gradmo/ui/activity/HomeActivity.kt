@@ -146,7 +146,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             when (it.title) {
                 "Home" -> {
                     navController.navigate(R.id.homeFragment)
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                 }
 
                 "My Batches" -> {
@@ -155,7 +155,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
                 "Edit Profile" -> {
                     navController.navigate(R.id.editProfileNewFragment)
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                 }
 
                 "Payment History" -> {
@@ -279,7 +279,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
 
-    private fun popBackToHome() {
+    fun popBackToHome() {
         val popped = navController.popBackStack(R.id.homeFragment, false)
         if (!popped) {
             // HomeFragment not in back stack — navigate to it
@@ -297,10 +297,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         return R.layout.activity_home // Ensure this points to the correct layout resource
     }
     private fun floatingButtonClick() {
-        binding.floatingbtn.setOnClickListener {
+        /*binding.floatingbtn.setOnClickListener {
             binding.bottomNavigationView.selectedItemId = R.id.search
             binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
-        }
+        }*/
     }
     private fun clearBottomBarPadding() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root, null)
@@ -350,7 +350,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             when (item.itemId) {
                 R.id.home -> {
                     navController.navigate(R.id.homeFragment)
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 R.id.course -> {
@@ -358,26 +358,28 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                         putString("flow", "seeAll")
                     }
                     navController.navigate(R.id.searchInstituteFragment, bundle)
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 R.id.search -> {
-                    navController.navigate(R.id.searchInstituteFragment)
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+                    if (currentDestId != R.id.searchInstituteFragment) {
+                        navController.navigate(R.id.searchInstituteFragment)
+                    }
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 R.id.notification -> {
                     if (currentDestId != R.id.notificationFragment) {
                         navController.navigate(R.id.notificationFragment)
                     }
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                      true
                 }
                 R.id.account -> {
                     if (currentDestId != R.id.editProfileNewFragment) {
                         navController.navigate(R.id.editProfileNewFragment)
                     }
-                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
                 else -> false
@@ -390,7 +392,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
         navController.navigate(R.id.homeFragment)
 //        }
 //         binding.bottomNavigationView.menu.findItem(R.id.home).icon = ContextCompat.getDrawable(this, R.drawable.home_icon)
-        binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
+//        binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
          binding.bottomNavigationView.selectedItemId = R.id.home
         // Load profile image with stroke
     }
@@ -423,14 +425,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     }
     fun showNavigationView() {
         binding.bottomAppBar.isVisible=true
-        binding.floatingbtn.isVisible=true
-        binding.imgBtn.isVisible=true
+//        binding.floatingbtn.isVisible=true
+//        binding.imgBtn.isVisible=true
     }
     fun hideNavigationView(){
         binding.apply {
             bottomAppBar.isVisible=false
-            imgBtn.isVisible=false
-            floatingbtn.isVisible=false
+//            imgBtn.isVisible=false
+//            floatingbtn.isVisible=false
         }
     }
     private fun requestCameraAndMicrophonePermissions() {

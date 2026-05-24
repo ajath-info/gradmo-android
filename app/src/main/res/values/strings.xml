@@ -41,4 +41,5 @@
     <string name="promo_code">Promo Code</string>
     <string name="enter_your_promo_code">Enter Your Promo Code</string>
     <string name="grand_total">Grand Total</string>
+    <string name="search">Search</string>
 </resources>

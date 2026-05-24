@@ -58,35 +58,35 @@
                     app:menu="@menu/bottom_menu" />
             </com.google.android.material.bottomappbar.BottomAppBar>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+<!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 
 
-                android:id="@+id/floatingbtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="0dp"
-                android:backgroundTint="@color/white"
+<!--                android:id="@+id/floatingbtn"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_margin="0dp"-->
+<!--                android:backgroundTint="@color/white"-->
 
-                android:elevation="0dp"
-                app:layout_anchor="@id/bottomAppBar"
-                app:layout_constraintBottom_toBottomOf="@id/imgBtn"
-                app:layout_constraintEnd_toEndOf="@id/imgBtn"
-                app:layout_constraintStart_toStartOf="@id/imgBtn"
-                app:layout_constraintTop_toTopOf="@id/imgBtn"
-                app:maxImageSize="0dp" />
+<!--                android:elevation="0dp"-->
+<!--                app:layout_anchor="@id/bottomAppBar"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/imgBtn"-->
+<!--                app:layout_constraintEnd_toEndOf="@id/imgBtn"-->
+<!--                app:layout_constraintStart_toStartOf="@id/imgBtn"-->
+<!--                app:layout_constraintTop_toTopOf="@id/imgBtn"-->
+<!--                app:maxImageSize="0dp" />-->
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imgBtn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:elevation="6dp"
-                android:src="@drawable/search_icon_menu"
-                app:layout_anchor="@id/floatingbtn"
-                app:layout_anchorGravity="center"
-                app:layout_constraintTop_toTopOf="@id/bottomAppBar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:maxImageSize="0dp" />
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/imgBtn"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:elevation="6dp"-->
+<!--                android:src="@drawable/search_icon_menu"-->
+<!--                app:layout_anchor="@id/floatingbtn"-->
+<!--                app:layout_anchorGravity="center"-->
+<!--                app:layout_constraintTop_toTopOf="@id/bottomAppBar"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:maxImageSize="0dp" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

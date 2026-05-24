@@ -56,7 +56,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     // ── Auto-scroll ──────────────────────────────────────────────────────
     private val autoScrollHandler = Handler(Looper.getMainLooper())
-    private val AUTO_SCROLL_DELAY = 3000L  // 3 seconds
+    private val AUTO_SCROLL_DELAY = 7000L  // 3 seconds
 
     private val autoScrollRunnable = object : Runnable {
         override fun run() {

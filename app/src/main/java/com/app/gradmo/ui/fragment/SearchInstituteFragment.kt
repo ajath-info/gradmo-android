@@ -61,7 +61,7 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchQuery: String = ""
     private val autoScrollHandler = Handler(Looper.getMainLooper())
-    private val AUTO_SCROLL_DELAY = 3000L  // 3 seconds
+    private val AUTO_SCROLL_DELAY = 7000L  // 3 seconds
 
     private val autoScrollRunnable = object : Runnable {
         override fun run() {
@@ -232,7 +232,8 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
 
     private fun clickEvent() {
         binding.backButton.setOnClickListener{
-            findNavController().popBackStack()
+//            findNavController().popBackStack()
+            (activity as HomeActivity).popBackToHome()
         }
         binding.searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
