@@ -7,28 +7,28 @@ data class BatchDetailResponse(
 )
 
 data class BatchDetails(
-    val batchFecherd: List<BatchFetched>,
-    val batchImage: String,
-    val batchName: String,
-    val batch_id: Int,
-    val batch_offer_price: Int,
-    val batch_price: Int,
-    val batch_type: Int,
-    val canEnroll: Boolean,
-    val category_name: String,
-    val description: String,
-    val end_date: String,
-    val end_time: String,
-    val enrollment: Enrollment,
-    val instructor: String,
-    val logo: String,
-    val modules: Modules,
-    val pay_mode: String,
-    val schedule: String,
-    val start_date: String,
-    val start_time: String,
-    val subcategory_name: String,
-    val title: String
+    val batchFecherd: List<BatchFetched> = listOf(),
+    val batchImage: String?=null,
+    val batchName: String?=null,
+    val batch_id: Int?=null,
+    val batch_offer_price: Int?=null,
+    val batch_price: Int?=null,
+    val batch_type: Int?=null,
+    val canEnroll: Boolean?=null,
+    val category_name: String?=null,
+    val description: String?=null,
+    val end_date: String?=null,
+    val end_time: String?=null,
+    val enrollment: Enrollment?=null,
+    val instructor: String?=null,
+    val logo: String?=null,
+    val modules: Modules?=null,
+    val pay_mode: String?=null,
+    val schedule: String?=null,
+    val start_date: String?=null,
+    val start_time: String?=null,
+    val subcategory_name: String?=null,
+    val title: String?=null
 )
 
 data class BatchFetched(
@@ -37,50 +37,50 @@ data class BatchFetched(
 )
 
 data class Enrollment(
-    val added_by: String,
-    val create_at: String,
-    val status: Int
+    val added_by: String?=null,
+    val create_at: String?=null,
+    val status: Int?=null
 )
 
 data class Modules(
-    val attendance: Attendance,
-    val homework: Homework,
-    val library: Library,
-    val live_classes: LiveClasses,
-    val upcoming_exams: UpcomingExams,
-    val video_lectures: VideoLectures
+    val attendance: Attendance?=null,
+    val homework: Homework?=null,
+    val library: Library?=null,
+    val live_classes: LiveClasses?=null,
+    val upcoming_exams: UpcomingExams?=null,
+    val video_lectures: VideoLectures?=null
 )
 
 data class Attendance(
-    val icon: String,
-    val marked_records: Int
+    val icon: String?=null,
+    val marked_records: Int?=null
 )
 
 data class Homework(
-    val icon: String,
-    val pending_count: Int,
-    val today_count: Int
+    val icon: String?=null,
+    val pending_count: Int?=null,
+    val today_count: Int?=null
 )
 
 data class Library(
-    val book_count: Int,
-    val has_new_content: Boolean,
-    val icon: String,
-    val notes_count: Int
+    val book_count: Int?=null,
+    val has_new_content: Boolean?=null,
+    val icon: String?=null,
+    val notes_count: Int?=null
 )
 
 data class LiveClasses(
-    val current_session_id: String?,
-    val icon: String,
-    val is_live: Boolean
+    val current_session_id: String?=null,
+    val icon: String?=null,
+    val is_live: Boolean?=null
 )
 
 data class UpcomingExams(
-    val count: Int,
-    val icon: String
+    val count: Int?=null,
+    val icon: String?=null
 )
 
 data class VideoLectures(
-    val count: Int,
-    val icon: String
+    val count: Int?=null,
+    val icon: String?=null
 )

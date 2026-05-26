@@ -35,7 +35,7 @@ import kotlin.getValue
 
 class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     private lateinit var adapterBatchDetailsItems: AdapterBatchDetailsItems  // replace with your adapter
-    lateinit var batch: BatchDetails
+    var batch: BatchDetails = BatchDetails()
     var instituteName: String = ""
     private val viewModel: BatchDetailsViewModel by viewModels()
 
@@ -82,7 +82,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
 
     private fun setupUI() {
         binding.apply {
-            if (batch.enrollment.status==0){
+            if (batch.enrollment?.status==0){
                 blurView.isVisible=true
                 recyclerBatchDetailItem.isEnabled=false
                 recyclerBatchDetailItem.isClickable=false
@@ -234,7 +234,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     override fun getLayoutId(): Int = R.layout.fragment_batch_detail
 
     override fun restoreView() {
-        if (::batch.isInitialized) setupUI()
+        setupUI()
         setupRecyclerView()
     }
 }

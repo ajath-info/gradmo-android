@@ -77,6 +77,7 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         flow = arguments?.getString("flow", "") ?: ""
         Log.i("TAG", "flow: "+flow)
         setupUI()
+        setupInstitutesRecycler()
         currentPage = 1
         isLastPage = false
         instituteList.clear()
@@ -177,8 +178,28 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     private fun Int.dpToPx(): Int =
         (this * resources.displayMetrics.density).toInt()
 
+    // Call once in initView / onViewCreated
+    private fun setupInstitutesRecycler() {
+        searchInstituteAdapter = SearchInstituteAdapter(instituteList, ::onInstituteSelected)
+        binding.instituteRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext()) // make sure this is set
+            adapter = searchInstituteAdapter
+        }
+        addPaginationScroll()
+    }
 
-    private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
+    // Call every time a new page arrives
+    private fun appendInstitutes(newItems: List<InstituteListResponse.Institute>, totalRecords: Int) {
+        val start = instituteList.size
+        instituteList.addAll(newItems)
+        searchInstituteAdapter.notifyItemRangeInserted(start, newItems.size)
+        isLoading = false
+
+        if (newItems.size < pageSize) isLastPage = true
+
+        binding.tvShowingCount.text = "Showing ${instituteList.size} of $totalRecords results"
+    }
+    /*private fun setupInstitutesRecycler(institutes: List<InstituteListResponse.Institute>, isRestore:Boolean, totalRecords:Int) {
         searchInstituteAdapter = SearchInstituteAdapter(instituteList, ::onInstituteSelected)
         binding.instituteRecycler.apply {
             adapter = searchInstituteAdapter
@@ -196,7 +217,7 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
             }
             binding.tvShowingCount.text = "Showing ${instituteList.size} of ${totalRecords} results"
         }
-    }
+    }*/
 
     private fun addPaginationScroll() {
         val layoutManager = binding.instituteRecycler.layoutManager as LinearLayoutManager
@@ -400,21 +421,15 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         viewModel.getInstitutesLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
                         totalRecords = it.data.pagination.totalRecords
-                        setupInstitutesRecycler(it.data.institutes, false, totalRecords)
+                        appendInstitutes(it.data.institutes, totalRecords) // ← changed
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
-
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-
+                Status.LOADING -> if (currentPage==1) ProcessDialog.showDialog(requireContext(), true)
                 Status.ERROR -> {
                     Log.e("TAG", "Login Failed: ${it.message}")
                     ProcessDialog.dismissDialog(true)
@@ -447,9 +462,9 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
 
     }
     override fun restoreView() {
-        viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
-            setupInstitutesRecycler(it, true, totalRecords)
-        }
+        binding.instituteRecycler.adapter = searchInstituteAdapter
+        binding.tvShowingCount.text = "Showing ${instituteList.size} of $totalRecords results"
+
         viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
             setUpBannerViewPager(it)
         }
