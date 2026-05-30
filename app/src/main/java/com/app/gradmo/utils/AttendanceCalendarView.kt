@@ -6,8 +6,8 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import com.app.gradmo.model.static.CalenderModels.CalenderModels.AttendanceStatus
-import com.app.gradmo.model.static.CalenderModels.CalenderModels.MonthAttendanceData
+import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels.AttendanceStatus
+import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels.MonthAttendanceData
 import java.util.Calendar
 
 /**

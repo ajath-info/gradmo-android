@@ -87,116 +87,177 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-            <!-- ── SECTION 2 : TITLE + SEARCH ── -->
             <LinearLayout
-                android:layout_marginTop="16dp"
-                android:paddingBottom="16dp"
-                android:background="@color/light_blue_bg"
+                android:id="@+id/layoutForStudent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/searchLayoutForStudent"
                     android:layout_marginTop="16dp"
-                    android:layout_marginStart="20dp"
-                    android:id="@+id/searchSectionTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_medium"
-                    android:textColor="@color/black"
-
-                    android:text="You’re not enrolled in any batch till now!!"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/searchField"
+                    android:paddingBottom="16dp"
+                    android:background="@color/light_blue_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="18dp"
-                    android:background="@drawable/bg_login_flow_edittex"
-                    android:backgroundTint="@color/white"
-                    android:drawableStart="@drawable/search_icon"
-                    android:drawablePadding="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/manrope_medium"
-                    android:hint="Search a Institute to enroll"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="16dp"
-                    android:singleLine="true" />
-
-            </LinearLayout>
-
-            <!-- ── SECTION 3 : CATEGORY TITLE + HORIZONTAL RECYCLERVIEW ── -->
-            <LinearLayout
-                android:layout_marginTop="16dp"
-                android:background="@color/light_blue_bg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="24dp">
-
-                <!-- Row: Title  +  See All → -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/categoryTitle"
+                        android:visibility="gone"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="20dp"
+                        android:id="@+id/searchSectionTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/manrope_semibold"
-                        android:text="Nearby Institutes"
+                        android:fontFamily="@font/manrope_medium"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <LinearLayout
-                        android:id="@+id/seeAllLayout"
-                        android:layout_width="wrap_content"
+                        android:text="You’re not enrolled in any batch till now!!"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/searchField"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:background="@drawable/bg_login_flow_edittex"
+                        android:backgroundTint="@color/white"
+                        android:drawableStart="@drawable/search_icon"
+                        android:drawablePadding="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/manrope_medium"
+                        android:hint="Search a Institute to enroll"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingVertical="10dp"
+                        android:paddingHorizontal="16dp"
+                        android:singleLine="true" />
 
-                        <TextView
-                            android:id="@+id/seeAllText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="See All"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:id="@+id/seeAllArrow"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginStart="4dp"
-                            android:src="@drawable/next_arrow" />
-
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoryRecyclerView"
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:background="@color/light_blue_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    tools:listitem="@layout/adapter_home_institute"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="24dp">
 
+                    <!-- Row: Title  +  See All → -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/categoryTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/manrope_semibold"
+                            android:text="Nearby Institutes"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/seeAllLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/seeAllText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="See All"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <ImageView
+                                android:id="@+id/seeAllArrow"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginStart="4dp"
+                                android:src="@drawable/next_arrow" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/categoryRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/adapter_home_institute"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/layoutForTeacher"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:background="@color/light_blue_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:visibility="visible"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope_bold"
+                        android:textColor="@color/black"
+                        android:text="My Batches"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/searchBatch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:background="@drawable/bg_login_flow_edittex"
+                        android:backgroundTint="@color/white"
+                        android:drawableStart="@drawable/search_icon"
+                        android:drawablePadding="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/manrope_medium"
+                        android:hint="Search a Batch"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingVertical="10dp"
+                        android:paddingHorizontal="16dp"
+                        android:singleLine="true" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/batchRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/adapter_home_institute"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

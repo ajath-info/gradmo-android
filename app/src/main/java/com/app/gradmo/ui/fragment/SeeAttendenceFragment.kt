@@ -9,9 +9,8 @@ import androidx.navigation.fragment.findNavController
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentSeeAttendenceBinding
-import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.login.response.LoginResponse
-import com.app.gradmo.model.static.CalenderModels.CalenderModels
+import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
 import com.app.gradmo.ui.view_model.SeeAttendenceViewModel

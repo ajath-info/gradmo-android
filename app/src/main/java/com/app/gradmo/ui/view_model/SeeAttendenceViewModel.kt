@@ -1,14 +1,10 @@
 package com.app.gradmo.ui.view_model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.gradmo.model.attendence.AttendanceListRequest
 import com.app.gradmo.model.attendence.AttendanceListResponse
-import com.app.gradmo.model.exam_list.ExamDashboardResponse
-import com.app.gradmo.model.static.CalenderModels.CalenderModels.MonthAttendanceData
-import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.network_call.repository.ApiRepository
 import com.app.gradmo.utils.network_utils.Resources
 import com.app.gradmo.utils.network_utils.SingleLiveEvent

@@ -20,7 +20,6 @@ import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_details.ExamDetailsResponse
 import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.login.response.LoginResponse
-import com.app.gradmo.model.static.AssessmentQuestion
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences

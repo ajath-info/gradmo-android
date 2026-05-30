@@ -1,4 +1,4 @@
-package com.app.gradmo.ui.fragment
+package com.app.gradmo.ui.fragment.teacher
 
 import android.Manifest
 import android.content.Intent
@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
-import com.app.gradmo.databinding.FragmentBatchDetailBinding
+import com.app.gradmo.databinding.FragmentTeacherBatchDetailBinding
 import com.app.gradmo.model.batch_detail.BatchDetails
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.login.response.LoginResponse
@@ -33,7 +33,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import kotlin.getValue
 
-class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
+class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBinding>() {
     private lateinit var adapterBatchDetailsItems: AdapterBatchDetailsItems  // replace with your adapter
     var batch: BatchDetails = BatchDetails()
     var instituteName: String = ""
@@ -94,7 +94,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 enrollButton.isVisible=false
             }
             Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
-            instituteName.text = this@BatchDetailFragment.instituteName
+            instituteName.text = this@TeacherBatchDetailFragment.instituteName
             batchName.text = batch.batchName
             tvTeacherName.text = batch.instructor
             tvTiming.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
@@ -231,7 +231,7 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_batch_detail
+    override fun getLayoutId(): Int = R.layout.fragment_teacher_batch_detail
 
     override fun restoreView() {
         setupUI()

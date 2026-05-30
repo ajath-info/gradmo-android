@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.databinding.AdapterBatchDetailItemsBinding
-import com.app.gradmo.model.static.BatchDetailItem
+import com.app.gradmo.model.staticdata.BatchDetailItem
 
 class AdapterBatchDetailsItems(
     val list: List<BatchDetailItem>,

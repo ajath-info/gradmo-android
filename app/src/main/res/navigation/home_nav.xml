@@ -114,4 +114,8 @@
         android:id="@+id/completedExamListFragment"
         android:name="com.app.gradmo.ui.fragment.CompletedExamListFragment"
         android:label="CompletedExamListFragment" />
+    <fragment
+        android:id="@+id/teacherBatchDetailFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherBatchDetailFragment"
+        android:label="TeacherBatchDetailFragment" />
 </navigation>

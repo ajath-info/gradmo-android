@@ -44,8 +44,10 @@ import com.app.gradmo.utils.network_utils.ProcessDialog
 import com.app.gradmo.utils.network_utils.Status
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.text.ifEmpty
 
+@AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding>() {
 
     private lateinit var navController: NavController
@@ -58,8 +60,17 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (savedInstanceState == null) {
+            val navHostFragment = NavHostFragment.create(R.navigation.home_nav)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, navHostFragment)
+                .setPrimaryNavigationFragment(navHostFragment)
+                .commitNow()   // commitNow so findFragmentById works immediately below
+        }
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
         navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
         sideMenuBinding = binding.sideMenu
@@ -411,7 +422,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment, R.id.teacherBatchDetailFragment -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 

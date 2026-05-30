@@ -20,6 +20,8 @@ import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentHomeBinding
 import com.app.gradmo.model.banner.response.BannerResponse
+import com.app.gradmo.model.enums.UserType
+import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.login.response.LoginResponse
@@ -27,7 +29,10 @@ import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.PAYMENT_GATEWAY_ID
 import com.app.gradmo.preferences.PAYMENT_GATEWAY_SECRET_KEY
 import com.app.gradmo.preferences.Preferences
+import com.app.gradmo.preferences.USER_TYPE
+import com.app.gradmo.preferences.UserPreference
 import com.app.gradmo.ui.activity.HomeActivity
+import com.app.gradmo.ui.adapter.AdapterTeacherEnrolledBatch
 import com.app.gradmo.ui.adapter.HomeBannerAdapter
 import com.app.gradmo.ui.adapter.HomeInstituteAdapter
 import com.app.gradmo.ui.view_model.HomeViewModel
@@ -48,6 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var homeInstituteAdapter: HomeInstituteAdapter
+    private lateinit var adapterTeacherEnrolledBatch: AdapterTeacherEnrolledBatch
     private lateinit var homeBannerAdapter: HomeBannerAdapter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -72,19 +78,39 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val dots = mutableListOf<ImageView>()
 
     override fun initView(savedInstanceState: Bundle?) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        getLocationAndHitApi()
-        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
-            requireContext(), LOGIN_DATA
-        )?.data?.accessToken
-        setHeaderName()
+        setUserType()
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+        when(UserPreference.userType){
+            UserType.STUDENT ->{
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                getLocationAndHitApi()
+            }
+            UserType.TEACHER -> {
 
-        Log.i("TAG", "LOGIN_DATA: "+ Gson().toJson(Preferences.getCustomModelPreference<LoginResponse>(
-            requireContext(), LOGIN_DATA
-        )?.data))
+            }
+            UserType.INSTITUTE -> {
+
+            }
+        }
+        setHeaderName()
         viewModel.hitThirdPartyCredentialsDataApi("Bearer $accessToken")
         if (viewModel.getBannerLiveData().value?.data == null) {
             viewModel.hitBannerDataApi("Bearer $accessToken")
+        }
+    }
+
+    private fun setUserType() {
+        var userType = Preferences.getStringPreference(requireContext(), USER_TYPE)
+        when(userType){
+            "student" -> {
+                UserPreference.userType = UserType.STUDENT
+            }
+            "teacher" -> {
+                UserPreference.userType = UserType.TEACHER
+            }
+            "institute" -> {
+                UserPreference.userType = UserType.INSTITUTE
+            }
         }
     }
 
@@ -286,6 +312,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.categoryRecyclerView.apply {
             adapter = homeInstituteAdapter
         }
+    }
+    private fun setupBatchesRecycler(institutes: List<InstituteListResponse.Institute>) {
+        adapterTeacherEnrolledBatch = AdapterTeacherEnrolledBatch(listOf(), ::onBatchSelected)
+        binding.batchRecyclerView.apply {
+            adapter = adapterTeacherEnrolledBatch
+        }
+    }
+    fun onBatchSelected(batch:InstituteDetailResponse.Batche){
+//        val bundle=Bundle()
+//        bundle.putParcelable("batch", batch)
+//        bundle.putString("instituteName", institute.name)
+//        findNavController().navigate(R.id.batchDetailFragment, bundle)
     }
     fun onItemSelected(institute:InstituteListResponse.Institute){
         var bundle = Bundle()

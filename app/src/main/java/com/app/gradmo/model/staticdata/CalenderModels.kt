@@ -1,9 +1,9 @@
-package com.app.gradmo.model.static
+package com.app.gradmo.model.staticdata
 
 import androidx.annotation.ColorInt
 import com.app.gradmo.model.attendence.AttendanceListResponse
-import com.app.gradmo.model.static.CalenderModels.CalenderModels.AttendanceStatus
-import com.app.gradmo.model.static.CalenderModels.CalenderModels.MonthAttendanceData
+import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels.AttendanceStatus
+import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels.MonthAttendanceData
 
 class CalenderModels {
 

@@ -60,3 +60,15 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+# ─── Zoom Video SDK ───────────────────────────────────────────────
+-keep class us.zoom.** { *; }
+-dontwarn us.zoom.**
+
+-keep class com.zipow.** { *; }
+-dontwarn com.zipow.**
+
+# Keep native method bindings (JNI)
+-keepclasseswithmembernames class * {
+    native <methods>;
+}

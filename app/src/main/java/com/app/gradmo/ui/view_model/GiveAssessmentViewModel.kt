@@ -7,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_details.ExamDetailsResponse
 import com.app.gradmo.model.exam_list.ExamDashboardResponse
-import com.app.gradmo.model.exam_list.ExamsListRequest
-import com.app.gradmo.model.exam_list.UpcomingExamListResponse
-import com.app.gradmo.model.static.AssessmentOption
-import com.app.gradmo.model.static.AssessmentQuestion
+import com.app.gradmo.model.staticdata.AssessmentOption
+import com.app.gradmo.model.staticdata.AssessmentQuestion
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.network_call.repository.ApiRepository
 import com.app.gradmo.utils.network_utils.Resources

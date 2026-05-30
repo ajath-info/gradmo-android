@@ -7,7 +7,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseActivity
 import com.app.gradmo.databinding.ActivitySignupFlowBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignupFlowActivity : BaseActivity<ActivitySignupFlowBinding>() {
     private lateinit var navController: NavController
 

@@ -1,4 +1,4 @@
-package com.app.gradmo.model.static
+package com.app.gradmo.model.staticdata
 
 data class AssessmentQuestion(
     val id: Int,

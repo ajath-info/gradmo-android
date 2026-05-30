@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.R
 import com.app.gradmo.databinding.ItemAssessmentOptionBinding
-import com.app.gradmo.model.static.AssessmentOption
 
 // ─────────────────────────────────────────────────────────────
 // AssessmentOptionAdapter.kt
