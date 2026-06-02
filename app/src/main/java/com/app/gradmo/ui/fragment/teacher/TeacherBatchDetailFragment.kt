@@ -16,6 +16,7 @@ import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentTeacherBatchDetailBinding
 import com.app.gradmo.model.batch_detail.BatchDetails
+import com.app.gradmo.model.batch_list.BatchListResponse.Data.EnrolledBatche
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.staticdata.BatchDetailItem
@@ -24,6 +25,7 @@ import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
 import com.app.gradmo.ui.activity.ZoomVideoActivity
 import com.app.gradmo.ui.adapter.AdapterBatchDetailsItems
+import com.app.gradmo.ui.fragment.BatchDetailFragment
 import com.app.gradmo.ui.view_model.BatchDetailsViewModel
 import com.app.gradmo.utils.CommonUtils.convertTimeFormat
 import com.app.gradmo.utils.network_utils.ProcessDialog
@@ -40,12 +42,12 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     private val viewModel: BatchDetailsViewModel by viewModels()
 
     override fun initView(savedInstanceState: Bundle?) {
-        var batchItem = arguments?.getParcelable("batch") ?: InstituteDetailResponse.Batche()
+        var teacherBatch = arguments?.getParcelable("teacherBatch") ?: EnrolledBatche()
         instituteName = arguments?.getString("instituteName") ?: ""
         setupRecyclerView()
         observeViewModel()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        viewModel.hitBatchDetailsApi("Bearer $accessToken", batchItem.id.toString())
+        viewModel.hitBatchDetailsApi("Bearer $accessToken", teacherBatch.batch_id.toString())
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -82,17 +84,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
 
     private fun setupUI() {
         binding.apply {
-            if (batch.enrollment?.status==0){
-                blurView.isVisible=true
-                recyclerBatchDetailItem.isEnabled=false
-                recyclerBatchDetailItem.isClickable=false
-                enrollButton.isVisible=true
-            }else{
-                blurView.isVisible=false
-                recyclerBatchDetailItem.isEnabled=true
-                recyclerBatchDetailItem.isClickable=true
-                enrollButton.isVisible=false
-            }
+            enrollButton.isVisible=false
             Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
             instituteName.text = this@TeacherBatchDetailFragment.instituteName
             batchName.text = batch.batchName
@@ -153,7 +145,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     private fun openHomework() {
         var bundle = Bundle()
         bundle.putString("batch_id", batch.batch_id.toString())
-        findNavController().navigate(R.id.homeworkFragment, bundle)
+        findNavController().navigate(R.id.teacherHomeworkFragment, bundle)
     }
 
     companion object {

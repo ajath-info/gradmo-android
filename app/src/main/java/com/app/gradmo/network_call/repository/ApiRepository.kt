@@ -3,6 +3,7 @@ package com.app.gradmo.network_call.repository
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.state.GetStatesRequest
 import com.app.gradmo.model.attendence.AttendanceListRequest
+import com.app.gradmo.model.batch_list.BatchListRequest
 import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
@@ -79,4 +80,6 @@ class ApiRepository {
     suspend fun submitExamApi(token: String, request: SubmitExamRequest) = service.submitExam(token, request)
 
     suspend fun getAttendanceApi(token: String, request: AttendanceListRequest) = service.getAttendance(token, request)
+
+    suspend fun getBatchListApi(token: String, request: BatchListRequest) = service.getBatchList(token, request)
 }

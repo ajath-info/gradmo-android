@@ -9,6 +9,8 @@ import com.app.gradmo.model.attendence.AttendanceListRequest
 import com.app.gradmo.model.attendence.AttendanceListResponse
 import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.batch_detail.BatchDetailResponse
+import com.app.gradmo.model.batch_list.BatchListRequest
+import com.app.gradmo.model.batch_list.BatchListResponse
 import com.app.gradmo.model.create_order.CreateOrderResponse
 import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_list.ExamDashboardResponse
@@ -187,6 +189,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: AttendanceListRequest
     ): AttendanceListResponse
+
+    @POST("api/batch/batch-list")
+    suspend fun getBatchList(
+        @Header("Authorization") token: String,
+        @Body requestBody: BatchListRequest
+    ): BatchListResponse
 
 }
 

@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -20,6 +21,8 @@ import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentHomeBinding
 import com.app.gradmo.model.banner.response.BannerResponse
+import com.app.gradmo.model.batch_list.BatchListRequest
+import com.app.gradmo.model.batch_list.BatchListResponse
 import com.app.gradmo.model.enums.UserType
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
@@ -80,22 +83,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         setUserType()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        when(UserPreference.userType){
-            UserType.STUDENT ->{
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-                getLocationAndHitApi()
-            }
-            UserType.TEACHER -> {
-
-            }
-            UserType.INSTITUTE -> {
-
-            }
-        }
+        setUIForUserType(accessToken)
         setHeaderName()
         viewModel.hitThirdPartyCredentialsDataApi("Bearer $accessToken")
         if (viewModel.getBannerLiveData().value?.data == null) {
             viewModel.hitBannerDataApi("Bearer $accessToken")
+        }
+    }
+
+    private fun setUIForUserType(accessToken: String?) {
+        when(UserPreference.userType){
+            UserType.STUDENT ->{
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                getLocationAndHitApi()
+                binding.layoutForStudent.isVisible=true
+                binding.layoutForTeacher.isVisible=false
+            }
+            UserType.TEACHER -> {
+//                setupBatchesRecycler(listOf(InstituteDetailResponse.Batche(), InstituteDetailResponse.Batche()))
+                viewModel.hitBatchesDataApi("Bearer $accessToken", BatchListRequest())
+                binding.layoutForStudent.isVisible=false
+                binding.layoutForTeacher.isVisible=true
+            }
+            UserType.INSTITUTE -> {
+
+            }
         }
     }
 
@@ -313,17 +325,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = homeInstituteAdapter
         }
     }
-    private fun setupBatchesRecycler(institutes: List<InstituteListResponse.Institute>) {
-        adapterTeacherEnrolledBatch = AdapterTeacherEnrolledBatch(listOf(), ::onBatchSelected)
+    private fun setupBatchesRecycler(batches: List<BatchListResponse.Data.EnrolledBatche>) {
+        adapterTeacherEnrolledBatch = AdapterTeacherEnrolledBatch(batches, ::onBatchSelected)
         binding.batchRecyclerView.apply {
             adapter = adapterTeacherEnrolledBatch
         }
     }
-    fun onBatchSelected(batch:InstituteDetailResponse.Batche){
-//        val bundle=Bundle()
-//        bundle.putParcelable("batch", batch)
-//        bundle.putString("instituteName", institute.name)
-//        findNavController().navigate(R.id.batchDetailFragment, bundle)
+    fun onBatchSelected(batch:BatchListResponse.Data.EnrolledBatche){
+        val bundle=Bundle()
+        bundle.putParcelable("teacherBatch", batch)
+        bundle.putString("instituteName", /*institute.name*/"")
+        findNavController().navigate(R.id.teacherBatchDetailFragment, bundle)
     }
     fun onItemSelected(institute:InstituteListResponse.Institute){
         var bundle = Bundle()
@@ -354,6 +366,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun getLayoutId(): Int = R.layout.fragment_home
 
     private fun setObserver() {
+        viewModel.getBatchesLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        setupBatchesRecycler(it.data.data.enrolled_batches ?: listOf())
+//                        setupRatingRecycler(it.data.rating)
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
         viewModel.getBannerLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
@@ -416,12 +453,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun restoreView() {
         setHeaderName()
-
         viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
             setUpBannerViewPager(it)
         }
         viewModel.getInstitutesLiveData().value?.data?.institutes?.let {
             setupInstitutesRecycler(it)
+        }
+        viewModel.getBatchesLiveData().value?.data?.data?.enrolled_batches?.let {
+            setupBatchesRecycler(it)
         }
     }
 }

@@ -253,7 +253,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:clipToPadding="false"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         tools:listitem="@layout/adapter_home_institute"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

@@ -28,7 +28,9 @@ data class BatchDetails(
     val start_date: String?=null,
     val start_time: String?=null,
     val subcategory_name: String?=null,
-    val title: String?=null
+    val title: String?=null,
+    val enrolled_at: String?=null,
+    val enrollment_status: Int?=null,
 )
 
 data class BatchFetched(

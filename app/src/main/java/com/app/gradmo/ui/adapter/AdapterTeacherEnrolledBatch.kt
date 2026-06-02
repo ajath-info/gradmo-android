@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.R
 import com.app.gradmo.databinding.AdapterTeacherEnrolledBatchBinding
+import com.app.gradmo.model.batch_list.BatchListResponse
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.utils.CommonUtils.convertTimeFormat
 import com.bumptech.glide.Glide
 
 class AdapterTeacherEnrolledBatch(
-    private val batches: List<InstituteDetailResponse.Batche>,
-    private val onBatchSelected: (InstituteDetailResponse.Batche) -> Unit
+    private val batches: List<BatchListResponse.Data.EnrolledBatche>,
+    private val onBatchSelected: (BatchListResponse.Data.EnrolledBatche) -> Unit
 ) : RecyclerView.Adapter<AdapterTeacherEnrolledBatch.SearchInstituteViewHolder>() {
     inner class SearchInstituteViewHolder(val binding: AdapterTeacherEnrolledBatchBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -32,19 +33,11 @@ class AdapterTeacherEnrolledBatch(
     override fun onBindViewHolder(holder: SearchInstituteViewHolder, position: Int) {
         val batch = batches[position]
         holder.binding.apply {
-            Glide.with(root.context).load(batch.batch_image)
-                .placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder)
-                .into(imageView)
-            instituteName.text = batch.batch_name
+            Glide.with(root.context).load(batch.batchImage).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
+            instituteName.text = batch.batchName
 //            tvTeacherName.text = "N/A"
             tvTeacherName.text = "Offline"
-            tvTime.text = "${
-                convertTimeFormat(
-                    batch.start_time.toString(),
-                    "HH:mm:ss",
-                    "h:mm a"
-                )
-            } - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
+            tvTime.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
         holder.binding.root.setOnClickListener {
             onBatchSelected(batch)

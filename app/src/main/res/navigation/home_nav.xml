@@ -118,4 +118,13 @@
         android:id="@+id/teacherBatchDetailFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.TeacherBatchDetailFragment"
         android:label="TeacherBatchDetailFragment" />
+    <fragment
+        android:id="@+id/teacherHomeworkFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherHomeworkFragment"
+        android:label="TeacherHomeworkFragment" />
+    <fragment
+        android:id="@+id/createHomeworkFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.CreateHomeworkFragment"
+        android:label="fragment_create_homework"
+        tools:layout="@layout/fragment_create_homework" />
 </navigation>
