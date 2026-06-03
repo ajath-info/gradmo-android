@@ -130,7 +130,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     private fun openUpcomingExams() {
         var bundle = Bundle()
         bundle.putString("batch_id", batch.batch_id.toString())
-        findNavController().navigate(R.id.upcomingExamListFragment, bundle)
+        findNavController().navigate(R.id.teacherExamListFragment, bundle)
     }
     private fun openVideoLecture() {
         var bundle = Bundle()

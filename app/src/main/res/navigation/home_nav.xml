@@ -125,6 +125,17 @@
     <fragment
         android:id="@+id/createHomeworkFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.CreateHomeworkFragment"
-        android:label="fragment_create_homework"
-        tools:layout="@layout/fragment_create_homework" />
+        android:label="fragment_create_homework"/>
+    <fragment
+        android:id="@+id/teacherExamListFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherExamListFragment"
+        android:label="TeacherExamListFragment" />
+    <fragment
+        android:id="@+id/createExamDetailsFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.CreateExamDetailsFragment"
+        android:label="fragment_create_exam_details" />
+    <fragment
+        android:id="@+id/addQuestionsFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.AddQuestionsFragment"
+        android:label="AddQuestionsFragment" />
 </navigation>

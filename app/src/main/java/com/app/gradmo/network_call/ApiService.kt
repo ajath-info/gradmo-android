@@ -28,6 +28,7 @@ import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.logout.response.DeleteResponse
 import com.app.gradmo.model.plan_detail.PlanDetailsResponse
 import com.app.gradmo.model.promocode.response.PromocodeListResponse
+import com.app.gradmo.model.questions.CreateExamResponse
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.third_party_credentials.ThirdPartyCredentialsResponse
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
@@ -195,6 +196,13 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: BatchListRequest
     ): BatchListResponse
+
+    @Multipart
+    @POST("api/user/update-profile")
+    suspend fun createExam(
+        @Header("Authorization") accessToken: String,
+        @Part request:RequestBody,
+    ): CreateExamResponse
 
 }
 

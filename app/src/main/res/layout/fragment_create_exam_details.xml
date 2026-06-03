@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_bold"
-                android:text="Create Homework"
+                android:text="Assessment"
                 android:textColor="@color/black"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -46,7 +46,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         <LinearLayout
             app:layout_constraintTop_toBottomOf="@+id/headerLayout"
-            app:layout_constraintBottom_toTopOf="@+id/createButton"
+            app:layout_constraintBottom_toTopOf="@+id/addQuestions"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical">
@@ -54,7 +54,7 @@
                 android:id="@+id/heading"
                 style="@style/CommonLoginFlowEditText"
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:hint="Heading"
@@ -62,51 +62,47 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
             <EditText
-                android:id="@+id/details"
+                android:id="@+id/duration"
                 style="@style/CommonLoginFlowEditText"
                 android:layout_width="match_parent"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:lines="5"
-                android:gravity="start"
-                android:hint="Details"
+                android:hint="Duration (In Minutes)"
                 app:layout_constraintTop_toBottomOf="@id/bookIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
-            <LinearLayout
-                android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
+            <EditText
+                android:id="@+id/dueDate"
+                style="@style/CommonLoginFlowEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add Image"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:layout_marginStart="30dp"
-                    />
-                <com.google.android.material.button.MaterialButton
-                    style="@style/CommonButton1"
-                    android:backgroundTint="@color/theme_blue"
-                    android:id="@+id/browseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="30dp"
-                    android:text="Browse"
-                    android:drawableLeft="@drawable/browse_icon"/>
-            </LinearLayout>
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Due Date"
+                app:layout_constraintTop_toBottomOf="@id/bookIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <EditText
+                android:id="@+id/dueTime"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Due Time"
+                app:layout_constraintTop_toBottomOf="@id/bookIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
         </LinearLayout>
         <com.google.android.material.button.MaterialButton
             style="@style/CommonButton1"
             android:backgroundTint="@color/theme_blue"
-            android:id="@+id/createButton"
+            android:id="@+id/addQuestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send to Students"
+            android:text="Add Questions"
             android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

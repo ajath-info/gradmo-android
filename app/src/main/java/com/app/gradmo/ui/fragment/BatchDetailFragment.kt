@@ -43,7 +43,6 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         var batchItem = arguments?.getParcelable("batch") ?: InstituteDetailResponse.Batche()
         instituteName = arguments?.getString("instituteName") ?: ""
         setupRecyclerView()
-        observeViewModel()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitBatchDetailsApi("Bearer $accessToken", batchItem.id.toString())
     }
@@ -220,14 +219,6 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
             bundle.putString("batch_offer_price", batch.batch_offer_price.toString())
             bundle.putString("batch_id", batch.batch_id.toString())
             findNavController().navigate(R.id.selectPlanFragment, bundle)
-        }
-    }
-
-    private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-//            viewModel.categories.collect { list ->
-//                categoryAdapter.submitList(list)
-//            }
         }
     }
 

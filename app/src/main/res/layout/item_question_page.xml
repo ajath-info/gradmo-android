@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_question_page.xml
+    One page inside the ViewPager2.  Fully vertically scrollable.
+-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <!-- ── Title row with delete button ──────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="18dp"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/tvQuestionNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:text="Question 1"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <!--
+                    Delete button – hidden when only 1 question exists.
+                    Use a plain ImageView so it sits flush to the corner.
+                -->
+                <ImageView
+                    android:id="@+id/btnDeleteQuestion"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@color/black_view"
+                    android:padding="6dp"
+                    android:src="@drawable/cross_button"
+                    android:visibility="gone"
+                    android:contentDescription="Remove question" />
+
+            </LinearLayout>
+
+            <!-- ── Question text ─────────────────────────────────────────── -->
+            <EditText
+                android:id="@+id/etQuestion"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                android:gravity="top|start"
+                android:hint="Question"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minHeight="56dp"
+                android:minLines="2" />
+
+            <!-- ── Add Image row ──────────────────────────────────────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:text="Add Image"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBrowse"
+                    style="@style/CommonButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/theme_blue"
+                    android:drawableStart="@drawable/browse_icon"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="10dp"
+                    android:text="Browse"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- ── Image preview card (hidden until image is chosen) ──────── -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imagePreviewCard"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <ImageView
+                    android:id="@+id/ivPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <!-- ✕ to remove the chosen image -->
+                <ImageView
+                    android:id="@+id/btnRemoveImage"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:background="@color/black_view"
+                    android:padding="4dp"
+                    android:src="@drawable/cross_button"
+                    android:contentDescription="Remove image" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── Add Options label ──────────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/manrope_semibold"
+                android:text="Add Options"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <!-- Options — same CommonLoginFlowEditText style as question -->
+            <EditText
+                android:id="@+id/etOption1"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                android:hint="Option 1"
+                android:inputType="textCapSentences" />
+
+            <EditText
+                android:id="@+id/etOption2"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="Option 2"
+                android:inputType="textCapSentences" />
+
+            <EditText
+                android:id="@+id/etOption3"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="Option 3"
+                android:inputType="textCapSentences" />
+
+            <EditText
+                android:id="@+id/etOption4"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="Option 4"
+                android:inputType="textCapSentences" />
+
+            <!-- ── Correct Answer ─────────────────────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/manrope_semibold"
+                android:text="Correct Answer"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                android:gravity="start"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAnswer1"
+                    style="@style/AnswerOptionButton"
+                    android:text="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAnswer2"
+                    style="@style/AnswerOptionButton"
+                    android:layout_marginStart="10dp"
+                    android:text="2" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAnswer3"
+                    style="@style/AnswerOptionButton"
+                    android:layout_marginStart="10dp"
+                    android:text="3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAnswer4"
+                    style="@style/AnswerOptionButton"
+                    android:layout_marginStart="10dp"
+                    android:text="4" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
