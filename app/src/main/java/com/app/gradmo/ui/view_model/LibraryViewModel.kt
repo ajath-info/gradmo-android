@@ -44,33 +44,4 @@ class LibraryViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-
-
-
-    private val citiesLiveDate = SingleLiveEvent<Resources<GetCitiesResponse>>()
-
-    fun getCitiesLiveData(): LiveData<Resources<GetCitiesResponse>> {
-        return citiesLiveDate
-    }
-    fun hitCitiesDataApi(request: GetCitiesRequest) {
-
-        try {
-            citiesLiveDate.postValue(Resources.loading(null))
-            viewModelScope.launch {
-                try {
-                    citiesLiveDate.postValue(
-                        Resources.success(
-                            ApiRepository().getCitiesApi(request)
-                        )
-                    )
-                } catch (ex: Exception) {
-                    citiesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
-
-                }
-            }
-
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
 }

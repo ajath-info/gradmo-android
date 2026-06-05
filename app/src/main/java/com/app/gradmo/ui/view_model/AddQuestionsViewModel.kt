@@ -22,13 +22,14 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import us.google.protobuf.Api
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
 class AddQuestionsViewModel @Inject constructor(
-    private val apiRepository: ApiRepository
+//    private val apiRepository: ApiRepository
 ) : ViewModel() {
 
     // ── Question list (single source of truth for the adapter) ───────────
@@ -168,11 +169,11 @@ class AddQuestionsViewModel @Inject constructor(
                     }
                 }
 
-                val response = apiRepository.createExamApi(multipartBuilder.build(), token)
+                val response = ApiRepository().createExamApi(multipartBuilder.build(), token)
 
                 withContext(Dispatchers.Main) {
                     if (response.status == "true") {
-//                        _submitResult.postValue(response)
+                        _submitResult.postValue(Resources.success(response))
                     } else {
                         _submitResult.postValue(Resources.error(response.msg ?: "", null))
                     }

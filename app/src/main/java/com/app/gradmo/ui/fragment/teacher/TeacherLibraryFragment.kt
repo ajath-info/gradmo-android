@@ -1,7 +1,12 @@
 package com.app.gradmo.ui.fragment.teacher
 
+import android.app.AlertDialog
+import android.app.DownloadManager
+import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -20,16 +25,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentFilterInstituteBottomSheetBinding
-import com.app.gradmo.databinding.FragmentHomeworkBinding
-import com.app.gradmo.databinding.FragmentTeacherHomeworkBinding
-import com.app.gradmo.model.homework.HomeworkListResponse
+import com.app.gradmo.databinding.FragmentLibraryBinding
+import com.app.gradmo.databinding.FragmentTeacherLibraryBinding
 import com.app.gradmo.model.library_list.LibraryListRequest
+import com.app.gradmo.model.library_list.LibraryListResponse
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
-import com.app.gradmo.ui.activity.HomeActivity
-import com.app.gradmo.ui.adapter.AdapterHomework
-import com.app.gradmo.ui.view_model.HomeworkViewModel
+import com.app.gradmo.ui.adapter.AdapterLibraryBook
+import com.app.gradmo.ui.view_model.LibraryViewModel
 import com.app.gradmo.utils.CommonUtils
 import com.app.gradmo.utils.CommonUtils.updateModeUI
 import com.app.gradmo.utils.CommonUtils.updateSortUI
@@ -41,20 +45,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
 @AndroidEntryPoint
-class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
+class TeacherLibraryFragment : BaseFragment<FragmentTeacherLibraryBinding>() {
     private var totalRecords: Int = 0
     private var currentPage = 1
     private val pageSize = 10   // adjust as per API
     private var isLoading = false
     private var isLastPage = false
 
-    private val BooksList = mutableListOf<HomeworkListResponse.HomeWork>()
-    private val viewModel: HomeworkViewModel by viewModels()
-    private lateinit var libraryBooksAdapter: AdapterHomework  // replace with your adapter
+    private val BooksList = mutableListOf<LibraryListResponse.Data.Library>()
+    private val viewModel: LibraryViewModel by viewModels()
+    private lateinit var libraryBooksAdapter: AdapterLibraryBook  // replace with your adapter
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
-    private var flow = ""    // "online" / "offline" / ""
     private var batch_id = ""
 
     private var searchRunnable: Runnable? = null
@@ -62,22 +65,27 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
     private var searchQuery: String = ""
 
     override fun initView(savedInstanceState: Bundle?) {
-        flow = arguments?.getString("flow", "") ?: ""
+
         batch_id = arguments?.getString("batch_id", "") ?: ""
+        Log.i("TAG", "batch_id: "+batch_id)
+
     }
+
     override fun onResume() {
         super.onResume()
-        initHomeworkApi()
+        initLibraryApi()
     }
-    fun initHomeworkApi(){
+    private fun initLibraryApi() {
         currentPage = 1
         isLastPage = false
         BooksList.clear()
+
         setupBooksRecycler(listOf(), false, totalRecords)
-        callHomeworkApi()
+        callLibraryApi()
     }
-    private fun setupBooksRecycler(institutes: List<HomeworkListResponse.HomeWork>, isRestore:Boolean, totalRecords:Int) {
-        libraryBooksAdapter = AdapterHomework(BooksList, ::onBookSelected)
+
+    private fun setupBooksRecycler(institutes: List<LibraryListResponse.Data.Library>, isRestore:Boolean, totalRecords:Int) {
+        libraryBooksAdapter = AdapterLibraryBook(BooksList, ::onBookSelected)
         binding.instituteRecycler.apply {
             adapter = libraryBooksAdapter
         }
@@ -120,19 +128,48 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
     private fun loadNextPage() {
         isLoading = true
         currentPage++
-        callHomeworkApi()
+        callLibraryApi()
     }
-    private fun onBookSelected(homework: HomeworkListResponse.HomeWork) {
-        var bundle = Bundle()
-        bundle.putParcelable("homework", homework)
-        findNavController().navigate(R.id.homeworkDetailFragment, bundle)
+    private fun onBookSelected(institute: LibraryListResponse.Data.Library) {
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Download File")
+            .setMessage("Do you want to download this file?")
+            .setPositiveButton("Yes") { _, _ ->
+
+                val request = DownloadManager.Request(Uri.parse(institute.downloadUrl))
+                    .setTitle(institute.fileName)
+                    .setDescription("Downloading file...")
+                    .setNotificationVisibility(
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                    )
+                    .setAllowedOverMetered(true)
+                    .setAllowedOverRoaming(true)
+                    .setDestinationInExternalPublicDir(
+                        Environment.DIRECTORY_DOWNLOADS,
+                        institute.fileName
+                    )
+
+                val downloadManager =
+                    requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                downloadManager.enqueue(request)
+
+                Toast.makeText(
+                    requireContext(),
+                    "Download started",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun clickEvent() {
-        binding.createButton.setOnClickListener {
+        binding.uploadButton.setOnClickListener {
             var bundle = Bundle()
             bundle.putString("batch_id", batch_id.toString())
-            findNavController().navigate(R.id.createHomeworkFragment, bundle)
+            findNavController().navigate(R.id.addLibraryFragment, bundle)
         }
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
@@ -146,7 +183,7 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
                 BooksList.clear()
                 libraryBooksAdapter.notifyDataSetChanged()
 
-                callHomeworkApi()
+                callLibraryApi()
                 true
             } else false
         }
@@ -166,7 +203,7 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
                         BooksList.clear()
                         libraryBooksAdapter.notifyDataSetChanged()
 
-                        callHomeworkApi()
+                        callLibraryApi()
                     }
                 }
 
@@ -252,9 +289,9 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
         BooksList.clear()
         libraryBooksAdapter.notifyDataSetChanged()
 
-        callHomeworkApi()
+        callLibraryApi()
     }
-    private fun callHomeworkApi() {
+    private fun callLibraryApi() {
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(),
             LOGIN_DATA
@@ -264,24 +301,24 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
             batch_id =batch_id
         )
 
-        viewModel.hitHomeworkDataApi("Bearer $accessToken", request)
+        viewModel.hitLibraryDataApi("Bearer $accessToken", request)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
         clickEvent()
     }
-    override fun getLayoutId(): Int = R.layout.fragment_teacher_homework
+    override fun getLayoutId(): Int = R.layout.fragment_teacher_library
     private fun setObserver() {
-        viewModel.getHomeworkLiveData().observe(viewLifecycleOwner) {
+        viewModel.getLibraryLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "getHomeworkLiveData success: ${Gson().toJson(it)}")
+                    Log.e("TAG", " ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-                        totalRecords = it.data.pagination.totalRecords
-                        setupBooksRecycler(it.data.homeWork, false, totalRecords)
+                        totalRecords = it.data.data.pagination.totalRecords
+                        setupBooksRecycler(it.data.data.library, false, totalRecords)
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
                             .show()
                     }
                     ProcessDialog.dismissDialog(true)
@@ -300,10 +337,9 @@ class TeacherHomeworkFragment : BaseFragment<FragmentTeacherHomeworkBinding>() {
 
     }
     override fun restoreView() {
-        viewModel.getHomeworkLiveData().value?.data?.homeWork?.let {
+        viewModel.getLibraryLiveData().value?.data?.data?.library?.let {
             setupBooksRecycler(it, true, totalRecords)
         }
-//        setupBooksRecycler(listOf(), false, totalRecords)
     }
 
 }

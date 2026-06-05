@@ -13,14 +13,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
-import com.app.gradmo.databinding.FragmentBatchDetailBinding
+import com.app.gradmo.databinding.FragmentAddLibraryBinding
 import com.app.gradmo.databinding.FragmentCreateHomeworkBinding
-import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
-import com.app.gradmo.ui.view_model.BatchDetailsViewModel
+import com.app.gradmo.ui.view_model.AddLibraryViewModel
 import com.app.gradmo.ui.view_model.CreateHomeWorkViewModel
+import com.app.gradmo.ui.view_model.LibraryViewModel
 import com.app.gradmo.utils.network_utils.ProcessDialog
 import com.app.gradmo.utils.network_utils.Status
 import com.google.gson.Gson
@@ -29,13 +29,14 @@ import java.io.File
 import kotlin.getValue
 
 @AndroidEntryPoint
-class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
+class AddLibraryFragment : BaseFragment<FragmentAddLibraryBinding>() {
 
-    private val viewModel: CreateHomeWorkViewModel by viewModels()
+    private val viewModel: AddLibraryViewModel by viewModels()
     private var batchId = ""
     private var selectedPdfFile: File? = null
     private var accessToken = ""
 
+    // File picker launcher
     private val filePickerLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -44,7 +45,6 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         batchId = arguments?.getString("batch_id", "") ?: ""
-        Log.i("TAG", "initView batchId: ${batchId}")
         accessToken = Preferences.getCustomModelPreference<LoginResponse>(
             requireContext(), LOGIN_DATA
         )?.data?.accessToken ?: ""
@@ -62,18 +62,17 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
         }
 
         binding.browseButton.setOnClickListener {
-            // Homework accepts images per the XML ("Add Image") but API sends pdf_file key
-            // Launching both image and PDF picker — adjust mime type as needed
-            filePickerLauncher.launch("*/*")
+            filePickerLauncher.launch("application/pdf")
         }
 
         binding.createButton.setOnClickListener {
             if (validateInputs()) {
-                viewModel.hitCreateHomeWorkApi(
+                viewModel.hitAddLibraryDataApi(
                     token = "Bearer $accessToken",
                     batchId = batchId,
-                    description = binding.details.text.toString().trim(),
-                    title = binding.heading.text.toString().trim(),
+                    subject = binding.subject.text.toString().trim(),
+                    title = binding.title.text.toString().trim(),
+                    topic = binding.topic.text.toString().trim(),
                     pdfFile = selectedPdfFile!!
                 )
             }
@@ -81,21 +80,27 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
     }
 
     private fun validateInputs(): Boolean {
-        val heading = binding.heading.text.toString().trim()
-        val details = binding.details.text.toString().trim()
+        val subject = binding.subject.text.toString().trim()
+        val title = binding.title.text.toString().trim()
+        val topic = binding.topic.text.toString().trim()
 
-        if (heading.isEmpty()) {
-            binding.heading.error = "Heading is required"
-            binding.heading.requestFocus()
+        if (subject.isEmpty()) {
+            binding.subject.error = "Subject is required"
+            binding.subject.requestFocus()
             return false
         }
-        if (details.isEmpty()) {
-            binding.details.error = "Details are required"
-            binding.details.requestFocus()
+        if (title.isEmpty()) {
+            binding.title.error = "Title is required"
+            binding.title.requestFocus()
+            return false
+        }
+        if (topic.isEmpty()) {
+            binding.topic.error = "Topic is required"
+            binding.topic.requestFocus()
             return false
         }
         if (selectedPdfFile == null) {
-            Toast.makeText(requireContext(), "Please select a file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a PDF file", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -103,7 +108,7 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
 
     private fun handleSelectedFile(uri: Uri) {
         try {
-            val fileName = getFileNameFromUri(uri) ?: "selected_file"
+            val fileName = getFileNameFromUri(uri) ?: "selected_file.pdf"
             val tempFile = File(requireContext().cacheDir, fileName)
 
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -113,6 +118,7 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
             }
 
             selectedPdfFile = tempFile
+            // Show the selected filename next to Browse button
             Toast.makeText(requireContext(), "File selected: $fileName", Toast.LENGTH_SHORT).show()
 
         } catch (e: Exception) {
@@ -133,15 +139,16 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
     }
 
     private fun setObserver() {
-        viewModel.getCreateHomeWorkLiveData().observe(viewLifecycleOwner) {
+        viewModel.addLibraryDataLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
                     ProcessDialog.dismissDialog(true)
                     if (it.data?.status == "true") {
-                        Toast.makeText(requireContext(), "Homework added successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Book added successfully", Toast.LENGTH_SHORT).show()
+                        // Navigate back and signal the list fragment to refresh
                         requireActivity().supportFragmentManager.popBackStack()
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
                 Status.LOADING -> {
@@ -155,6 +162,6 @@ class CreateHomeworkFragment : BaseFragment<FragmentCreateHomeworkBinding>() {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_create_homework
+    override fun getLayoutId(): Int = R.layout.fragment_add_library
     override fun restoreView() {}
 }

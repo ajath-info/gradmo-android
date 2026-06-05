@@ -138,4 +138,16 @@
         android:id="@+id/addQuestionsFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.AddQuestionsFragment"
         android:label="AddQuestionsFragment" />
+    <fragment
+        android:id="@+id/markAttendanceFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.MarkAttendanceFragment"
+        android:label="MarkAttendanceFragment" />
+    <fragment
+        android:id="@+id/addLibraryFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.AddLibraryFragment"
+        android:label="AddLibraryFragment" />
+    <fragment
+        android:id="@+id/teacherLibraryFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherLibraryFragment"
+        android:label="TeacherLibraryFragment" />
 </navigation>

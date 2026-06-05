@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -30,6 +31,8 @@ import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
 import com.app.gradmo.model.address.state.GetStatesRequest
 import com.app.gradmo.model.address.state.GetStatesResponse
+import com.app.gradmo.model.batch_list.BatchListRequest
+import com.app.gradmo.model.enums.UserType
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.login.response.UserData
 import com.app.gradmo.preferences.IS_LOGIN
@@ -44,6 +47,7 @@ import com.app.gradmo.utils.CommonUtils.touchHideKeyBoard
 import com.app.gradmo.utils.network_utils.ProcessDialog
 import com.app.gradmo.utils.network_utils.Status
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -91,6 +95,7 @@ class EditProfileNewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentEditProfileNewBinding.inflate(layoutInflater)
+        setUserType()
         initViews()
         backListener()
         setUI()
@@ -99,7 +104,20 @@ class EditProfileNewFragment : Fragment() {
         }
         return binding.root
     }
-
+    private fun setUserType() {
+        var userType = Preferences.getStringPreference(requireContext(), USER_TYPE)
+        when(userType){
+            "student" -> {
+                UserPreference.userType = UserType.STUDENT
+            }
+            "teacher" -> {
+                UserPreference.userType = UserType.TEACHER
+            }
+            "institute" -> {
+                UserPreference.userType = UserType.INSTITUTE
+            }
+        }
+    }
     private fun backListener() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (from!="signup"||from!="incompleteProfile"){
@@ -207,6 +225,21 @@ class EditProfileNewFragment : Fragment() {
 
     private fun setUI() {
         binding.apply {
+            when(UserPreference.userType){
+                UserType.STUDENT ->{
+                    binding.educationalInfoText.isVisible = true
+                    binding.etSchoolName.isVisible = true
+                    binding.etGrade.isVisible = true
+                }
+                UserType.TEACHER -> {
+                    binding.educationalInfoText.isVisible = false
+                    binding.etSchoolName.isVisible = false
+                    binding.etGrade.isVisible = false
+                }
+                UserType.INSTITUTE -> {
+
+                }
+            }
             if (from=="signup"){
                 etName.setText(tempDetails.name)
                 nameLabel.text = tempDetails.name

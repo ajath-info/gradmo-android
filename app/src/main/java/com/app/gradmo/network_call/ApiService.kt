@@ -1,5 +1,7 @@
 package com.app.gradmo.network_call
 
+import com.app.gradmo.model.add_homework.AddHomeworkResponse
+import com.app.gradmo.model.add_library.AddLibraryDataResponse
 import com.app.gradmo.model.exam_details.ExamDetailsResponse
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
@@ -148,6 +150,29 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: LibraryListRequest
     ): LibraryListResponse
+
+    @Multipart
+    @POST("api/batch/library-add-book")
+    suspend fun addLibraryData(
+        @Header("Authorization") token: String,
+        @Part("batch_id") batchId: RequestBody,
+        @Part("subject") subject: RequestBody,
+        @Part("title") title: RequestBody,
+        @Part("topic") topic: RequestBody,
+        @Part pdf_file: MultipartBody.Part
+    ): AddLibraryDataResponse
+
+    @Multipart
+    @POST("api/batch/homework-add")
+    suspend fun addHomeworkData(
+        @Header("Authorization") token: String,
+        @Part("batch_id") batchId: RequestBody,
+        @Part("subject_id") subjectId: RequestBody,
+        @Part("date") date: RequestBody,
+        @Part("description") description: RequestBody,
+//        @Part("title") title: RequestBody,
+        @Part pdf_file: MultipartBody.Part
+    ): AddHomeworkResponse
 
     @POST("api/batch/homework-list")
     suspend fun getHomeworkList(

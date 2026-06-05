@@ -1,18 +1,23 @@
-package com.app.gradmo.ui.fragment
+package com.app.gradmo.ui.fragment.teacher
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
+import com.app.gradmo.databinding.FragmentMarkAttendanceBinding
 import com.app.gradmo.databinding.FragmentSeeAttendenceBinding
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
+import com.app.gradmo.ui.view_model.MarkAttendanceViewModel
 import com.app.gradmo.ui.view_model.SeeAttendenceViewModel
 import com.app.gradmo.utils.network_utils.ProcessDialog
 import com.app.gradmo.utils.network_utils.Status
@@ -22,8 +27,8 @@ import java.text.DateFormatSymbols
 import kotlin.getValue
 
 @AndroidEntryPoint
-class SeeAttendenceFragment : BaseFragment<FragmentSeeAttendenceBinding>() {
-    private val viewModel: SeeAttendenceViewModel by viewModels()
+class MarkAttendanceFragment : BaseFragment<FragmentMarkAttendanceBinding>() {
+    private val viewModel: MarkAttendanceViewModel by viewModels()
     private var batch_id = ""
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -33,9 +38,6 @@ class SeeAttendenceFragment : BaseFragment<FragmentSeeAttendenceBinding>() {
             requireContext(), LOGIN_DATA
         )?.data?.accessToken ?: ""
 
-        // Kicks off the first API call for the current month
-        viewModel.init("Bearer $accessToken")
-        viewModel.batchId = batch_id
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,11 +59,7 @@ class SeeAttendenceFragment : BaseFragment<FragmentSeeAttendenceBinding>() {
                         // Convert raw API response → UI model
                         val uiData = CalenderModels.MonthAttendanceData.fromApiResponse(it.data)
 
-                        updateMonthTitle(uiData.year, uiData.month)
-                        binding.calendarView.setMonthData(uiData)
-                        binding.tvAttendanceSummary.text =
-                            "Attendance for the month : ${uiData.presentCount}/${uiData.totalDays} (${uiData.percentage}%)"
-                    } else {
+                        } else {
                         Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -85,26 +83,9 @@ class SeeAttendenceFragment : BaseFragment<FragmentSeeAttendenceBinding>() {
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-
-        binding.btnPreviousMonth.setOnClickListener {
-            viewModel.goToPreviousMonth()
-        }
-
-        binding.btnNextMonth.setOnClickListener {
-            viewModel.goToNextMonth()
-        }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private fun updateMonthTitle(year: Int, month: Int) {
-        val monthName = DateFormatSymbols().months[month - 1]  // month is 1-based
-        binding.tvMonthYear.text = "$monthName $year"
-    }
-
-    // ── BaseFragment ──────────────────────────────────────────────────────────
-
-    override fun getLayoutId(): Int = R.layout.fragment_see_attendence
+    override fun getLayoutId(): Int = R.layout.fragment_mark_attendance
 
     override fun restoreView() {}
 }

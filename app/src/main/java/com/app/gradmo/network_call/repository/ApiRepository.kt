@@ -16,8 +16,12 @@ import com.app.gradmo.network_call.RetrofitBuilder
 import com.app.gradmo.ui.signup.model.ChangePasswordRequest
 import com.app.gradmo.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class ApiRepository {
     private val service = RetrofitBuilder.apiService
@@ -66,6 +70,46 @@ class ApiRepository {
     suspend fun batchDetailsApi(token: String, batch_id: String) = service.batchDetails(token, batch_id)
 
     suspend fun getLibraryListApi(token: String, request: LibraryListRequest) = service.getLibraryList(token, request)
+
+    suspend fun addLibraryDataApi(
+        token: String,
+        batchId: String,
+        subject: String,
+        title: String,
+        topic: String,
+        pdfFile: File
+    ) = service.addLibraryData(
+        token = token,
+        batchId = batchId.toRequestBody("text/plain".toMediaTypeOrNull()),
+        subject = subject.toRequestBody("text/plain".toMediaTypeOrNull()),
+        title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
+        topic = topic.toRequestBody("text/plain".toMediaTypeOrNull()),
+        pdf_file = MultipartBody.Part.createFormData(
+            "pdf_file", pdfFile.name,
+            pdfFile.asRequestBody("application/pdf".toMediaTypeOrNull())
+        )
+    )
+
+    suspend fun addHomeworkDataApi(
+        token: String,
+        batchId: String,
+        subjectId: String,
+        date: String,
+        description: String,
+        title: String,
+        pdfFile: File
+    ) = service.addHomeworkData(
+        token = token,
+        batchId = batchId.toRequestBody("text/plain".toMediaTypeOrNull()),
+        subjectId = subjectId.toRequestBody("text/plain".toMediaTypeOrNull()),
+        date = date.toRequestBody("text/plain".toMediaTypeOrNull()),
+        description = description.toRequestBody("text/plain".toMediaTypeOrNull()),
+//        title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
+        pdf_file = MultipartBody.Part.createFormData(
+            "pdf_file", pdfFile.name,
+            pdfFile.asRequestBody("application/pdf".toMediaTypeOrNull())
+        )
+    )
 
     suspend fun getHomeworkListApi(token: String, request: LibraryListRequest) = service.getHomeworkList(token, request)
 

@@ -31,11 +31,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_bold"
-                android:text="Create Homework"
+                android:text="Add Library"
                 android:textColor="@color/black"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -51,18 +50,29 @@
             android:layout_height="0dp"
             android:orientation="vertical">
             <EditText
-                android:id="@+id/heading"
+                android:id="@+id/subject"
                 style="@style/CommonLoginFlowEditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:hint="Heading"
+                android:hint="Subject"
                 app:layout_constraintTop_toBottomOf="@id/bookIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
             <EditText
-                android:id="@+id/details"
+                android:id="@+id/title"
+                style="@style/CommonLoginFlowEditText"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Title"
+                app:layout_constraintTop_toBottomOf="@id/bookIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <EditText
+                android:id="@+id/topic"
                 style="@style/CommonLoginFlowEditText"
                 android:layout_width="match_parent"
                 android:layout_marginTop="25dp"
@@ -70,7 +80,7 @@
                 android:layout_marginEnd="20dp"
                 android:lines="5"
                 android:gravity="start"
-                android:hint="Details"
+                android:hint="Topic"
                 app:layout_constraintTop_toBottomOf="@id/bookIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />

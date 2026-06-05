@@ -112,7 +112,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
                 openLibrary()
             }
             3->{
-                openSeeAttendance()
+                openMarkAttendance()
             }
             4->{
                 openUpcomingExams()
@@ -122,10 +122,10 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
             }
         }
     }
-    private fun openSeeAttendance() {
+    private fun openMarkAttendance() {
         var bundle = Bundle()
         bundle.putString("batch_id", batch.batch_id.toString())
-        findNavController().navigate(R.id.seeAttendenceFragment, bundle)
+        findNavController().navigate(R.id.markAttendanceFragment, bundle)
     }
     private fun openUpcomingExams() {
         var bundle = Bundle()
@@ -140,7 +140,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     private fun openLibrary() {
         var bundle = Bundle()
         bundle.putString("batch_id", batch.batch_id.toString())
-        findNavController().navigate(R.id.libraryFragment, bundle)
+        findNavController().navigate(R.id.teacherLibraryFragment, bundle)
     }
     private fun openHomework() {
         var bundle = Bundle()
