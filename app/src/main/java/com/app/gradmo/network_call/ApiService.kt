@@ -32,6 +32,7 @@ import com.app.gradmo.model.plan_detail.PlanDetailsResponse
 import com.app.gradmo.model.promocode.response.PromocodeListResponse
 import com.app.gradmo.model.questions.CreateExamResponse
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
+import com.app.gradmo.model.teacher_created_exams.TeacherCreatedExamsResponse
 import com.app.gradmo.model.third_party_credentials.ThirdPartyCredentialsResponse
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentResponse
@@ -222,12 +223,16 @@ interface ApiService {
         @Body requestBody: BatchListRequest
     ): BatchListResponse
 
-    @Multipart
-    @POST("api/user/update-profile")
+    @POST("api/batch/exam-add")   // ← update to your real endpoint
     suspend fun createExam(
         @Header("Authorization") accessToken: String,
-        @Part request:RequestBody,
+        @Body request: MultipartBody          // whole multipart body built in ViewModel
     ): CreateExamResponse
 
+    @POST("api/batch/exam-manage-list")
+    suspend fun getTeacherCreatedExamList(
+        @Header("Authorization") token: String,
+        @Body requestBody: ExamsListRequest
+    ): TeacherCreatedExamsResponse
 }
 

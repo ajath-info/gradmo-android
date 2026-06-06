@@ -128,7 +128,10 @@ class ApiRepository {
     suspend fun getBatchListApi(token: String, request: BatchListRequest) = service.getBatchList(token, request)
 
     suspend fun createExamApi(
-        body: RequestBody,
-        accessToken: String
+        accessToken: String,
+        body: MultipartBody
     ) = service.createExam(accessToken, body)
+
+    suspend fun getTeacherCreatedExamListApi(token: String, request: ExamsListRequest) = service.getTeacherCreatedExamList(token, request)
+
 }

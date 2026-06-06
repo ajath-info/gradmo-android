@@ -12,6 +12,7 @@ import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.library_list.LibraryListRequest
+import com.app.gradmo.model.teacher_created_exams.TeacherCreatedExamsResponse
 import com.app.gradmo.model.video_lecture.VideoLectureListResponse
 import com.app.gradmo.network_call.repository.ApiRepository
 import com.app.gradmo.utils.network_utils.Resources
@@ -73,6 +74,36 @@ class UpcomingExamsViewModel @Inject constructor() : ViewModel() {
                     )
                 } catch (ex: Exception) {
                     examDashboardLiveData.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+
+
+    private val teacherCreatedExamLiveData = SingleLiveEvent<Resources<TeacherCreatedExamsResponse>>()
+
+    fun getTeacherCreatedExamLiveData(): LiveData<Resources<TeacherCreatedExamsResponse>> {
+        return teacherCreatedExamLiveData
+    }
+    fun hitTeacherCreatedExamApi(token: String, request: ExamsListRequest) {
+
+        try {
+            teacherCreatedExamLiveData.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    teacherCreatedExamLiveData.postValue(
+                        Resources.success(
+                            ApiRepository().getTeacherCreatedExamListApi(token, request
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    teacherCreatedExamLiveData.postValue(Resources.error(ex.localizedMessage, null))
 
                 }
             }

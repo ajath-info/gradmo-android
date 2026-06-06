@@ -35,7 +35,7 @@ class CreateExamDetailsFragment : BaseFragment<FragmentCreateExamDetailsBinding>
 
             // ── Read batch_id from whoever launched this fragment ────────
             // Adjust the argument key / source to match your navigation graph.
-            val batchId = arguments?.getInt("batch_id", 0) ?: 0
+            val batchId = arguments?.getString("batch_id", "0") ?: "0"
 
             val name     = binding.heading.text.toString().trim()
             val duration = binding.duration.text.toString().trim().toIntOrNull() ?: 0
@@ -43,7 +43,7 @@ class CreateExamDetailsFragment : BaseFragment<FragmentCreateExamDetailsBinding>
             val dueTime  = binding.dueTime.text.toString().trim()   // expect "HH:mm"
 
             val args = Bundle().apply {
-                putInt(ExamArgs.BATCH_ID, batchId)
+                putString(ExamArgs.BATCH_ID, batchId)
                 putString(ExamArgs.NAME,  name)
                 putInt(ExamArgs.DURATION, duration)
                 putString(ExamArgs.DUE_DATE, dueDate)

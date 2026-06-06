@@ -43,7 +43,7 @@ data class QuestionJson(
 )
 
 data class CreateExamRequest(
-    val batch_id: Int,
+    val batch_id: String,
     val name: String,
     val time_duration: Int,
     val mock_sheduled_date: String,   // note: API has the typo "sheduled"

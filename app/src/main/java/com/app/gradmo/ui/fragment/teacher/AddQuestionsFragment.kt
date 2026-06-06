@@ -2,10 +2,12 @@ package com.app.gradmo.ui.fragment.teacher
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
@@ -27,7 +29,6 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
     private val viewModel: AddQuestionsViewModel by viewModels()
     private lateinit var adapter: QuestionPagerAdapter
 
-    /** Position of the question currently waiting for a gallery result. */
     private var pendingImagePosition = -1
 
     // ── Image picker ──────────────────────────────────────────────────────
@@ -61,19 +62,21 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
 
     override fun restoreView() { /* no-op */ }
 
-    // ── Args from CreateExamDetailsFragment ───────────────────────────────
+    // ── Args ──────────────────────────────────────────────────────────────
 
     private fun readArgs() {
         arguments?.let { args ->
-            viewModel.batchId       = args.getInt(ExamArgs.BATCH_ID, 0)
-            viewModel.examName      = args.getString(ExamArgs.NAME, "")
+            viewModel.batchId       = args.getString(ExamArgs.BATCH_ID, "0")
+            viewModel.examName      = args.getString(ExamArgs.NAME, "") ?: ""
             viewModel.timeDuration  = args.getInt(ExamArgs.DURATION, 0)
-            viewModel.scheduledDate = args.getString(ExamArgs.DUE_DATE, "")
-            viewModel.scheduledTime = args.getString(ExamArgs.DUE_TIME, "")
+            viewModel.scheduledDate = args.getString(ExamArgs.DUE_DATE, "") ?: ""
+            viewModel.scheduledTime = args.getString(ExamArgs.DUE_TIME, "") ?: ""
+
+            Log.i("TAG", "readArgs: batchId "+viewModel.batchId)
         }
     }
 
-    // ── ViewPager setup ───────────────────────────────────────────────────
+    // ── ViewPager ─────────────────────────────────────────────────────────
 
     private fun setupViewPager() {
         adapter = QuestionPagerAdapter(
@@ -86,7 +89,6 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
         )
 
         binding.questionViewPager.adapter = adapter
-        // Keep adjacent pages in memory so TextWatcher state is preserved
         binding.questionViewPager.offscreenPageLimit = 1
 
         binding.questionViewPager.registerOnPageChangeCallback(
@@ -96,7 +98,6 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
                 }
             }
         )
-
         updateCounter(0)
     }
 
@@ -105,8 +106,7 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
     private fun setupBottomBar() {
         binding.addQuestionButton.setOnClickListener {
             val newIndex = viewModel.addQuestion()
-            adapter.refreshAll()                        // repaint all page numbers
-            // Post the navigation so ViewPager2 finishes its layout pass first
+            adapter.refreshAll()
             binding.questionViewPager.post {
                 binding.questionViewPager.currentItem = newIndex
                 updateCounter(newIndex)
@@ -116,7 +116,7 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
         binding.finishTestButton.setOnClickListener { onFinishTest() }
     }
 
-    // ── Delete a question ─────────────────────────────────────────────────
+    // ── Delete ────────────────────────────────────────────────────────────
 
     private fun confirmDelete(position: Int) {
         MaterialAlertDialogBuilder(requireContext())
@@ -130,11 +130,10 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
     private fun deleteQuestion(position: Int) {
         val navigateTo = viewModel.removeQuestion(position)
         if (navigateTo == -1) {
-            // Should not happen since the button is hidden for single-question lists
             Toast.makeText(requireContext(), "Must have at least one question.", Toast.LENGTH_SHORT).show()
             return
         }
-        adapter.refreshAll()                // re-binds all pages (fixes page numbers)
+        adapter.refreshAll()
         binding.questionViewPager.post {
             binding.questionViewPager.setCurrentItem(navigateTo, false)
             updateCounter(navigateTo)
@@ -150,13 +149,10 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
 
                 Status.SUCCESS -> {
                     ProcessDialog.dismissDialog(true)
-                    val examId = result.data?.data?.id ?: 0
-                    Toast.makeText(
-                        requireContext(),
-                        "Exam created! (ID: $examId)",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    Toast.makeText(requireContext(), result.data?.msg ?: "Exam created!", Toast.LENGTH_SHORT).show()
+                    // Pop both AddQuestionsFragment AND CreateExamDetailsFragment
+                    // in one call, landing on TeacherExamListFragment.
+                    findNavController().popBackStack(R.id.teacherExamListFragment, false)
                 }
 
                 Status.ERROR -> {
@@ -167,7 +163,7 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
         }
     }
 
-    // ── Finish / Submit ───────────────────────────────────────────────────
+    // ── Submit ────────────────────────────────────────────────────────────
 
     private fun onFinishTest() {
         val accessToken = Preferences
@@ -184,8 +180,7 @@ class AddQuestionsFragment : BaseFragment<FragmentAddQuestionsBinding>() {
     // ── Helpers ───────────────────────────────────────────────────────────
 
     private fun updateCounter(currentIndex: Int) {
-        val total = viewModel.getCurrentCount()
-        binding.questionCounter.text = "${currentIndex + 1} / $total"
+        binding.questionCounter.text = "${currentIndex + 1} / ${viewModel.getCurrentCount()}"
     }
 
     private fun showError(message: String) {

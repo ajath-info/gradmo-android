@@ -10,13 +10,24 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import com.app.gradmo.R
 import com.app.gradmo.databinding.FragmentFilterInstituteBottomSheetBinding
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 object CommonUtils {
+    object DateChipHelper {
 
+        private val DISPLAY_FORMAT = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.getDefault())
+
+        fun setToday(view: TextView) {
+            val today = LocalDate.now()
+            view.text = "Today · ${today.format(DISPLAY_FORMAT)}"
+        }
+    }
     fun convertTimeFormat(
         inputTime: String,
         inputFormat: String,

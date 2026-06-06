@@ -22,7 +22,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import us.google.protobuf.Api
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -40,33 +39,30 @@ class AddQuestionsViewModel @Inject constructor(
 
     fun getQuestionList(): MutableList<QuestionData> = _questions.value ?: mutableListOf()
 
-    // ─── Exam meta-fields (passed from CreateExamDetailsFragment) ─────────
-    var batchId: Int = 0
+    // ── Exam meta-fields (populated from args in the fragment) ────────────
+    var batchId: String = "0"
     var examName: String = ""
     var timeDuration: Int = 0
     var scheduledDate: String = ""
     var scheduledTime: String = ""
 
-    // ── Add / remove questions ────────────────────────────────────────────
+    // ── Add / remove ──────────────────────────────────────────────────────
 
     fun addQuestion(): Int {
         val list = getQuestionList()
-        val idx  = list.size
-        list.add(QuestionData(imageFieldName = "question_image_$idx"))
-        _questions.value = list     // notifies counter observer in fragment
+        list.add(QuestionData(imageFieldName = "question_image_${list.size}"))
+        _questions.value = list
         return list.lastIndex
     }
 
     /**
-     * Removes the question at [position].
-     * Returns the index the ViewPager should navigate to after deletion,
-     * or -1 if the list would be empty (caller should block deletion).
+     * Returns the page index to navigate to after deletion,
+     * or -1 if the list has only one item (deletion blocked).
      */
     fun removeQuestion(position: Int): Int {
         val list = getQuestionList()
-        if (list.size <= 1) return -1           // must keep at least one question
+        if (list.size <= 1) return -1
         list.removeAt(position)
-        // Re-assign imageFieldName to keep them sequential after removal
         list.forEachIndexed { i, q -> q.imageFieldName = "question_image_$i" }
         _questions.value = list
         return if (position >= list.size) list.lastIndex else position
@@ -95,13 +91,6 @@ class AddQuestionsViewModel @Inject constructor(
     private val _submitResult = SingleLiveEvent<Resources<CreateExamResponse>>()
     val submitResult: LiveData<Resources<CreateExamResponse>> get() = _submitResult
 
-    /**
-     * Builds the multipart request and calls the API.
-     *
-     * @param token           "Bearer <accessToken>"
-     * @param contentResolver used to read image bytes from content URIs
-     * @param cacheDir        app's cache directory to create temp files from URIs
-     */
     fun submitExam(token: String, contentResolver: ContentResolver, cacheDir: File) {
         val error = validate()
         if (error != null) {
@@ -113,74 +102,79 @@ class AddQuestionsViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val questions = getQuestionList()
+                val questionList = getQuestionList()
 
-                // ── Build questions_json list ────────────────────────────
-                val questionsJson = questions.mapIndexed { i, q ->
-                    val optionLetter = when (q.correctAnswer) {
-                        1 -> "A"; 2 -> "B"; 3 -> "C"; else -> "D"
-                    }
+                // ── Build questions_json ──────────────────────────────────
+                val questionsJson = questionList.mapIndexed { _, q ->
                     QuestionJson(
-                        question_id   = 0,
-                        subject_id    = 0,
-                        chapter_id    = 0,
-                        question      = q.questionText,
-                        options       = listOf(q.option1, q.option2, q.option3, q.option4),
+                        question_id    = 0,
+                        subject_id     = 0,
+                        chapter_id     = 0,
+                        question       = q.questionText,
+                        options        = listOf(q.option1, q.option2, q.option3, q.option4),
                         correct_option = q.correctAnswer.toString(),
-                        answer        = optionLetter,
-                        question_mask = 1,
-                        question_image = "",          // server fills this after upload
-                        image_field   = q.imageFieldName
+                        answer         = when (q.correctAnswer) { 1 -> "A"; 2 -> "B"; 3 -> "C"; else -> "D" },
+                        question_mask  = 1,
+                        question_image = "",
+                        image_field    = q.imageFieldName
                     )
                 }
 
-                val request = CreateExamRequest(
-                    batch_id           = batchId,
-                    name               = examName,
-                    time_duration      = timeDuration,
-                    mock_sheduled_date = scheduledDate,
-                    mock_sheduled_time = scheduledTime,
-                    total_question     = questions.size,
-                    total_marks        = questions.size,   // 1 mark per question; adjust as needed
-                    questions_json     = questionsJson
-                )
+                // ── Build MultipartBody ───────────────────────────────────
+                // API expects individual flat form fields (not a wrapped JSON blob),
+                // matching the Postman --form style exactly.
+                val multipartBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .apply {
+                        // Flat scalar fields
+                        addFormDataPart("batch_id",            batchId.toString())
+                        addFormDataPart("name",                examName)
+                        addFormDataPart("time_duration",       timeDuration.toString())
+                        addFormDataPart("mock_sheduled_date",  scheduledDate)
+                        addFormDataPart("mock_sheduled_time",  scheduledTime)
+                        addFormDataPart("type",                "1")
+                        addFormDataPart("format",              "2")
+                        addFormDataPart("marking_parcent",     "0")
+                        addFormDataPart("total_question",      questionList.size.toString())
+                        addFormDataPart("total_marks",         questionList.size.toString())
 
-                // ── Build multipart body ─────────────────────────────────
-                val multipartBuilder = MultipartBody.Builder().setType(MultipartBody.FORM)
+                        // questions_json as a JSON-string form field (not a file)
+                        addFormDataPart("questions_json",      Gson().toJson(questionsJson))
 
-                // Add the JSON payload as a plain-text field
-                multipartBuilder.addFormDataPart(
-                    "data",
-                    Gson().toJson(request).toRequestBody("application/json".toMediaTypeOrNull()).toString()
-                )
-
-                // Attach each question's image (if picked) as a file part
-                questions.forEach { q ->
-                    if (!q.imagePath.isNullOrBlank()) {
-                        val uri  = Uri.parse(q.imagePath)
-                        val file = uriToTempFile(contentResolver, uri, cacheDir, q.imageFieldName)
-                        if (file != null) {
-                            val requestFile = file.asRequestBody(
-                                contentResolver.getType(uri)?.toMediaTypeOrNull()
-                                    ?: "image/*".toMediaTypeOrNull()
-                            )
-                            multipartBuilder.addFormDataPart(q.imageFieldName, file.name, requestFile)
+                        // One image file part per question that has an image picked
+                        questionList.forEach { q ->
+                            if (!q.imagePath.isNullOrBlank()) {
+                                val uri  = Uri.parse(q.imagePath)
+                                val file = uriToTempFile(contentResolver, uri, cacheDir, q.imageFieldName)
+                                if (file != null) {
+                                    val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+                                    addFormDataPart(
+                                        q.imageFieldName,   // e.g. "question_image_0"
+                                        file.name,
+                                        file.asRequestBody(mimeType.toMediaTypeOrNull())
+                                    )
+                                }
+                            }
                         }
                     }
-                }
+                    .build()
 
-                val response = ApiRepository().createExamApi(multipartBuilder.build(), token)
+                // ── Hit the API ───────────────────────────────────────────
+                val response = ApiRepository().createExamApi(token, multipartBody)
 
                 withContext(Dispatchers.Main) {
                     if (response.status == "true") {
                         _submitResult.postValue(Resources.success(response))
                     } else {
-                        _submitResult.postValue(Resources.error(response.msg ?: "", null))
+                        _submitResult.postValue(Resources.error(response.msg ?: "Failed", null))
                     }
                 }
+
             } catch (ex: Exception) {
                 withContext(Dispatchers.Main) {
-                    _submitResult.postValue(Resources.error(ex.localizedMessage ?: "Unknown error", null))
+                    _submitResult.postValue(
+                        Resources.error(ex.localizedMessage ?: "Unknown error", null)
+                    )
                 }
             }
         }
@@ -188,7 +182,6 @@ class AddQuestionsViewModel @Inject constructor(
 
     // ── Helpers ───────────────────────────────────────────────────────────
 
-    /** Copies a content URI to a temporary File so OkHttp can stream it. */
     private fun uriToTempFile(
         contentResolver: ContentResolver,
         uri: Uri,

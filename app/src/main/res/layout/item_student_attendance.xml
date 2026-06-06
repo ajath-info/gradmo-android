@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  item_student_attendance.xml  -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:background="@color/color_surface">
+
+        <!-- Roll number -->
+        <TextView
+            android:id="@+id/tvRollNumber"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/color_text_secondary"
+            tools:text="1" />
+
+        <!-- Avatar container (image + initials overlay) -->
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_avatar_placeholder" />
+
+            <!-- Initials shown when no avatar URL -->
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_primary"
+                tools:text="EH" />
+        </FrameLayout>
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:textSize="15sp"
+            android:textColor="@color/color_text_primary"
+            tools:text="Esther Howard" />
+
+        <!-- Absent button -->
+        <!--
+            Selected state (isSelected=true): red tinted bg + red X icon
+            Unselected: light gray bg + gray X icon
+            Defined via selector drawables — see bg_btn_absent.xml
+        -->
+        <ImageView
+            android:id="@+id/btnAbsent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_btn_absent"
+            android:src="@drawable/attendance_cross"
+            android:contentDescription="Mark absent"/>
+
+        <!-- Present button -->
+        <ImageView
+            android:id="@+id/btnPresent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_btn_present"
+            android:src="@drawable/attendance_tick"
+            android:contentDescription="Mark present"/>
+
+    </LinearLayout>
+</layout>
+
+    <!--
+        Divider between rows is handled by DividerItemDecoration added in Fragment,
+        or you can add a 1dp bottom border here via android:foreground.
+    -->

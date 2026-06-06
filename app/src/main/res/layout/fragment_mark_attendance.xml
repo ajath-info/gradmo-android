@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--  fragment_attendance.xml  -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -7,42 +8,149 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:orientation="vertical"
+        android:background="@color/color_background">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/headerLayout"
+        <!-- ── Toolbar ── -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/color_surface"
+            android:elevation="0dp"
+            app:title="Attendance"
+            app:navigationIcon="@drawable/calender_back" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_divider" />
+
+        <!-- ── Search bar ── -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingTop="45dp"
-            android:paddingBottom="15dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:background="@color/color_surface">
 
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/back_button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_search_field"
+                android:drawableStart="@drawable/search_icon"
+                android:drawablePadding="8dp"
+                android:hint="Search student"
+                android:paddingHorizontal="14dp"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:textSize="14sp"
+                android:textColorHint="@color/color_hint" />
+        </LinearLayout>
+
+        <!-- ── Date chip (today, read-only) ── -->
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_date_chip"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/color_primary"
+            tools:text="Today · 05 Jun 2026" />
+
+        <!-- ── Full-screen loading ── -->
+        <ProgressBar
+            android:id="@+id/progressBarFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <!-- ── Error state ── -->
+        <LinearLayout
+            android:id="@+id/groupError"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
+                android:id="@+id/tvError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_bold"
-                android:text="Attendence"
-                android:textColor="@color/black"
-                android:textSize="21sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textColor="@color/color_error"
+                android:textSize="14sp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/btnRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Retry" />
+        </LinearLayout>
+
+        <!-- ── Student list ── -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvStudents"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"
+            tools:listitem="@layout/item_student_attendance" />
+
+        <!-- ── Paging loader ── -->
+        <ProgressBar
+            android:id="@+id/progressBarPaging"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingVertical="8dp"
+            android:visibility="gone" />
+
+        <!-- ── Submit row ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/color_surface"
+            android:padding="16dp"
+            android:elevation="8dp">
+            <com.google.android.material.button.MaterialButton
+                style="@style/CommonButton1"
+                android:backgroundTint="@color/theme_blue"
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create New Homework"
+                android:layout_margin="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <ProgressBar
+                android:id="@+id/progressSubmit"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
 </layout>

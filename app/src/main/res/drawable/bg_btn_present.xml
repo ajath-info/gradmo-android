@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected (PRESENT marked) -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp" />
+            <solid android:color="@color/color_present_bg_selected" />
+            <!-- color_present_bg_selected = #E6F5EC  (light green) -->
+        </shape>
+    </item>
+    <!-- Default (not yet marked) -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp" />
+            <solid android:color="@color/color_btn_default_bg" />
+            <!-- color_btn_default_bg = #F2F2F2 -->
+        </shape>
+    </item>
+</selector>

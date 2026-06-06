@@ -17,4 +17,24 @@
     <color name="orange_FF7300">#FF7300</color>
     <color name="black_payment_summary">#3E3E47</color>
     <color name="option_label_gray">#4D4D4D</color>
+
+    <color name="color_background">#F7F8FA</color>
+    <color name="color_surface">#FFFFFF</color>
+    <color name="color_divider">#EBEBEB</color>
+    <color name="color_primary">#4A6CF7</color>
+    <color name="color_primary_light">#C5CFFB</color>
+    <color name="color_text_primary">#1A1A2E</color>
+    <color name="color_text_secondary">#888888</color>
+    <color name="color_hint">#BBBBBB</color>
+    <color name="color_error">#E24B4A</color>
+
+    <color name="color_btn_default_bg">#F2F2F2</color>
+    <color name="color_present_bg_selected">#E6F5EC</color>
+    <color name="color_present_icon_selected">#2ECC71</color>
+    <color name="color_absent_bg_selected">#FDECEA</color>
+    <color name="color_absent_icon_selected">#E74C3C</color>
+
+    <color name="color_search_bg">#F5F5F5</color>
+    <color name="color_avatar_bg">#E8EEF9</color>
+    <color name="color_chip_bg">#EEF2FF</color>
 </resources>

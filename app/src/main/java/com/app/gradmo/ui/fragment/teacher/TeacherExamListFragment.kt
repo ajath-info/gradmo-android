@@ -25,9 +25,11 @@ import com.app.gradmo.databinding.FragmentUpcomingExamListBinding
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.exam_list.UpcomingExamListResponse
 import com.app.gradmo.model.login.response.LoginResponse
+import com.app.gradmo.model.teacher_created_exams.TeacherCreatedExamsResponse.Data.Exam
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
 import com.app.gradmo.ui.activity.HomeActivity
+import com.app.gradmo.ui.adapter.AdapterTeacherCreatedExamList
 import com.app.gradmo.ui.adapter.AdapterUpcomingExams
 import com.app.gradmo.ui.view_model.UpcomingExamsViewModel
 import com.app.gradmo.utils.CommonUtils
@@ -48,9 +50,9 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
     private var isLoading = false
     private var isLastPage = false
 
-    private val BooksList = mutableListOf<UpcomingExamListResponse.Data.UpcomingExam>()
+    private val BooksList = mutableListOf<Exam>()
     private val viewModel: UpcomingExamsViewModel by viewModels()
-    private lateinit var libraryBooksAdapter: AdapterUpcomingExams  // replace with your adapter
+    private lateinit var libraryBooksAdapter: AdapterTeacherCreatedExamList  // replace with your adapter
 
     private var orderType = "DESC"   // default Z-A
     private var selectedMode = ""    // "online" / "offline" / ""
@@ -64,9 +66,10 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         flow = arguments?.getString("flow", "") ?: ""
         batch_id = arguments?.getString("batch_id", "") ?: ""
-        Log.i("TAG", "batch_id: "+batch_id)
-        Log.i("TAG", "flow: "+flow)
-        setupUI()
+
+    }
+
+    fun initExamListApi(){
         currentPage = 1
         isLastPage = false
         BooksList.clear()
@@ -76,17 +79,12 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
         callUpcomingnExamsApi()
     }
 
-    private fun setupUI() {
-        when(flow){
-            "seeAll"->{
-                binding.title.text = "Institutes"
-                (activity as HomeActivity).hideNavigationView()
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        initExamListApi()
     }
-
-    private fun setupBooksRecycler(institutes: List<UpcomingExamListResponse.Data.UpcomingExam>, isRestore:Boolean, totalRecords:Int) {
-        libraryBooksAdapter = AdapterUpcomingExams(BooksList, ::onBookSelected)
+    private fun setupBooksRecycler(institutes: List<Exam>, isRestore:Boolean, totalRecords:Int) {
+        libraryBooksAdapter = AdapterTeacherCreatedExamList(BooksList, ::onBookSelected)
         binding.instituteRecycler.apply {
             adapter = libraryBooksAdapter
         }
@@ -131,7 +129,7 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
         currentPage++
         callUpcomingnExamsApi()
     }
-    private fun onBookSelected(exam:UpcomingExamListResponse.Data.UpcomingExam) {
+    private fun onBookSelected(exam:Exam) {
         var bundle = Bundle()
         bundle.putParcelable("exam", exam)
         findNavController().navigate(R.id.giveAssessmentFragment, bundle)
@@ -139,7 +137,9 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
 
     private fun clickEvent() {
         binding.uploadButton.setOnClickListener {
-            findNavController().navigate(R.id.createExamDetailsFragment)
+            var bundle = Bundle()
+            bundle.putString("batch_id", batch_id)
+            findNavController().navigate(R.id.createExamDetailsFragment, bundle)
         }
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
@@ -274,7 +274,7 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
         )
 
 //        viewModel.hitUpcomingExamsDataApi("Bearer $accessToken", request)
-        viewModel.hitExamDashboardApi("Bearer $accessToken", request)
+        viewModel.hitTeacherCreatedExamApi("Bearer $accessToken", request)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -283,42 +283,17 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_teacher_exam_list
     private fun setObserver() {
-        viewModel.getUpcomingExamsLiveData().observe(viewLifecycleOwner) {
+        viewModel.getTeacherCreatedExamLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.e("TAG", "getUpcomingExamsLiveData success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-                        totalRecords = it.data.data.pagination.totalRecords
-                        setupBooksRecycler(it.data.data.upcomingExams, false, totalRecords)
-                    } else {
-                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    ProcessDialog.dismissDialog(true)
-                }
-
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-
-                Status.ERROR -> {
-                    Log.e("TAG", "getUpcomingExamsLiveData Failed: ${it.message}")
-                    ProcessDialog.dismissDialog(true)
-                }
-            }
-        }
-        viewModel.getExamDashboardLiveData().observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.e("TAG", "getUpcomingExamsLiveData success: ${Gson().toJson(it)}")
-                    if (it.data?.status == "true") {
-                        totalRecords = it.data.data.upcomingExams.size + it.data.data.completedExams.size
-                        val list = mutableListOf<UpcomingExamListResponse.Data.UpcomingExam>()
-                        list.addAll(it.data.data.upcomingExams)
-                        list.addAll(it.data.data.completedExams)
+                        totalRecords = it.data.data.exams.size
+                        val list = mutableListOf<Exam>()
+                        list.addAll(it.data.data.exams)
                         setupBooksRecycler(list, false, totalRecords)
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
                             .show()
                     }
                     ProcessDialog.dismissDialog(true)
@@ -337,7 +312,7 @@ class TeacherExamListFragment : BaseFragment<FragmentTeacherExamListBinding>() {
 
     }
     override fun restoreView() {
-        viewModel.getUpcomingExamsLiveData().value?.data?.data?.upcomingExams?.let {
+        viewModel.getTeacherCreatedExamLiveData().value?.data?.data?.exams?.let {
             setupBooksRecycler(it, true, totalRecords)
         }
     }
