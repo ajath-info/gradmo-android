@@ -150,4 +150,12 @@
         android:id="@+id/teacherLibraryFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.TeacherLibraryFragment"
         android:label="TeacherLibraryFragment" />
+    <fragment
+        android:id="@+id/teacherVideoLectureFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherVideoLectureFragment"
+        android:label="TeacherVideoLectureFragment" />
+    <fragment
+        android:id="@+id/addVideoLectureFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.AddVideoLectureFragment"
+        android:label="AddVideoLectureFragment" />
 </navigation>

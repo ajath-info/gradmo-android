@@ -59,12 +59,12 @@ class StudentAttendanceAdapter(
             binding.btnPresent.imageTintList = ColorStateList.valueOf(presentColor)
             binding.btnAbsent.imageTintList  = ColorStateList.valueOf(absentColor)
 
-            binding.btnPresent.setOnClickListener {
-                onMark(student.id, AttendanceStatus.PRESENT)
-            }
-            binding.btnAbsent.setOnClickListener {
-                onMark(student.id, AttendanceStatus.ABSENT)
-            }
+//            binding.btnPresent.setOnClickListener {
+//                onMark(student.id, AttendanceStatus.PRESENT)
+//            }
+//            binding.btnAbsent.setOnClickListener {
+//                onMark(student.id, AttendanceStatus.ABSENT)
+//            }
         }
 
         private fun applyStatus(studentId: String) {

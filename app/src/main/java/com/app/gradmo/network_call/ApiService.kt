@@ -234,5 +234,18 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: ExamsListRequest
     ): TeacherCreatedExamsResponse
+
+    @Multipart
+    @POST("api/batch/video-lecture-add")
+    suspend fun addVideoLecture(
+        @Header("Authorization") token: String,
+        @Part("batch_id") batchId: RequestBody,
+        @Part("subject") subject: RequestBody,
+        @Part("title") title: RequestBody,
+        @Part("topic") topic: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("preview_type") previewType: RequestBody,
+        @Part video_file: MultipartBody.Part
+    ): AddLibraryDataResponse
 }
 

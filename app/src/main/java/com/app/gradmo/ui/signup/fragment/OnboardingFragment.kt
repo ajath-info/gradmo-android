@@ -19,17 +19,21 @@ class OnboardingFragment : BaseFragment<FragmentOnboardingBinding>() {
         OnboardingItem(
             R.drawable.onboarding1,
             "As a Student",
-            "Discover amazing features in our app"
+            "Your learning journey starts here.\n" +
+                    "Explore courses, connect with trusted educators, and access quality education—all in one place.\n" +
+                    "\n"
         ),
         OnboardingItem(
             R.drawable.onboarding2,
             "As a teacher",
-            "Explore our App"
+            "Teach, inspire, and grow.\n" +
+                    "Create classes, manage students effortlessly, and expand your impact through a modern teaching platform.\n"
         ),
         OnboardingItem(
             R.drawable.onboarding3,
             "As an Institue",
-            "Enjoy seamless experience"
+            "Grow your institution digitally.\n" +
+                    "Reach aspiring students, manage educators, and build a stronger learning ecosystem.\n"
         )
     )
 

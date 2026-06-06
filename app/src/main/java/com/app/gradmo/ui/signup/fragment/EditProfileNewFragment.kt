@@ -367,9 +367,9 @@ class EditProfileNewFragment : Fragment() {
             Toast.makeText(requireActivity(), "Please enter your locality", Toast.LENGTH_SHORT).show()
         }else if(etPincode.isEmpty()){
             Toast.makeText(requireActivity(), "Please enter the pincode", Toast.LENGTH_SHORT).show()
-        }else if(etSchoolName.isEmpty()){
+        }else if(etSchoolName.isEmpty() && UserPreference.userType == UserType.STUDENT){
             Toast.makeText(requireActivity(), "Please enter your school name", Toast.LENGTH_SHORT).show()
-        }else if(etGrade.isEmpty()){
+        }else if(etGrade.isEmpty() && UserPreference.userType == UserType.STUDENT){
             Toast.makeText(requireActivity(), "Please enter your grade", Toast.LENGTH_SHORT).show()
         }else if(selectedStateName.isEmpty()){
             Toast.makeText(requireActivity(), "Please select state", Toast.LENGTH_SHORT).show()

@@ -134,4 +134,26 @@ class ApiRepository {
 
     suspend fun getTeacherCreatedExamListApi(token: String, request: ExamsListRequest) = service.getTeacherCreatedExamList(token, request)
 
+    suspend fun addVideoLectureApi(
+        token: String,
+        batchId: String,
+        subject: String,
+        title: String,
+        topic: String,
+        description: String,
+        previewType: String,
+        videoFile: File
+    ) = service.addVideoLecture(
+        token = token,
+        batchId = batchId.toRequestBody("text/plain".toMediaTypeOrNull()),
+        subject = subject.toRequestBody("text/plain".toMediaTypeOrNull()),
+        title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
+        topic = topic.toRequestBody("text/plain".toMediaTypeOrNull()),
+        description = description.toRequestBody("text/plain".toMediaTypeOrNull()),
+        previewType = previewType.toRequestBody("text/plain".toMediaTypeOrNull()),
+        video_file = MultipartBody.Part.createFormData(
+            "video_file", videoFile.name,
+            videoFile.asRequestBody("video/*".toMediaTypeOrNull())
+        )
+    )
 }

@@ -92,6 +92,8 @@
                 android:fontFamily="@font/manrope_semibold"
                 android:paddingVertical="12dp"
                 android:text="Add question"
+                android:textAllCaps="false"
+                android:letterSpacing="0"
                 android:textColor="@color/theme_blue"
                 android:textSize="15sp"
                 app:cornerRadius="30dp"

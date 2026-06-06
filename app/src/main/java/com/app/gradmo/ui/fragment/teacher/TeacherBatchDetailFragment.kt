@@ -103,7 +103,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     fun onBatchItemSelected(item:BatchDetailItem, position: Int){
         when(position){
             0->{
-                openZoomClass()
+//                openZoomClass()
             }
             1->{
                 openVideoLecture()
@@ -135,7 +135,7 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
     private fun openVideoLecture() {
         var bundle = Bundle()
         bundle.putString("batch_id", batch.batch_id.toString())
-        findNavController().navigate(R.id.videoLecturesFragment, bundle)
+        findNavController().navigate(R.id.teacherVideoLectureFragment, bundle)
     }
     private fun openLibrary() {
         var bundle = Bundle()
