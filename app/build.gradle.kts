@@ -24,9 +24,19 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        buildConfig = true   // ← add this
+    }
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/abc/Desktop/gradmo_jks")
+            storePassword = "123456"
+            keyAlias = "key0"
+            keyPassword = "123456"
+        }
     }
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")  // ← add this line
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -36,25 +46,35 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+
     }
+//    packagingOptions {
+//        pickFirst("**/libc++_shared.so")
+//        // Fix Problem 2 — exclude the VERIFICATION.md causing merge failure
+//        exclude("**/VERIFICATION.md")
+//        exclude("**/*.md")
+//    }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     packaging {
         resources {
             excludes += setOf(
+                "**/*.md",
+
                 "META-INF/INDEX.LIST",
                 "META-INF/DEPENDENCIES",
                 "META-INF/gradle/incremental.annotation.processors"
             )
         }
+        jniLibs {
+            pickFirsts += setOf("**/libc++_shared.so")  // ← add this
+        }
     }
 }
-
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -90,10 +110,12 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
     implementation("com.razorpay:checkout:1.6.40")
-    implementation("us.zoom.videosdk:zoomvideosdk-core:2.5.5")          // mandatory
+//    implementation("us.zoom.videosdk:zoomvideosdk-core:2.5.5")          // mandatory
 //    implementation("us.zoom.videosdk:zoomvideosdk-annotation:2.5.5")     // screen share annotation (optional)
 //    implementation("us.zoom.videosdk:zoomvideosdk-videoeffects:2.5.5")   // virtual background (optional)
+//    implementation("us.zoom.sdk:zoom-sdk-android:6.3.0")  // check latest on Zoom's dev portal
+
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-ui:1.3.1")
-
+    implementation(project(":mobilertc"))
 }

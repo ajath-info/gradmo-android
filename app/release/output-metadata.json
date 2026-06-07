@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.app.edtech",
+  "applicationId": "com.app.gradmo",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
+      "versionCode": 4,
+      "versionName": "1.0.2",
       "outputFile": "app-release.apk"
     }
   ],

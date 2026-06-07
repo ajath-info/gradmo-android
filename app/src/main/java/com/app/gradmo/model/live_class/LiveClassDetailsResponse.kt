@@ -3,6 +3,7 @@ package com.app.gradmo.model.live_class
 data class LiveClassDetailsResponse(
     val liveClass: LiveClass,
     val message: String,
+    val msg: String,
     val status: String
 ) {
     data class LiveClass(

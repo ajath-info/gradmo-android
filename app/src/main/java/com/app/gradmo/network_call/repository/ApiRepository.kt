@@ -4,11 +4,15 @@ import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.state.GetStatesRequest
 import com.app.gradmo.model.attendence.AttendanceListRequest
 import com.app.gradmo.model.batch_list.BatchListRequest
+import com.app.gradmo.model.create_zoom.CreateZoomRequest
+import com.app.gradmo.model.end_zoom.EndZoomClassRequest
 import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_list.ExamsListRequest
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.library_list.LibraryListRequest
+import com.app.gradmo.model.live_class.BatchLiveClassListRequest
+import com.app.gradmo.model.live_class.LiveClassDetailsRequest
 import com.app.gradmo.model.login.request.LoginRequest
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
@@ -156,4 +160,14 @@ class ApiRepository {
             videoFile.asRequestBody("video/*".toMediaTypeOrNull())
         )
     )
+
+    suspend fun getLiveClassListApi(token: String, request: BatchLiveClassListRequest) = service.getLiveClassList(token, request)
+
+    suspend fun getLiveClassDetailsApi(token: String, request: LiveClassDetailsRequest) = service.getLiveClassDetails(token, request)
+
+    suspend fun getZoomDetailsApi(token: String, batch_id: String) = service.getZoomDetails(token, batch_id)
+
+    suspend fun createZoomClassApi(token: String, request: CreateZoomRequest) = service.createZoomClass(token, request)
+
+    suspend fun endZoomClassApi(token: String, request: EndZoomClassRequest) = service.endZoomClass(token, request)
 }

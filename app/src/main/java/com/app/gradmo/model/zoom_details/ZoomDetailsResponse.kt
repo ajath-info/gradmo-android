@@ -9,15 +9,15 @@ data class ZoomDetailsResponse(
         val zoom: Zoom
     ) {
         data class Zoom(
-            val batchId: Int,
-            val duration: Int,
-            val hostId: String,
-            val inAppOnly: Int,
-            val password: String,
-            val startTime: Any,
-            val timezone: String,
-            val topic: String,
-            val zoomMeetingId: String
+            val batchId: Int?=null,
+            val duration: Int?=null,
+            val hostId: String?=null,
+            val inAppOnly: Int?=null,
+            val password: String?=null,
+            val startTime: String?=null,
+            val timezone: String?=null,
+            val topic: String?=null,
+            val zoomMeetingId: String?=null
         )
     }
 }

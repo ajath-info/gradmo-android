@@ -158,4 +158,8 @@
         android:id="@+id/addVideoLectureFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.AddVideoLectureFragment"
         android:label="AddVideoLectureFragment" />
+    <fragment
+        android:id="@+id/teacherZoomFragment"
+        android:name="com.app.gradmo.ui.fragment.teacher.TeacherZoomFragment"
+        android:label="TeacherZoomFragment" />
 </navigation>

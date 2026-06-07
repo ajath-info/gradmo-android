@@ -22,11 +22,12 @@
             android:orientation="vertical">
 
             <ImageView
-                android:padding="18dp"
                 android:id="@+id/image"
-                android:src="@drawable/batch_attendence_image"
-                android:layout_width="95dp"
-                android:layout_height="95dp" />
+                android:layout_width="92dp"
+                android:layout_height="98dp"
+                android:layout_gravity="center_horizontal"
+                android:padding="18dp"
+                android:src="@drawable/batch_attendence_image" />
 
             <TextView
                 android:id="@+id/name"

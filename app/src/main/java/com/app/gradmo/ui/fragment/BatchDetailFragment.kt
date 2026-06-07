@@ -195,12 +195,12 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
         ))
     }
     private fun openZoomSession() {
-        val intent = Intent(requireContext(), ZoomVideoActivity::class.java).apply {
-            putExtra(ZoomVideoActivity.EXTRA_SESSION_NAME, "batch-${batch.batchName}-live")
-            putExtra(ZoomVideoActivity.EXTRA_SESSION_TOKEN, getSessionToken()) // see below
-            putExtra(ZoomVideoActivity.EXTRA_USER_NAME, "Student")
-        }
-        startActivity(intent)
+//        val intent = Intent(requireContext(), ZoomVideoActivity::class.java).apply {
+//            putExtra(ZoomVideoActivity.EXTRA_SESSION_NAME, "batch-${batch.batchName}-live")
+//            putExtra(ZoomVideoActivity.EXTRA_SESSION_TOKEN, getSessionToken()) // see below
+//            putExtra(ZoomVideoActivity.EXTRA_USER_NAME, "Student")
+//        }
+//        startActivity(intent)
     }
 
     // For TESTING only — generate a token from your backend normally

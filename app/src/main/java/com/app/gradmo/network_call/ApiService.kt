@@ -14,6 +14,10 @@ import com.app.gradmo.model.batch_detail.BatchDetailResponse
 import com.app.gradmo.model.batch_list.BatchListRequest
 import com.app.gradmo.model.batch_list.BatchListResponse
 import com.app.gradmo.model.create_order.CreateOrderResponse
+import com.app.gradmo.model.create_zoom.CreateZoomRequest
+import com.app.gradmo.model.create_zoom.CreateZoomResponse
+import com.app.gradmo.model.end_zoom.EndZoomClassRequest
+import com.app.gradmo.model.end_zoom.EndZoomClassResponse
 import com.app.gradmo.model.exam_details.ExamDetailsRequest
 import com.app.gradmo.model.exam_list.ExamDashboardResponse
 import com.app.gradmo.model.exam_list.ExamsListRequest
@@ -25,6 +29,10 @@ import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.library_list.LibraryListRequest
 import com.app.gradmo.model.library_list.LibraryListResponse
+import com.app.gradmo.model.live_class.BatchLiveClassListRequest
+import com.app.gradmo.model.live_class.BatchLiveClassListResponse
+import com.app.gradmo.model.live_class.LiveClassDetailsRequest
+import com.app.gradmo.model.live_class.LiveClassDetailsResponse
 import com.app.gradmo.model.login.request.LoginRequest
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.logout.response.DeleteResponse
@@ -37,6 +45,7 @@ import com.app.gradmo.model.third_party_credentials.ThirdPartyCredentialsRespons
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentResponse
 import com.app.gradmo.model.video_lecture.VideoLectureListResponse
+import com.app.gradmo.model.zoom_details.ZoomDetailsResponse
 import com.app.gradmo.ui.signup.model.ChangePasswordRequest
 import com.app.gradmo.ui.signup.model.ResetPasswordRequest
 import com.app.hihlo.ui.signup.model.SignUp
@@ -247,5 +256,36 @@ interface ApiService {
         @Part("preview_type") previewType: RequestBody,
         @Part video_file: MultipartBody.Part
     ): AddLibraryDataResponse
+
+    @POST("api/batch/live-class-list")
+    suspend fun getLiveClassList(
+        @Header("Authorization") token: String,
+        @Body requestBody: BatchLiveClassListRequest
+    ): BatchLiveClassListResponse
+
+    @POST("api/batch/live-class-details")
+    suspend fun getLiveClassDetails(
+        @Header("Authorization") token: String,
+        @Body requestBody: LiveClassDetailsRequest
+    ): LiveClassDetailsResponse
+
+    @FormUrlEncoded
+    @POST("api/batch/batch-zoom-details")
+    suspend fun getZoomDetails(
+        @Header("Authorization") token: String,
+        @Field("batch_id") batch_id: String,
+    ): ZoomDetailsResponse
+
+    @POST("api/batch/batch-zoom-create")
+    suspend fun createZoomClass(
+        @Header("Authorization") token: String,
+        @Body requestBody: CreateZoomRequest
+    ): CreateZoomResponse
+
+    @POST("api/batch/live-meeting-end")
+    suspend fun endZoomClass(
+        @Header("Authorization") token: String,
+        @Body requestBody: EndZoomClassRequest
+    ): EndZoomClassResponse
 }
 

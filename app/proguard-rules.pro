@@ -65,3 +65,57 @@
 -keepattributes Exceptions
 -keepattributes InnerClasses
 -keepattributes EnclosingMethod
+
+# Zoom SDK
+-keep class us.zoom.** { *; }
+-keep class com.zipow.** { *; }
+-dontwarn us.zoom.**
+-dontwarn com.zipow.**
+
+# ZXing (QR code scanner used by Zoom SDK)
+-keep class com.google.zxing.** { *; }
+-dontwarn com.google.zxing.**
+
+# Kotlin coroutines Swing dispatcher (desktop artifact, not needed on Android)
+-dontwarn kotlinx.coroutines.swing.**
+-dontwarn java.awt.**
+-dontwarn javax.swing.**
+
+# Keep all data/model classes used with Gson
+-keep class com.app.gradmo.model.** { *; }
+
+# Gson specific
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+-dontwarn com.google.gson.**
+
+# Keep generic type information for Retrofit/Gson
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeInvisibleAnnotations
+-keepattributes RuntimeVisibleParameterAnnotations
+-keepattributes RuntimeInvisibleParameterAnnotations
+
+# Retrofit
+-keep class retrofit2.** { *; }
+-keepattributes Exceptions
+-dontwarn retrofit2.**
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# OkHttp
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+# Hilt
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-dontwarn dagger.hilt.**
