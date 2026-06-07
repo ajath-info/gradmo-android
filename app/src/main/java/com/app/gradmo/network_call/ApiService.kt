@@ -1,5 +1,7 @@
 package com.app.gradmo.network_call
 
+import com.app.gradmo.model.add_attendance.AddAttendanceRequest
+import com.app.gradmo.model.add_attendance.AddAttendanceResponse
 import com.app.gradmo.model.add_homework.AddHomeworkResponse
 import com.app.gradmo.model.add_library.AddLibraryDataResponse
 import com.app.gradmo.model.exam_details.ExamDetailsResponse
@@ -7,6 +9,8 @@ import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
 import com.app.gradmo.model.address.state.GetStatesRequest
 import com.app.gradmo.model.address.state.GetStatesResponse
+import com.app.gradmo.model.attendance_students_list.GetStudentsForAttendanceRequest
+import com.app.gradmo.model.attendance_students_list.GetStudentsForAttendanceResponse
 import com.app.gradmo.model.attendence.AttendanceListRequest
 import com.app.gradmo.model.attendence.AttendanceListResponse
 import com.app.gradmo.model.banner.response.BannerResponse
@@ -287,5 +291,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: EndZoomClassRequest
     ): EndZoomClassResponse
+
+    @POST("api/batch/attendance-roster-matrix")
+    suspend fun getStudentsForAttendance(
+        @Header("Authorization") token: String,
+            @Body requestBody: GetStudentsForAttendanceRequest
+    ): GetStudentsForAttendanceResponse
+
+    @POST("api/user/add-attendance")
+    suspend fun addAttendance(
+        @Header("Authorization") token: String,
+        @Body requestBody: AddAttendanceRequest
+    ): AddAttendanceResponse
 }
 

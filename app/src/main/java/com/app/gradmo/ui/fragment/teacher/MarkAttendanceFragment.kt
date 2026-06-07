@@ -1,40 +1,31 @@
 package com.app.gradmo.ui.fragment.teacher
 
+
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.app.gradmo.R
-import com.app.gradmo.base.BaseFragment
-import com.app.gradmo.databinding.FragmentMarkAttendanceBinding
-import com.app.gradmo.databinding.FragmentSeeAttendenceBinding
-import com.app.gradmo.model.login.response.LoginResponse
-import com.app.gradmo.model.staticdata.CalenderModels.CalenderModels
-import com.app.gradmo.preferences.LOGIN_DATA
-import com.app.gradmo.preferences.Preferences
-import com.app.gradmo.ui.view_model.MarkAttendanceViewModel
-import com.app.gradmo.ui.view_model.SeeAttendenceViewModel
-import com.app.gradmo.utils.network_utils.ProcessDialog
-import com.app.gradmo.utils.network_utils.Status
-import com.google.gson.Gson
-import dagger.hilt.android.AndroidEntryPoint
-import java.text.DateFormatSymbols
-import kotlin.getValue
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.gradmo.databinding.FragmentMarkAttendanceBinding
+import com.app.gradmo.model.login.response.LoginResponse
+import com.app.gradmo.preferences.LOGIN_DATA
+import com.app.gradmo.preferences.Preferences
 import com.app.gradmo.ui.adapter.StudentAttendanceAdapter
+import com.app.gradmo.ui.view_model.MarkAttendanceViewModel
 import com.app.gradmo.ui.view_model.SubmitState
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class MarkAttendanceFragment : Fragment() {
 
@@ -56,18 +47,34 @@ class MarkAttendanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set on ViewModel BEFORE loadStudents() — init block is intentionally absent
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+        viewModel.token   = "Bearer $accessToken"
+        viewModel.batchId = arguments?.getString("batch_id")?.toIntOrNull() ?: 0
+
+        setTodayChip()
         setupRecyclerView()
         setupSearch()
         setupSubmitButton()
         observeState()
+
+        viewModel.loadStudents()   // called here so token + batchId are guaranteed set
     }
 
     // ── Setup ─────────────────────────────────────────────────────
 
+    private fun setTodayChip() {
+        val today = LocalDate.now()
+        val fmt   = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.getDefault())
+        binding.tvDate.text = "Today · ${today.format(fmt)}"
+    }
+
     private fun setupRecyclerView() {
         adapter = StudentAttendanceAdapter(
-            onMark = { studentId, status ->
+            onMark    = { studentId, status ->
                 viewModel.markAttendance(studentId, status)
+                // refreshItem triggers a lightweight partial bind (only buttons update)
                 adapter.refreshItem(studentId)
             },
             getStatus = viewModel::getAttendanceStatus
@@ -76,23 +83,23 @@ class MarkAttendanceFragment : Fragment() {
         val layoutManager = LinearLayoutManager(requireContext())
         binding.rvStudents.layoutManager = layoutManager
         binding.rvStudents.adapter       = adapter
+        binding.rvStudents.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        )
 
-        // Pagination: trigger loadNextPage when last item is nearly visible
+        // Client-side pagination: load next slice when near bottom
         binding.rvStudents.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                if (dy <= 0) return                              // only trigger on downward scroll
-                val last    = layoutManager.findLastVisibleItemPosition()
-                val total   = layoutManager.itemCount
-                val state   = viewModel.uiState.value
-                if (!state.isLoadingMore && state.hasNextPage &&
-                    state.searchQuery.isEmpty() &&
-                    last >= total - 3) {                         // load when 3 items from end
+                if (dy <= 0) return
+                val last  = layoutManager.findLastVisibleItemPosition()
+                val total = layoutManager.itemCount
+                if (viewModel.canLoadMore() && last >= total - 3) {
                     viewModel.loadNextPage()
                 }
             }
         })
 
-        binding.btnRetry.setOnClickListener { viewModel.loadFirstPage() }
+        binding.btnRetry.setOnClickListener { viewModel.loadStudents() }
     }
 
     private fun setupSearch() {
@@ -114,10 +121,8 @@ class MarkAttendanceFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     renderList(state.isLoading, state.errorMessage)
-                    renderLoadMore(state.isLoadingMore)
                     renderSubmit(state.submitState)
-
-                    // Always re-submit filtered list to adapter
+                    // Push filtered/paginated list to adapter on every state change
                     adapter.submitList(viewModel.getFilteredStudents().toList())
                 }
             }
@@ -125,33 +130,30 @@ class MarkAttendanceFragment : Fragment() {
     }
 
     private fun renderList(isLoading: Boolean, errorMessage: String?) {
-        binding.progressBarFull.visibility = if (isLoading) View.VISIBLE  else View.GONE
-        binding.rvStudents.visibility      = if (isLoading) View.GONE     else View.VISIBLE
-        binding.groupError.visibility      = if (errorMessage != null && !isLoading) View.VISIBLE else View.GONE
+        binding.progressBarFull.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.rvStudents.visibility      = if (isLoading) View.GONE    else View.VISIBLE
+        binding.groupError.visibility      =
+            if (errorMessage != null && !isLoading) View.VISIBLE else View.GONE
         binding.tvError.text               = errorMessage
-    }
-
-    private fun renderLoadMore(isLoadingMore: Boolean) {
-        binding.progressBarPaging.visibility = if (isLoadingMore) View.VISIBLE else View.GONE
     }
 
     private fun renderSubmit(submitState: SubmitState) {
         when (submitState) {
-            is SubmitState.Idle    -> {
-                binding.btnSubmit.isEnabled = true
+            is SubmitState.Idle -> {
+                binding.btnSubmit.isEnabled       = true
                 binding.progressSubmit.visibility = View.GONE
             }
             is SubmitState.Loading -> {
-                binding.btnSubmit.isEnabled = false
+                binding.btnSubmit.isEnabled       = false
                 binding.progressSubmit.visibility = View.VISIBLE
             }
             is SubmitState.Success -> {
                 binding.progressSubmit.visibility = View.GONE
-                Snackbar.make(binding.root, "Attendance submitted!", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Attendance saved!", Snackbar.LENGTH_SHORT).show()
                 viewModel.resetSubmitState()
             }
-            is SubmitState.Error   -> {
-                binding.btnSubmit.isEnabled = true
+            is SubmitState.Error -> {
+                binding.btnSubmit.isEnabled       = true
                 binding.progressSubmit.visibility = View.GONE
                 Snackbar.make(binding.root, submitState.message, Snackbar.LENGTH_LONG).show()
                 viewModel.resetSubmitState()
@@ -164,68 +166,3 @@ class MarkAttendanceFragment : Fragment() {
         _binding = null
     }
 }
-
-/*
-@AndroidEntryPoint
-class MarkAttendanceFragment : BaseFragment<FragmentMarkAttendanceBinding>() {
-    private val viewModel: MarkAttendanceViewModel by viewModels()
-    private var batch_id = ""
-
-    override fun initView(savedInstanceState: Bundle?) {
-        batch_id = arguments?.getString("batch_id", "") ?: ""
-        Log.i("TAG", "batch_id: "+batch_id)
-        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(
-            requireContext(), LOGIN_DATA
-        )?.data?.accessToken ?: ""
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setObserver()
-        clickEvent()
-    }
-
-    // ── Observers ─────────────────────────────────────────────────────────────
-
-    private fun setObserver() {
-        viewModel.getAttendanceLiveDataLiveData().observe(viewLifecycleOwner) {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    ProcessDialog.dismissDialog(true)
-                    Log.e("TAG", "getAttendanceLiveData success: ${Gson().toJson(it)}")
-
-                    if (it.data?.status == "true") {
-                        // Convert raw API response → UI model
-                        val uiData = CalenderModels.MonthAttendanceData.fromApiResponse(it.data)
-
-                    } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-
-                Status.ERROR -> {
-                    ProcessDialog.dismissDialog(true)
-                    Log.e("TAG", "getAttendanceLiveData Failed: ${it.message}")
-                    Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    // ── Click Events ──────────────────────────────────────────────────────────
-
-    private fun clickEvent() {
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
-
-    override fun getLayoutId(): Int = R.layout.fragment_mark_attendance
-
-    override fun restoreView() {}
-}*/

@@ -72,18 +72,19 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="8dp"
+            android:padding="8dp"
             android:background="@drawable/bg_btn_absent"
             android:src="@drawable/attendance_cross"
-            android:contentDescription="Mark absent"/>
+            android:contentDescription="Mark absent" />
 
-        <!-- Present button -->
         <ImageView
             android:id="@+id/btnPresent"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:padding="8dp"
             android:background="@drawable/bg_btn_present"
             android:src="@drawable/attendance_tick"
-            android:contentDescription="Mark present"/>
+            android:contentDescription="Mark present" />
 
     </LinearLayout>
 </layout>

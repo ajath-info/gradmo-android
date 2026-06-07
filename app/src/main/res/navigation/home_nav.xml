@@ -162,4 +162,20 @@
         android:id="@+id/teacherZoomFragment"
         android:name="com.app.gradmo.ui.fragment.teacher.TeacherZoomFragment"
         android:label="TeacherZoomFragment" />
+    <fragment
+        android:id="@+id/studentZoomFragment"
+        android:name="com.app.gradmo.ui.fragment.StudentZoomFragment"
+        android:label="StudentZoomFragment" />
+    <fragment
+        android:id="@+id/updatePasswordFragment"
+        android:name="com.app.gradmo.ui.fragment.UpdatePasswordFragment"
+        android:label="UpdatePasswordFragment" />
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.app.gradmo.ui.fragment.AboutUsFragment"
+        android:label="AboutUsFragment" />
+    <fragment
+        android:id="@+id/privacyFragment"
+        android:name="com.app.gradmo.ui.fragment.PrivacyFragment"
+        android:label="PrivacyFragment" />
 </navigation>

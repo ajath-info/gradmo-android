@@ -174,11 +174,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Privacy Policy" -> {
-
+                    navController.navigate(R.id.privacyFragment)
                 }
 
                 "About App" -> {
-
+                    navController.navigate(R.id.aboutUsFragment)
                 }
 
                 "Logout" -> {
@@ -194,7 +194,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Update Password" -> {
-
+                    navController.navigate(R.id.updatePasswordFragment)
                 }
             }
         }
@@ -422,7 +422,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment, R.id.teacherBatchDetailFragment, R.id.teacherBatchDetailFragment, R.id.teacherHomeworkFragment, R.id.createHomeworkFragment, R.id.teacherExamListFragment, R.id.createExamDetailsFragment, R.id.addQuestionsFragment, R.id.markAttendanceFragment, R.id.teacherLibraryFragment, R.id.addLibraryFragment, R.id.teacherVideoLectureFragment, R.id.addVideoLectureFragment, R.id.teacherZoomFragment -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment, R.id.teacherBatchDetailFragment, R.id.teacherBatchDetailFragment, R.id.teacherHomeworkFragment, R.id.createHomeworkFragment, R.id.teacherExamListFragment, R.id.createExamDetailsFragment, R.id.addQuestionsFragment, R.id.markAttendanceFragment, R.id.teacherLibraryFragment, R.id.addLibraryFragment, R.id.teacherVideoLectureFragment, R.id.addVideoLectureFragment, R.id.teacherZoomFragment, R.id.studentZoomFragment, R.id.updatePasswordFragment, R.id.privacyFragment, R.id.aboutUsFragment -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 

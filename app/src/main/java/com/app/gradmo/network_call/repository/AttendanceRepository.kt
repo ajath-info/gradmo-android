@@ -1,82 +1,107 @@
 package com.app.gradmo.network_call.repository
 
-import com.app.gradmo.model.mark_attendance.AttendanceStatus
+import com.app.gradmo.model.add_attendance.AddAttendanceRequest
+import com.app.gradmo.model.attendance_students_list.AttendanceStatus
+import com.app.gradmo.model.attendance_students_list.GetStudentsForAttendanceRequest
+import com.app.gradmo.model.attendance_students_list.StudentUiModel
 import com.app.gradmo.model.mark_attendance.AttendanceSubmitRequest
 import com.app.gradmo.model.mark_attendance.Student
+import com.app.gradmo.network_call.ApiService
+import com.app.gradmo.network_call.RetrofitBuilder
 import kotlinx.coroutines.delay
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 /**
- * ─────────────────────────────────────────────────────────────────
- *  AttendanceRepository
+ * AttendanceRepository
  *
- *  ALL network calls are isolated here.
- *  To wire up real APIs:
- *    1. Replace fetchStudentsPage() body with your Retrofit/Ktor call.
- *    2. Replace submitAttendance() body with your Retrofit/Ktor call.
- *    3. Delete the dummy data block at the bottom of this file.
- * ─────────────────────────────────────────────────────────────────
+ * Owns all network calls for the attendance feature.
+ * The ViewModel never touches ApiService directly.
+ *
+ * Inject this via Hilt or pass it through a ViewModelFactory — your call.
  */
-class AttendanceRepository {
+class AttendanceRepository() {
+    private val service = RetrofitBuilder.apiService
 
-    // ── Public API ────────────────────────────────────────────────
-
-    /**
-     * Fetch one page of students.
-     *
-     * @param page     1-based page index
-     * @param pageSize number of students per page
-     * @return Pair<List<Student>, hasNextPage: Boolean>
-     *
-     * Replace with:
-     *   val response = apiService.getStudents(page = page, pageSize = pageSize)
-     *   return Pair(response.students.map { it.toDomain() }, response.hasNext)
-     */
-    suspend fun fetchStudentsPage(page: Int, pageSize: Int): Pair<List<Student>, Boolean> {
-        delay(600) // simulate network latency — remove when using real API
-
-        val fromIndex = (page - 1) * pageSize
-        val toIndex   = minOf(fromIndex + pageSize, DUMMY_STUDENTS.size)
-
-        if (fromIndex >= DUMMY_STUDENTS.size) return Pair(emptyList(), false)
-
-        val slice      = DUMMY_STUDENTS.subList(fromIndex, toIndex)
-        val hasNextPage = toIndex < DUMMY_STUDENTS.size
-        return Pair(slice, hasNextPage)
-    }
+    // ── Fetch students + today's pre-filled status ────────────────
 
     /**
-     * Submit the marked attendance records.
+     * Fetches the batch student list and maps each student's status for TODAY
+     * from the cells map. Students with no cell entry for today get null status.
      *
-     * Replace with:
-     *   val response = apiService.submitAttendance(request)
-     *   if (!response.isSuccessful) throw Exception("Submit failed: ${response.code()}")
+     * @return List of [StudentUiModel] ready for the UI, plus batchStartTime for submit.
      */
-    suspend fun submitAttendance(request: AttendanceSubmitRequest) {
-        delay(800) // simulate network latency — remove when using real API
-        // TODO: replace with actual API call
-    }
+    suspend fun fetchStudentsWithTodayStatus(
+        token: String,
+        batchId: Int,
+        today: LocalDate = LocalDate.now()
+    ): FetchResult {
+        val todayStr = today.format(DateTimeFormatter.ISO_LOCAL_DATE) // "2026-06-07"
+        val month = today.monthValue
+        val year = today.year
 
-    // ── Dummy data (DELETE when using real API) ───────────────────
+        val request = GetStudentsForAttendanceRequest(
+            batch_id = batchId,
+            month = month,
+            year = year
+        )
 
-    companion object {
-        private val DUMMY_STUDENTS = listOf(
-            // Some students have pre-filled attendance (simulates API returning prior status)
-            Student("s01", "Esther Howard",    null, 1,  AttendanceStatus.PRESENT),
-            Student("s02", "Savannah Nguyen",  null, 2,  null),
-            Student("s03", "Marvin McKinney",  null, 3,  AttendanceStatus.ABSENT),
-            Student("s04", "Jacob Jones",      null, 4,  null),
-            Student("s05", "Floyd Miles",      null, 5,  AttendanceStatus.PRESENT),
-            Student("s06", "Annette Black",    null, 6,  null),
-            Student("s07", "Bessie Cooper",    null, 7,  null),
-            Student("s08", "Darrell Steward",  null, 8,  AttendanceStatus.ABSENT),
-            Student("s09", "Cody Fisher",      null, 9,  null),
-            Student("s10", "Kristin Watson",   null, 10, null),
-            Student("s11", "Jerome Bell",      null, 11, AttendanceStatus.PRESENT),
-            Student("s12", "Ralph Edwards",    null, 12, null),
-            Student("s13", "Courtney Henry",   null, 13, null),
-            Student("s14", "Albert Flores",    null, 14, AttendanceStatus.ABSENT),
-            Student("s15", "Theresa Webb",     null, 15, null),
-            Student("s16", "Arlene McCoy",     null, 16, null),
+        val response = service.getStudentsForAttendance(token, request)
+
+        // Defensive: treat missing/empty cells as empty map
+        val cells = response.data.cells ?: emptyMap()
+
+        val students = response.data.students.map { apiStudent ->
+            val cellKey = "${apiStudent.studentId}_$todayStr"   // e.g. "111_2026-06-07"
+            val cell = cells[cellKey]
+            StudentUiModel(
+                studentId = apiStudent.studentId,
+                name = apiStudent.name,
+                todayStatus = AttendanceStatus.fromApi(cell?.status),
+                existingAttId = cell?.attendanceId
+            )
+        }
+
+        return FetchResult(
+            students = students,
+            batchId = response.data.batch_id,
+            batchStartTime = response.data.batchStartTime,
+            todayDate = todayStr
         )
     }
+
+    // ── Submit / update attendance ────────────────────────────────
+
+    /**
+     * Sends the attendance record to the API.
+     *
+     * [presentStudentIds] = IDs of students marked PRESENT.
+     * The API payload sends only present IDs — confirm with backend whether
+     * absent students need to be submitted separately or are inferred.
+     */
+    suspend fun submitAttendance(
+        token: String,
+        batchId: Int,
+        attendanceDate: String,
+        batchStartTime: String,
+        presentStudentIds: List<Int>
+    ) {
+        val request = AddAttendanceRequest(
+            attendance_date = attendanceDate,
+            batch_id = batchId,
+            student_ids = presentStudentIds,
+            time = batchStartTime
+        )
+        service.addAttendance(token, request)
+    }
+
+    // ── Result wrapper ────────────────────────────────────────────
+
+    data class FetchResult(
+        val students: List<StudentUiModel>,
+        val batchId: Int,
+        val batchStartTime: String,
+        val todayDate: String
+    )
 }

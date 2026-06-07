@@ -161,54 +161,12 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
     }
 
     private fun openZoomClass() {
-//        val zoomLink = batch.zoom_link
-//            .ifEmpty { TEST_ZOOM_LINK }
-        val zoomLink = TEST_ZOOM_LINK
-        // Choose ONE of the two options below:
-        openInBrowser(zoomLink)       // Option A
-        // openInWebView(zoomLink)    // Option B
+        var bundle = Bundle()
+        bundle.putString("batch_id", batch.batch_id.toString())
+        bundle.putString("batchName", batch.batchName.toString())
+        findNavController().navigate(R.id.studentZoomFragment, bundle)
     }
 
-    // Option A — External Browser
-    private fun openInBrowser(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "No browser found to open link", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private val permissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val allGranted = permissions.values.all { it }
-        if (allGranted) openZoomSession()
-        else Toast.makeText(requireContext(), "Camera & Mic permissions required", Toast.LENGTH_SHORT).show()
-    }
-
-    // Call this instead of openZoomSession() directly
-    private fun requestPermissionsAndJoin() {
-        permissionLauncher.launch(arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
-        ))
-    }
-    private fun openZoomSession() {
-//        val intent = Intent(requireContext(), ZoomVideoActivity::class.java).apply {
-//            putExtra(ZoomVideoActivity.EXTRA_SESSION_NAME, "batch-${batch.batchName}-live")
-//            putExtra(ZoomVideoActivity.EXTRA_SESSION_TOKEN, getSessionToken()) // see below
-//            putExtra(ZoomVideoActivity.EXTRA_USER_NAME, "Student")
-//        }
-//        startActivity(intent)
-    }
-
-    // For TESTING only — generate a token from your backend normally
-    private fun getSessionToken(): String {
-        // Replace with a real JWT from your backend
-        // For testing, generate one at: https://videosdk.zoom.us/test
-        return "YOUR_TEST_JWT_TOKEN"
-    }
     private fun clickEvent() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()

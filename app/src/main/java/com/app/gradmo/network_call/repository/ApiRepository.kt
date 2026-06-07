@@ -1,7 +1,9 @@
 package com.app.gradmo.network_call.repository
 
+import com.app.gradmo.model.add_attendance.AddAttendanceRequest
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.state.GetStatesRequest
+import com.app.gradmo.model.attendance_students_list.GetStudentsForAttendanceRequest
 import com.app.gradmo.model.attendence.AttendanceListRequest
 import com.app.gradmo.model.batch_list.BatchListRequest
 import com.app.gradmo.model.create_zoom.CreateZoomRequest
@@ -170,4 +172,8 @@ class ApiRepository {
     suspend fun createZoomClassApi(token: String, request: CreateZoomRequest) = service.createZoomClass(token, request)
 
     suspend fun endZoomClassApi(token: String, request: EndZoomClassRequest) = service.endZoomClass(token, request)
+
+    suspend fun getStudentsForAttendanceApi(token: String, request: GetStudentsForAttendanceRequest) = service.getStudentsForAttendance(token, request)
+
+    suspend fun addAttendanceApi(token: String, request: AddAttendanceRequest) = service.addAttendance(token, request)
 }
