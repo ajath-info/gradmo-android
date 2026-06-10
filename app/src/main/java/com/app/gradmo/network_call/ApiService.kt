@@ -17,6 +17,7 @@ import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.batch_detail.BatchDetailResponse
 import com.app.gradmo.model.batch_list.BatchListRequest
 import com.app.gradmo.model.batch_list.BatchListResponse
+import com.app.gradmo.model.content_page.ContentPagesResponse
 import com.app.gradmo.model.create_order.CreateOrderResponse
 import com.app.gradmo.model.create_zoom.CreateZoomRequest
 import com.app.gradmo.model.create_zoom.CreateZoomResponse
@@ -303,5 +304,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: AddAttendanceRequest
     ): AddAttendanceResponse
+
+    @GET("api/main/pages")
+    suspend fun contentPageData(
+        @Header("Authorization") token: String,
+    ): ContentPagesResponse
 }
 

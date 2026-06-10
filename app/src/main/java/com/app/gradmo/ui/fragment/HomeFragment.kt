@@ -24,7 +24,6 @@ import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.batch_list.BatchListRequest
 import com.app.gradmo.model.batch_list.BatchListResponse
 import com.app.gradmo.model.enums.UserType
-import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.institute_list.request.InstitutesListRequest
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.login.response.LoginResponse
@@ -83,7 +82,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         setUserType()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
-        setUIForUserType(accessToken)
+        setUIForUserType()
+        when(UserPreference.userType){
+            UserType.STUDENT ->{
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                getLocationAndHitApi()
+            }
+            UserType.TEACHER -> {
+                viewModel.hitBatchesDataApi("Bearer $accessToken", BatchListRequest())
+            }
+            UserType.INSTITUTE -> {
+
+            }
+        }
         setHeaderName()
         viewModel.hitThirdPartyCredentialsDataApi("Bearer $accessToken")
         if (viewModel.getBannerLiveData().value?.data == null) {
@@ -91,17 +102,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
     }
 
-    private fun setUIForUserType(accessToken: String?) {
+    private fun setUIForUserType() {
         when(UserPreference.userType){
             UserType.STUDENT ->{
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-                getLocationAndHitApi()
                 binding.layoutForStudent.isVisible=true
                 binding.layoutForTeacher.isVisible=false
             }
             UserType.TEACHER -> {
-//                setupBatchesRecycler(listOf(InstituteDetailResponse.Batche(), InstituteDetailResponse.Batche()))
-                viewModel.hitBatchesDataApi("Bearer $accessToken", BatchListRequest())
                 binding.layoutForStudent.isVisible=false
                 binding.layoutForTeacher.isVisible=true
             }
@@ -453,6 +460,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun restoreView() {
         setHeaderName()
+        setUIForUserType()
         viewModel.getBannerLiveData().value?.data?.data?.banners?.let {
             setUpBannerViewPager(it)
         }

@@ -173,7 +173,7 @@ class ApiRepository {
 
     suspend fun endZoomClassApi(token: String, request: EndZoomClassRequest) = service.endZoomClass(token, request)
 
-    suspend fun getStudentsForAttendanceApi(token: String, request: GetStudentsForAttendanceRequest) = service.getStudentsForAttendance(token, request)
+    suspend fun contentPageDataApi(token: String) = service.contentPageData(token)
 
-    suspend fun addAttendanceApi(token: String, request: AddAttendanceRequest) = service.addAttendance(token, request)
+
 }

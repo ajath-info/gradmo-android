@@ -33,6 +33,7 @@ import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
 import com.app.gradmo.ui.adapter.AdapterLibraryBook
+import com.app.gradmo.ui.view_model.ContentDataViewModel
 import com.app.gradmo.ui.view_model.LibraryViewModel
 import com.app.gradmo.utils.CommonUtils
 import com.app.gradmo.utils.CommonUtils.updateModeUI
@@ -47,9 +48,12 @@ import kotlin.getValue
 @AndroidEntryPoint
 class PrivacyFragment : BaseFragment<FragmentPrivacyBinding>() {
 
-//    private val viewModel: LibraryViewModel by viewModels()
+    private val viewModel: ContentDataViewModel by viewModels()
 
-    override fun initView(savedInstanceState: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {
+        val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+        viewModel.hitContentDataApi("Bearer $accessToken")
+    }
     private fun clickEvent() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
@@ -62,29 +66,28 @@ class PrivacyFragment : BaseFragment<FragmentPrivacyBinding>() {
     }
     override fun getLayoutId(): Int = R.layout.fragment_privacy
     private fun setObserver() {
-//        viewModel.getLibraryLiveData().observe(viewLifecycleOwner) {
-//            when (it.status) {
-//                Status.SUCCESS -> {
-//                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
-//                    if (it.data?.status == "true") {
-//
-//                    } else {
-//                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                    ProcessDialog.dismissDialog(true)
-//                }
-//
-//                Status.LOADING -> {
-//                    ProcessDialog.showDialog(requireContext(), true)
-//                }
-//
-//                Status.ERROR -> {
-//                    Log.e("TAG", "Login Failed: ${it.message}")
-//                    ProcessDialog.dismissDialog(true)
-//                }
-//            }
-//        }
+        viewModel.getContentDataLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "Content Api success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        binding.contentText.text = it.data.data.privacy_policy.content
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "Content Api Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
 
     }
     override fun restoreView() {
