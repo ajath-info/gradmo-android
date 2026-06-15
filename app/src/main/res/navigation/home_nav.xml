@@ -178,4 +178,12 @@
         android:id="@+id/privacyFragment"
         android:name="com.app.gradmo.ui.fragment.PrivacyFragment"
         android:label="PrivacyFragment" />
+    <fragment
+        android:id="@+id/myBatchFragment"
+        android:name="com.app.gradmo.ui.fragment.MyBatchFragment"
+        android:label="MyBatchFragment" />
+    <fragment
+        android:id="@+id/paymentHistoryFragment"
+        android:name="com.app.gradmo.ui.fragment.PaymentHistoryFragment"
+        android:label="PaymentHistoryFragment" />
 </navigation>

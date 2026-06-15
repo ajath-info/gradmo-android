@@ -161,7 +161,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "My Batches" -> {
-
+                    navController.navigate(R.id.myBatchFragment)
                 }
 
                 "Edit Profile" -> {
@@ -170,7 +170,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Payment History" -> {
-
+                    navController.navigate(R.id.paymentHistoryFragment)
                 }
 
                 "Privacy Policy" -> {
@@ -190,7 +190,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                 }
 
                 "Share App" -> {
-
+                    shareApp()
                 }
 
                 "Update Password" -> {
@@ -199,7 +199,19 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
             }
         }
     }
+    private fun shareApp(){
+        val appPackageName = packageName
 
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(
+                Intent.EXTRA_TEXT,
+                "Check out this app: https://play.google.com/apps/testing/com.app.gradmo?id=$appPackageName"
+            )
+        }
+
+        startActivity(Intent.createChooser(shareIntent, "Share App"))
+    }
     private fun deleteAccountDialog() {
         CommonDialog(
             context = this,
@@ -422,7 +434,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     showNavigationView()
                     setBottomBarPadding()
                 }
-                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment, R.id.teacherBatchDetailFragment, R.id.teacherBatchDetailFragment, R.id.teacherHomeworkFragment, R.id.createHomeworkFragment, R.id.teacherExamListFragment, R.id.createExamDetailsFragment, R.id.addQuestionsFragment, R.id.markAttendanceFragment, R.id.teacherLibraryFragment, R.id.addLibraryFragment, R.id.teacherVideoLectureFragment, R.id.addVideoLectureFragment, R.id.teacherZoomFragment, R.id.studentZoomFragment, R.id.updatePasswordFragment, R.id.privacyFragment, R.id.aboutUsFragment -> {
+                R.id.batchDetailFragment, R.id.instituteDetailsFragment, R.id.editProfileNewFragment, R.id.batchListFragment, R.id.selectPlanFragment, R.id.paymentSummaryFragment, R.id.successPaymentFragment, R.id.promocodeListFragment, R.id.libraryFragment, R.id.videoLecturesFragment, R.id.videoLectureDetailFragment, R.id.seeAttendenceFragment, R.id.homeworkFragment, R.id.homeworkDetailFragment, R.id.upcomingExamListFragment, R.id.giveAssessmentFragment, R.id.testCompletedFragment, R.id.completedExamListFragment, R.id.videoPlayerFragment, R.id.teacherBatchDetailFragment, R.id.teacherBatchDetailFragment, R.id.teacherHomeworkFragment, R.id.createHomeworkFragment, R.id.teacherExamListFragment, R.id.createExamDetailsFragment, R.id.addQuestionsFragment, R.id.markAttendanceFragment, R.id.teacherLibraryFragment, R.id.addLibraryFragment, R.id.teacherVideoLectureFragment, R.id.addVideoLectureFragment, R.id.teacherZoomFragment, R.id.studentZoomFragment, R.id.updatePasswordFragment, R.id.privacyFragment, R.id.aboutUsFragment, R.id.myBatchFragment, R.id.paymentHistoryFragment -> {
                     clearBottomBarPadding()
                     hideNavigationView()
 
