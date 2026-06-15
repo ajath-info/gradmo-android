@@ -41,6 +41,8 @@ import com.app.gradmo.model.live_class.LiveClassDetailsResponse
 import com.app.gradmo.model.login.request.LoginRequest
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.model.logout.response.DeleteResponse
+import com.app.gradmo.model.notification_list.NotificationListRequest
+import com.app.gradmo.model.notification_list.NotificationListResponse
 import com.app.gradmo.model.payment_history.PaymentHistoryRequest
 import com.app.gradmo.model.payment_history.PaymentHistoryResponse
 import com.app.gradmo.model.plan_detail.PlanDetailsResponse
@@ -317,5 +319,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: PaymentHistoryRequest
     ): PaymentHistoryResponse
+
+    @POST("api/main/notifications-list")
+    suspend fun getNotificationList(
+        @Header("Authorization") token: String,
+        @Body requestBody: NotificationListRequest
+    ): NotificationListResponse
 }
 

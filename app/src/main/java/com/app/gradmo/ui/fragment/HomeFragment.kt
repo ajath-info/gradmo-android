@@ -65,6 +65,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     // ── Auto-scroll ──────────────────────────────────────────────────────
     private val autoScrollHandler = Handler(Looper.getMainLooper())
     private val AUTO_SCROLL_DELAY = 7000L  // 3 seconds
+    private var isEnrolledInAnyBatch = ""
 
     private val autoScrollRunnable = object : Runnable {
         override fun run() {
@@ -82,11 +83,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         setUserType()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
+        isEnrolledInAnyBatch = Preferences.getStringPreference(requireContext(), com.app.gradmo.preferences.isEnrolledInAnyBatch) ?: ""
         setUIForUserType()
         when(UserPreference.userType){
             UserType.STUDENT ->{
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-                getLocationAndHitApi()
+                if (isEnrolledInAnyBatch!="N"&&isEnrolledInAnyBatch!="Y"){
+                    viewModel.hitStudentBatchesDataApi("Bearer $accessToken", BatchListRequest())
+                }else if(isEnrolledInAnyBatch=="Y"){
+                    viewModel.hitStudentBatchesDataApi("Bearer $accessToken", BatchListRequest())
+                }else{
+                    fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                    getLocationAndHitApi()
+                }
             }
             UserType.TEACHER -> {
                 viewModel.hitBatchesDataApi("Bearer $accessToken", BatchListRequest())
@@ -105,10 +113,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun setUIForUserType() {
         when(UserPreference.userType){
             UserType.STUDENT ->{
-                binding.layoutForStudent.isVisible=true
                 binding.layoutForTeacher.isVisible=false
+                if(isEnrolledInAnyBatch=="Y"){
+                    binding.layoutForStudent.isVisible=false
+                    binding.studentBatchesLayout.isVisible=true
+                }else{
+                    binding.studentBatchesLayout.isVisible=false
+                    binding.layoutForStudent.isVisible=true
+                }
             }
             UserType.TEACHER -> {
+                binding.studentBatchesLayout.isVisible=false
                 binding.layoutForStudent.isVisible=false
                 binding.layoutForTeacher.isVisible=true
             }
@@ -338,6 +353,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = adapterTeacherEnrolledBatch
         }
     }
+    private fun setupStudentBatchesRecycler(batches: List<BatchListResponse.Data.EnrolledBatche>) {
+        adapterTeacherEnrolledBatch = AdapterTeacherEnrolledBatch(batches, ::onBatchSelected)
+        binding.studentBatchRecyclerView.apply {
+            adapter = adapterTeacherEnrolledBatch
+        }
+    }
     fun onBatchSelected(batch:BatchListResponse.Data.EnrolledBatche){
         val bundle=Bundle()
         bundle.putParcelable("teacherBatch", batch)
@@ -379,6 +400,42 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
                         setupBatchesRecycler(it.data.data.enrolled_batches ?: listOf())
+//                        setupRatingRecycler(it.data.rating)
+                    } else {
+                        Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ProcessDialog.dismissDialog(true)
+                }
+
+                Status.LOADING -> {
+                    ProcessDialog.showDialog(requireContext(), true)
+                }
+
+                Status.ERROR -> {
+                    Log.e("TAG", "Login Failed: ${it.message}")
+                    ProcessDialog.dismissDialog(true)
+                }
+            }
+        }
+
+        viewModel.getStudentBatchesLiveData().observe(viewLifecycleOwner) {
+            when (it.status) {
+                Status.SUCCESS -> {
+                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
+                    if (it.data?.status == "true") {
+                        if(isEnrolledInAnyBatch=="Y"){
+                            setupStudentBatchesRecycler(it.data.data.enrolled_batches ?: listOf())
+                        }else{
+                            if ((it.data.data.enrolled_batches?.size ?: 0) > 0){
+                                Preferences.setStringPreference(requireContext(), com.app.gradmo.preferences.isEnrolledInAnyBatch, "Y")
+                                setupStudentBatchesRecycler(it.data.data.enrolled_batches ?: listOf())
+                            }else{
+                                Preferences.setStringPreference(requireContext(), com.app.gradmo.preferences.isEnrolledInAnyBatch, "N")
+                                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                                getLocationAndHitApi()
+                            }
+                        }
 //                        setupRatingRecycler(it.data.rating)
                     } else {
                         Toast.makeText(requireContext(), "${it.data?.message}", Toast.LENGTH_SHORT)
@@ -468,6 +525,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             setupInstitutesRecycler(it)
         }
         viewModel.getBatchesLiveData().value?.data?.data?.enrolled_batches?.let {
+            setupBatchesRecycler(it)
+        }
+        viewModel.getStudentBatchesLiveData().value?.data?.data?.enrolled_batches?.let {
             setupBatchesRecycler(it)
         }
     }

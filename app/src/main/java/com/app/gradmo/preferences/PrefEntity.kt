@@ -7,5 +7,6 @@ const val LOGIN_DATA = "login_data"
 const val USER_TYPE = "user_type"
 const val PAYMENT_GATEWAY_SECRET_KEY = "payment_gateway_secret_key"
 const val PAYMENT_GATEWAY_ID = "payment_gateway_id"
+const val isEnrolledInAnyBatch = "isEnrolledInAnyBatch"
 
 

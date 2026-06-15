@@ -137,4 +137,34 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             ex.printStackTrace()
         }
     }
+
+
+
+    private val studentBatchesLiveDate = SingleLiveEvent<Resources<BatchListResponse>>()
+
+    fun getStudentBatchesLiveData(): LiveData<Resources<BatchListResponse>> {
+        return studentBatchesLiveDate
+    }
+    fun hitStudentBatchesDataApi(token: String, request: BatchListRequest) {
+
+        try {
+            studentBatchesLiveDate.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    studentBatchesLiveDate.postValue(
+                        Resources.success(
+                            ApiRepository().getBatchListApi(token, request
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    studentBatchesLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
 }

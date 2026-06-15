@@ -205,6 +205,43 @@
             </LinearLayout>
             <LinearLayout
                 android:visibility="gone"
+                android:id="@+id/studentBatchesLayout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:background="@color/light_blue_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:visibility="visible"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope_bold"
+                        android:textColor="@color/black"
+                        android:text="My Batches"
+                        android:textSize="15sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/studentBatchRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:clipToPadding="false"
+                        android:orientation="vertical"
+                        tools:listitem="@layout/adapter_home_institute"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/layoutForTeacher"
                 android:orientation="vertical"
                 android:layout_width="match_parent"

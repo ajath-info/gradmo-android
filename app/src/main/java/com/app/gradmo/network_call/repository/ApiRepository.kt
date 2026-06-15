@@ -16,6 +16,7 @@ import com.app.gradmo.model.library_list.LibraryListRequest
 import com.app.gradmo.model.live_class.BatchLiveClassListRequest
 import com.app.gradmo.model.live_class.LiveClassDetailsRequest
 import com.app.gradmo.model.login.request.LoginRequest
+import com.app.gradmo.model.notification_list.NotificationListRequest
 import com.app.gradmo.model.payment_history.PaymentHistoryRequest
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
@@ -177,5 +178,7 @@ class ApiRepository {
     suspend fun contentPageDataApi(token: String) = service.contentPageData(token)
 
     suspend fun getPaymentHistoryApi(token: String, request: PaymentHistoryRequest) = service.getPaymentHistory(token, request)
+
+    suspend fun getNotificationListApi(token: String, request: NotificationListRequest) = service.getNotificationList(token, request)
 
 }
