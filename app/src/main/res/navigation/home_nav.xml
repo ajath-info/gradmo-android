@@ -186,4 +186,8 @@
         android:id="@+id/paymentHistoryFragment"
         android:name="com.app.gradmo.ui.fragment.PaymentHistoryFragment"
         android:label="PaymentHistoryFragment" />
+    <fragment
+        android:id="@+id/instituteFragment"
+        android:name="com.app.gradmo.ui.fragment.InstituteFragment"
+        android:label="InstituteFragment" />
 </navigation>

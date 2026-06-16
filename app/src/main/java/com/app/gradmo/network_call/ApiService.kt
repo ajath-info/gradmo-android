@@ -51,6 +51,7 @@ import com.app.gradmo.model.questions.CreateExamResponse
 import com.app.gradmo.model.submit_exam.SubmitExamRequest
 import com.app.gradmo.model.teacher_created_exams.TeacherCreatedExamsResponse
 import com.app.gradmo.model.third_party_credentials.ThirdPartyCredentialsResponse
+import com.app.gradmo.model.user_detail.UserDetailResponse
 import com.app.gradmo.model.verify_payment.VerifyPaymentRequest
 import com.app.gradmo.model.verify_payment.VerifyPaymentResponse
 import com.app.gradmo.model.video_lecture.VideoLectureListResponse
@@ -122,9 +123,10 @@ interface ApiService {
     suspend fun delete(@Header("Authorization") token: String, @Field("student_id") student_id: String
     ): DeleteResponse
 
+    @FormUrlEncoded
     @POST("api/batch/slider-list")
     suspend fun getBanner(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String, @Field("institute_id") institute_id: String?=null
     ): BannerResponse
 
     @POST("api/institute/listing")
@@ -325,5 +327,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body requestBody: NotificationListRequest
     ): NotificationListResponse
+
+    @GET("api/user/user_details")
+    suspend fun getUserDetails(
+        @Header("Authorization") token: String,
+    ): UserDetailResponse
 }
 

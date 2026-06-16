@@ -528,7 +528,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             setupBatchesRecycler(it)
         }
         viewModel.getStudentBatchesLiveData().value?.data?.data?.enrolled_batches?.let {
-            setupBatchesRecycler(it)
+            setupStudentBatchesRecycler(it)
         }
     }
 }

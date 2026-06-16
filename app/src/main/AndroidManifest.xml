@@ -36,13 +36,16 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HomeActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.signup.activity.SignupFlowActivity"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>

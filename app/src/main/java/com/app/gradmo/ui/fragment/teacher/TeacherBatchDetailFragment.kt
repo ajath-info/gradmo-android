@@ -114,13 +114,13 @@ class TeacherBatchDetailFragment : BaseFragment<FragmentTeacherBatchDetailBindin
                 openLibrary()
             }
             3->{
-                openMarkAttendance()
+                openHomework()
             }
             4->{
                 openUpcomingExams()
             }
             5->{
-                openHomework()
+                openMarkAttendance()
             }
         }
     }

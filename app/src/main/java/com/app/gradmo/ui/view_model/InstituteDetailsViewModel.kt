@@ -3,6 +3,7 @@ package com.app.gradmo.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.gradmo.model.banner.response.BannerResponse
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.network_call.repository.ApiRepository
@@ -41,4 +42,33 @@ class InstituteDetailsViewModel @Inject constructor() : ViewModel() {
             ex.printStackTrace()
         }
     }
+
+
+    private val bannerLiveDate = SingleLiveEvent<Resources<BannerResponse>>()
+
+    fun getBannerLiveData(): LiveData<Resources<BannerResponse>> {
+        return bannerLiveDate
+    }
+    fun hitBannerDataApi(token: String, institute_id: String) {
+        try {
+            bannerLiveDate.postValue(Resources.loading(null))
+            viewModelScope.launch {
+                try {
+                    bannerLiveDate.postValue(
+                        Resources.success(
+                            ApiRepository().getBannerApi(token, institute_id
+                            )
+                        )
+                    )
+                } catch (ex: Exception) {
+                    bannerLiveDate.postValue(Resources.error(ex.localizedMessage, null))
+
+                }
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
 }

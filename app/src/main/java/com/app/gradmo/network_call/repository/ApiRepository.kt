@@ -55,7 +55,7 @@ class ApiRepository {
 
     suspend fun deleteApi(token: String, student_id: String) = service.delete(token, student_id)
 
-    suspend fun getBannerApi(token: String) = service.getBanner(token)
+    suspend fun getBannerApi(token: String, institute_id: String?=null) = service.getBanner(token, institute_id)
 
     suspend fun getInstitutesApi(token: String, request: InstitutesListRequest) = service.getInstitutes(token, request)
 
@@ -180,5 +180,7 @@ class ApiRepository {
     suspend fun getPaymentHistoryApi(token: String, request: PaymentHistoryRequest) = service.getPaymentHistory(token, request)
 
     suspend fun getNotificationListApi(token: String, request: NotificationListRequest) = service.getNotificationList(token, request)
+
+    suspend fun getUserDetailsApi(token: String) = service.getUserDetails(token)
 
 }

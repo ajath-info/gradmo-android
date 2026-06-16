@@ -119,13 +119,13 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
                 openLibrary()
             }
             3->{
-                openSeeAttendance()
+                openHomework()
             }
             4->{
                 openUpcomingExams()
             }
             5->{
-                openHomework()
+                openSeeAttendance()
             }
         }
     }

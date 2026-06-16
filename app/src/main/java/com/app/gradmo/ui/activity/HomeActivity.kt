@@ -377,10 +377,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                     true
                 }
                 R.id.course -> {
-                    val bundle = Bundle().apply {
+                    /*val bundle = Bundle().apply {
                         putString("flow", "seeAll")
-                    }
-                    navController.navigate(R.id.searchInstituteFragment, bundle)
+                    }*/
+                    navController.navigate(R.id.instituteFragment/*, bundle*/)
 //                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
                 }
@@ -423,7 +423,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private fun fragmentChangeCallback() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.searchInstituteFragment, R.id.notificationFragment, R.id.searchFragment -> {
+                R.id.searchInstituteFragment, R.id.notificationFragment, R.id.instituteFragment -> {
                     showNavigationView()
                     setBottomBarPadding()
                 }
