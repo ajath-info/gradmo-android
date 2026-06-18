@@ -45,7 +45,7 @@ class InstituteFragment() : BaseFragment<FragmentInstituteBinding>() {
     private lateinit var homeBannerAdapter: HomeBannerAdapter
     lateinit var adapter: InstitueTabAdapter
     var data = UserDetailResponse.Data()
-    var batchMap : Map<Int, List<UserDetailResponse.Data.Batch>> = mapOf()
+    var batchMap : Map<Int, List<Batch>> = mapOf()
 
     private val autoScrollRunnable = object : Runnable {
         override fun run() {
@@ -112,7 +112,7 @@ class InstituteFragment() : BaseFragment<FragmentInstituteBinding>() {
             onBatchSelected = { batch ->
                 val bundle=Bundle()
                 bundle.putParcelable("batch", batch.toBatche())
-//        bundle.putString("instituteName", institute.name)
+                bundle.putString("instituteName", batch.instituteName)
                 findNavController().navigate(R.id.batchDetailFragment, bundle)                        }
         )
         binding.instituteRecycler.apply {

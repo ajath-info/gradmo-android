@@ -149,6 +149,7 @@
                             <TextView
                                 android:id="@+id/tvTeacherName"
                                 app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/tvTiming"
                                 app:layout_constraintTop_toTopOf="parent"
                                 android:layout_marginHorizontal="10dp"
                                 android:layout_marginTop="9dp"
@@ -162,13 +163,14 @@
                                 android:text="" />
                             <TextView
                                 android:id="@+id/tvTiming"
-                                app:layout_constraintStart_toEndOf="@id/tvTeacherName"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 android:layout_marginHorizontal="10dp"
                                 android:layout_marginTop="9dp"
                                 android:drawableStart="@drawable/clock_icon"
                                 android:drawablePadding="6dp"
                                 android:layout_width="0dp"
+                                android:maxWidth="120dp"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
                                 android:fontFamily="@font/manrope_regular"
@@ -177,31 +179,31 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <TextView
-                            android:id="@+id/subjectName"
+                            android:id="@+id/grade"
                             app:layout_constraintStart_toEndOf="@+id/instituteCardView"
                             app:layout_constraintTop_toBottomOf="@+id/teacherLayout"
-                            android:background="@drawable/bg_blue_border"
+                            android:background="@drawable/bg_orange_border"
                             android:layout_marginHorizontal="10dp"
                             android:layout_marginTop="9dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/blue_3787FF"
+                            android:textColor="@color/orange_FF7300"
                             android:fontFamily="@font/manrope_semibold"
                             android:textSize="10sp"
                             android:text="Physics"
                             android:paddingVertical="4dp"
                             android:paddingHorizontal="15dp"/>
                         <TextView
-                            android:id="@+id/grade"
-                            app:layout_constraintStart_toEndOf="@+id/subjectName"
+                            android:id="@+id/subjectName"
+                            app:layout_constraintStart_toEndOf="@+id/grade"
                             app:layout_constraintTop_toBottomOf="@+id/teacherLayout"
-                            android:background="@drawable/bg_orange_border"
+                            android:background="@drawable/bg_blue_border"
 
                             android:layout_marginHorizontal="10dp"
                             android:layout_marginTop="9dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/orange_FF7300"
+                            android:textColor="@color/blue_3787FF"
                             android:fontFamily="@font/manrope_semibold"
                             android:textSize="10sp"
                             android:text="12th Grade"

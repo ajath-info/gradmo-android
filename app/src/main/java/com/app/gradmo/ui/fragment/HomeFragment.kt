@@ -7,6 +7,8 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -37,6 +39,7 @@ import com.app.gradmo.ui.activity.HomeActivity
 import com.app.gradmo.ui.adapter.AdapterTeacherEnrolledBatch
 import com.app.gradmo.ui.adapter.HomeBannerAdapter
 import com.app.gradmo.ui.adapter.HomeInstituteAdapter
+import com.app.gradmo.ui.fragment.MyBatchFragment.Companion.toBatche
 import com.app.gradmo.ui.view_model.HomeViewModel
 import com.app.gradmo.utils.network_utils.ProcessDialog
 import com.app.gradmo.utils.network_utils.Status
@@ -56,6 +59,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private lateinit var homeInstituteAdapter: HomeInstituteAdapter
     private lateinit var adapterTeacherEnrolledBatch: AdapterTeacherEnrolledBatch
+    private lateinit var adapterStudentEnrolledBatch: AdapterTeacherEnrolledBatch
     private lateinit var homeBannerAdapter: HomeBannerAdapter
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -352,18 +356,39 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.batchRecyclerView.apply {
             adapter = adapterTeacherEnrolledBatch
         }
+
+        binding.searchBatch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapterTeacherEnrolledBatch.filter(s?.toString() ?: "")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
     private fun setupStudentBatchesRecycler(batches: List<BatchListResponse.Data.EnrolledBatche>) {
-        adapterTeacherEnrolledBatch = AdapterTeacherEnrolledBatch(batches, ::onBatchSelected)
+        adapterStudentEnrolledBatch = AdapterTeacherEnrolledBatch(batches, ::onBatchSelected)
         binding.studentBatchRecyclerView.apply {
-            adapter = adapterTeacherEnrolledBatch
+            adapter = adapterStudentEnrolledBatch
         }
+
+        binding.studentBatchSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapterStudentEnrolledBatch.filter(s?.toString() ?: "")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
     fun onBatchSelected(batch:BatchListResponse.Data.EnrolledBatche){
         val bundle=Bundle()
-        bundle.putParcelable("teacherBatch", batch)
-        bundle.putString("instituteName", /*institute.name*/"")
-        findNavController().navigate(R.id.teacherBatchDetailFragment, bundle)
+        bundle.putString("instituteName", batch.instituteName)
+        if (UserPreference.userType== UserType.STUDENT){
+            bundle.putParcelable("batch", batch.toBatche())
+            findNavController().navigate(R.id.batchDetailFragment, bundle)
+        }else{
+            bundle.putParcelable("teacherBatch", batch.toBatche())
+            findNavController().navigate(R.id.teacherBatchDetailFragment, bundle)
+        }
     }
     fun onItemSelected(institute:InstituteListResponse.Institute){
         var bundle = Bundle()

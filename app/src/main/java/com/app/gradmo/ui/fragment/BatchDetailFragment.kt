@@ -96,6 +96,8 @@ class BatchDetailFragment : BaseFragment<FragmentBatchDetailBinding>() {
             instituteName.text = this@BatchDetailFragment.instituteName
             batchName.text = batch.batchName
             tvTeacherName.text = batch.instructor
+            grade.text = batch.subcategory_name
+            subjectName.text = batch.category_name
             tvTiming.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
     }

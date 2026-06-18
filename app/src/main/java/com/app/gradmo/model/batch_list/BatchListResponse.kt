@@ -16,6 +16,7 @@ data class BatchListResponse(
         data class EnrolledBatche(
             val batchImage: String?=null,
             val batchName: String?=null,
+            val instituteName: String?=null,
             val batch_id: Int?=null,
             val batch_type: Int?=null,
             val description: String?=null,

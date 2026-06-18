@@ -227,6 +227,25 @@
                         android:textColor="@color/black"
                         android:text="My Batches"
                         android:textSize="15sp" />
+                    <EditText
+                        android:id="@+id/studentBatchSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="18dp"
+                        android:background="@drawable/bg_login_flow_edittex"
+                        android:backgroundTint="@color/white"
+                        android:drawableStart="@drawable/search_icon"
+                        android:drawablePadding="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/manrope_medium"
+                        android:hint="Search a Batch"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingVertical="10dp"
+                        android:paddingHorizontal="16dp"
+                        android:singleLine="true" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/studentBatchRecyclerView"
@@ -241,7 +260,7 @@
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/layoutForTeacher"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -265,7 +284,7 @@
                         android:text="My Batches"
                         android:textSize="15sp" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/searchBatch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

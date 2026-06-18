@@ -36,7 +36,7 @@ class AdapterMyBatchList(
             Glide.with(root.context).load(batch.batchName).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
             instituteName.text = batch.batchName
 //            tvTeacherName.text = "N/A"
-            tvTeacherName.text = "Offline"
+            tvTeacherName.text = batch.instructor
             tvTime.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
         holder.binding.root.setOnClickListener {

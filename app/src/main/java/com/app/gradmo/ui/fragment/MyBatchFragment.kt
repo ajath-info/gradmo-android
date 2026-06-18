@@ -68,28 +68,31 @@ class MyBatchFragment : BaseFragment<FragmentMyBatchBinding>() {
 //        bundle.putString("instituteName", institute.name)
         findNavController().navigate(R.id.batchDetailFragment, bundle)
     }
-    fun EnrolledBatche.toBatche(): InstituteDetailResponse.Batche {
-        return InstituteDetailResponse.Batche(
-            admin_id = null,
-            batch_image = batchImage,
-            batch_mode = null,
-            batch_name = batchName,
-            batch_offer_price = null,
-            batch_price = null,
-            batch_type = batch_type?.toString(),
-            cat_id = null,
-            description = description,
-            end_date = end_date,
-            end_time = end_time,
-            id = batch_id?.toString(),
-            institute_id = null,
-            no_of_student = null,
-            pay_mode = null,
-            start_date = start_date,
-            start_time = start_time,
-            status = enrollment_status?.toString(),
-            sub_cat_id = null
-        )
+    companion object{
+        fun EnrolledBatche.toBatche(): InstituteDetailResponse.Batche {
+            return InstituteDetailResponse.Batche(
+                admin_id = null,
+                batch_image = batchImage,
+                batch_mode = null,
+                batch_name = batchName,
+                batch_offer_price = null,
+                batch_price = null,
+                batch_type = batch_type?.toString(),
+                cat_id = null,
+                description = description,
+                end_date = end_date,
+                end_time = end_time,
+                id = batch_id?.toString(),
+                institute_id = null,
+                no_of_student = null,
+                pay_mode = null,
+                start_date = start_date,
+                start_time = start_time,
+                status = enrollment_status?.toString(),
+                sub_cat_id = null
+            )
+        }
+
     }
     private fun clickEvent() {
         binding.backButton.setOnClickListener{

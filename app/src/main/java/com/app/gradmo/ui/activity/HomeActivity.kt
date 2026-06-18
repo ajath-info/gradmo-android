@@ -399,8 +399,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
                      true
                 }
                 R.id.account -> {
-                    if (currentDestId != R.id.editProfileNewFragment) {
-                        navController.navigate(R.id.editProfileNewFragment)
+                    if (currentDestId != R.id.profileFragment) {
+                        navController.navigate(R.id.profileFragment)
                     }
 //                    binding.imgBtn.setImageResource(R.drawable.search_icon_menu)
                     true
@@ -423,7 +423,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     private fun fragmentChangeCallback() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.searchInstituteFragment, R.id.notificationFragment, R.id.instituteFragment -> {
+                R.id.searchInstituteFragment, R.id.notificationFragment, R.id.instituteFragment, R.id.profileFragment -> {
                     showNavigationView()
                     setBottomBarPadding()
                 }

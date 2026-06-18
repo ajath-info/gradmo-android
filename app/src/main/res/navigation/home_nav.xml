@@ -190,4 +190,8 @@
         android:id="@+id/instituteFragment"
         android:name="com.app.gradmo.ui.fragment.InstituteFragment"
         android:label="InstituteFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.app.gradmo.ui.fragment.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>

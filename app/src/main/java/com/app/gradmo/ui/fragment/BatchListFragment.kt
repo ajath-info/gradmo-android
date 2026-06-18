@@ -9,12 +9,15 @@ import androidx.navigation.fragment.findNavController
 import com.app.gradmo.R
 import com.app.gradmo.base.BaseFragment
 import com.app.gradmo.databinding.FragmentBatchListBinding
+import com.app.gradmo.model.enums.UserType
 import com.app.gradmo.model.institute_detail.request.InstituteDetailRequest
 import com.app.gradmo.model.institute_detail.response.InstituteDetailResponse
 import com.app.gradmo.model.institute_list.response.InstituteListResponse
 import com.app.gradmo.model.login.response.LoginResponse
 import com.app.gradmo.preferences.LOGIN_DATA
 import com.app.gradmo.preferences.Preferences
+import com.app.gradmo.preferences.USER_TYPE
+import com.app.gradmo.preferences.UserPreference
 import com.app.gradmo.ui.adapter.AdapterBatchList
 import com.app.gradmo.ui.adapter.AdapterInstituteBatch
 import com.app.gradmo.ui.adapter.AdapterInstituteRating
@@ -60,9 +63,14 @@ class BatchListFragment : BaseFragment<FragmentBatchListBinding>() {
 
     fun onBatchSelected(batch:InstituteDetailResponse.Batche){
         val bundle=Bundle()
-        bundle.putParcelable("batch", batch)
         bundle.putString("instituteName", institute.name)
-        findNavController().navigate(R.id.batchDetailFragment, bundle)
+        if (UserPreference.userType== UserType.STUDENT){
+            bundle.putParcelable("batch", batch)
+            findNavController().navigate(R.id.batchDetailFragment, bundle)
+        }else{
+            bundle.putParcelable("teacherBatch", batch)
+            findNavController().navigate(R.id.teacherBatchDetailFragment, bundle)
+        }
     }
 
     private fun clickEvent() {

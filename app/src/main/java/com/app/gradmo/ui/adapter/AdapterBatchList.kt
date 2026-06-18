@@ -2,6 +2,7 @@ package com.app.gradmo.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gradmo.R
 import com.app.gradmo.databinding.AdapterInstituteBatchBinding
@@ -34,8 +35,8 @@ class AdapterBatchList(
         holder.binding.apply {
             Glide.with(root.context).load(batch.batch_image).placeholder(R.drawable.batch_placeholder).error(R.drawable.batch_placeholder).into(imageView)
             instituteName.text = batch.batch_name
-//            tvTeacherName.text = "N/A"
-            tvTeacherName.text = "Offline"
+            tvTeacherName.isVisible = false
+//            tvTeacherName.text = "Offline"
             tvTime.text = "${convertTimeFormat(batch.start_time.toString(), "HH:mm:ss", "h:mm a")} - ${convertTimeFormat(batch.end_time.toString(), "HH:mm:ss", "h:mm a")}"
         }
         holder.binding.root.setOnClickListener {
