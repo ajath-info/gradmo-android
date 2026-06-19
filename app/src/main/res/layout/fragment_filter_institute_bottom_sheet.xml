@@ -106,6 +106,7 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
+            android:id="@+id/tvCity"
             android:background="@drawable/bg_black_border"
             android:paddingHorizontal="20dp"
             android:paddingVertical="8dp"
@@ -114,6 +115,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select Your City"
+            android:clickable="true"
+            android:focusable="true"
             android:textColor="@color/gray_3E3E47"
             android:fontFamily="@font/manrope_semibold"
             android:textSize="18sp"

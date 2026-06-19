@@ -183,4 +183,6 @@ class ApiRepository {
 
     suspend fun getUserDetailsApi(token: String) = service.getUserDetails(token)
 
+    suspend fun getInstituteCitiesApi(token: String) = service.getInstituteCities(token)
+
 }

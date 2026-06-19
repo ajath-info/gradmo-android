@@ -9,4 +9,5 @@ data class InstitutesListRequest(
     val page:String?=null,
     val limit:String?=null,
     val mode:String?=null,
+    val city:String?=null,
     )

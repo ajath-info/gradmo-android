@@ -1,5 +1,6 @@
 package com.app.gradmo.network_call
 
+import com.app.gradmo.model.InstituteCityResponse
 import com.app.gradmo.model.add_attendance.AddAttendanceRequest
 import com.app.gradmo.model.add_attendance.AddAttendanceResponse
 import com.app.gradmo.model.add_homework.AddHomeworkResponse
@@ -332,5 +333,10 @@ interface ApiService {
     suspend fun getUserDetails(
         @Header("Authorization") token: String,
     ): UserDetailResponse
+
+    @GET("api/institute/city-list")
+    suspend fun getInstituteCities(
+        @Header("Authorization") token: String,
+    ): InstituteCityResponse
 }
 

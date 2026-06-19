@@ -3,6 +3,7 @@ package com.app.gradmo.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.gradmo.model.InstituteCityResponse
 import com.app.gradmo.model.address.city.GetCitiesRequest
 import com.app.gradmo.model.address.city.GetCitiesResponse
 import com.app.gradmo.model.banner.response.BannerResponse
@@ -79,12 +80,12 @@ class SearchInstituteViewModel @Inject constructor() : ViewModel() {
 
 
 
-    private val citiesLiveDate = SingleLiveEvent<Resources<GetCitiesResponse>>()
+    private val citiesLiveDate = SingleLiveEvent<Resources<InstituteCityResponse>>()
 
-    fun getCitiesLiveData(): LiveData<Resources<GetCitiesResponse>> {
+    fun getCitiesLiveData(): LiveData<Resources<InstituteCityResponse>> {
         return citiesLiveDate
     }
-    fun hitCitiesDataApi(request: GetCitiesRequest) {
+    fun hitCitiesDataApi(token: String) {
 
         try {
             citiesLiveDate.postValue(Resources.loading(null))
@@ -92,7 +93,7 @@ class SearchInstituteViewModel @Inject constructor() : ViewModel() {
                 try {
                     citiesLiveDate.postValue(
                         Resources.success(
-                            ApiRepository().getCitiesApi(request)
+                            ApiRepository().getInstituteCitiesApi(token)
                         )
                     )
                 } catch (ex: Exception) {

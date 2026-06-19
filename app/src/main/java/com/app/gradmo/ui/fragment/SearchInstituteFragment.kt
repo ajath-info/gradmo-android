@@ -39,6 +39,9 @@ import com.app.gradmo.utils.network_utils.Status
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import androidx.appcompat.widget.ListPopupWindow
 
 @AndroidEntryPoint
 class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
@@ -63,6 +66,9 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
     private val autoScrollHandler = Handler(Looper.getMainLooper())
     private val AUTO_SCROLL_DELAY = 7000L  // 3 seconds
 
+    private var selectedCity = ""              // empty = no city filter
+    private var cityList: List<String> = emptyList()
+
     private val autoScrollRunnable = object : Runnable {
         override fun run() {
             val itemCount = homeBannerAdapter.itemCount
@@ -83,6 +89,7 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         instituteList.clear()
         val accessToken = Preferences.getCustomModelPreference<LoginResponse>(requireContext(), LOGIN_DATA)?.data?.accessToken
         viewModel.hitBannerDataApi("Bearer $accessToken")
+        viewModel.hitCitiesDataApi("Bearer $accessToken")
         callInstituteApi()
     }
 
@@ -336,6 +343,14 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
             CommonUtils.updateModeUI(sheetBinding, isOffline = false)
         }
 
+        // ================= CITY =================
+
+        sheetBinding.tvCity.text = if (selectedCity.isEmpty()) "Select Your City" else selectedCity
+
+        sheetBinding.tvCity.setOnClickListener {
+            showCityPopup(sheetBinding.tvCity)
+        }
+
         // ================= APPLY =================
 
         sheetBinding.nextButton.setOnClickListener {
@@ -365,6 +380,30 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         }
         dialog.show()
     }
+    private fun showCityPopup(anchor: TextView) {
+        if (cityList.isEmpty()) {
+            Toast.makeText(requireContext(), "Cities not loaded yet, please try again", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val items = mutableListOf("All Cities").apply { addAll(cityList) }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, items)
+
+        val popupWindow = ListPopupWindow(requireContext()).apply {
+            setAdapter(adapter)
+            anchorView = anchor
+            width = anchor.width
+            isModal = true
+        }
+
+        popupWindow.setOnItemClickListener { _, _, position, _ ->
+            selectedCity = if (position == 0) "" else items[position]
+            anchor.text = if (selectedCity.isEmpty()) "Select Your City" else selectedCity
+            popupWindow.dismiss()
+        }
+
+        popupWindow.show()
+    }
     private fun applyFilters() {
         currentPage = 1
         isLastPage = false
@@ -383,11 +422,12 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
             latitude = "28.93466857138595",
             longitude = "78.34283781396569",
             order_field = "name",
-            order_type = orderType,     // ✅ dynamic
-            mode = selectedMode,        // ✅ dynamic
+            order_type = orderType,
+            mode = selectedMode,
             page = currentPage.toString(),
             limit = pageSize.toString(),
             search = searchQuery,
+            city = selectedCity
         )
 
         viewModel.hitInstitutesDataApi("Bearer $accessToken", request)
@@ -439,27 +479,20 @@ class SearchInstituteFragment : BaseFragment<FragmentSearchInstituteBinding>() {
         viewModel.getCitiesLiveData().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.e("TAG", "Login success: ${Gson().toJson(it)}")
                     if (it.data?.status == "true") {
-
+                        cityList = it.data.cities.map { c -> c.city }
                     } else {
-                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(requireContext(), "${it.data?.msg}", Toast.LENGTH_SHORT).show()
                     }
                     ProcessDialog.dismissDialog(true)
                 }
-
-                Status.LOADING -> {
-                    ProcessDialog.showDialog(requireContext(), true)
-                }
-
+                Status.LOADING -> ProcessDialog.showDialog(requireContext(), true)
                 Status.ERROR -> {
-                    Log.e("TAG", "Login Failed: ${it.message}")
+                    Log.e("TAG", "Cities Failed: ${it.message}")
                     ProcessDialog.dismissDialog(true)
                 }
             }
         }
-
     }
     override fun restoreView() {
         binding.instituteRecycler.adapter = searchInstituteAdapter

@@ -23,6 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/backButton"
                 android:layout_marginStart="20dp"
                 android:layout_width="24dp"
